@@ -1,67 +1,43 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: Xiling Wang
  */
-public enum Country {
-        Alaska,
-        Alberta,
-        Ontario,
-        WesternAmerica,
-        EasternAmerica,
-        Quebec,
-        CentralAmerica,
-        Greenland,
-        NorthwestAmerica,
+public class Country {
+    private String name;
+    private String owner;
+    private int armySize;
+    private List<Country> neighbours;
 
-        //South America
-        Brazil,
-        Venezuela,
-        Peru,
-        Argentina,
+    public Country(String name) {
+        this.name = name;
+        owner = "";
+        armySize = 0;
+        neighbours = new ArrayList<>();
+    }
 
-        //Australia
-        WesternAustralia,
-        EasternAustralia,
-        Indoneasia,
-        NewGuinea,
+    public String getName() {
+        return name;
+    }
 
-        //Europe
-        Ukraine,
-        Scandinavia,
-        Iceland,
-        GreatBritain,
-        NorthernEurope,
-        WesternEurope,
-        SouthernEurope,
+    public String getOwner() {
+        return owner;
+    }
 
-        //Asia
-        Yakutsk,
-        Siberia,
-        Kamchatka,
-        Irkutsk,
-        Ural,
-        Japan,
-        Mongolia,
-        China,
-        MiddleEast,
-        India,
-        Siam,
-        Afganistan,
+    public int getArmySize() {
+        return armySize;
+    }
 
-        //Africa
-        Congo,
-        EastAfrica,
-        Egypt,
-        Madagascar,
-        NorthAfrica,
-        SouthAfrica;
+    public void setOwner(String player) {
+        owner = player;
+    }
 
+    public void setArmySize(int armySize) {
+        this.armySize = armySize;
+    }
 
-
-
-
-
-
-
+    public void addNeighbour(Country country) {
+        neighbours.add(country);
+    }
 }
