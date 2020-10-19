@@ -3,6 +3,7 @@ import java.util.*;
 
 /**
  * @author Xiling Wang
+ * @author Aleksandar Veselinovic
  */
 public class Model {
 
