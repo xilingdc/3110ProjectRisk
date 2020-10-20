@@ -29,6 +29,12 @@ public class Country {
         return armySize;
     }
 
+    public Country getCountry(String name) {
+        if (this.name.equals(name)) {
+            return this;
+        } else return null;
+    }
+
     public void setOwner(String player) {
         owner = player;
     }
@@ -37,7 +43,13 @@ public class Country {
         this.armySize = armySize;
     }
 
-    public void addNeighbour(Country country) {
-        neighbours.add(country);
+    public void addNeighbours(Country[] countries) {
+        for (int i = 0; i < countries.length; i++) {
+            neighbours.add(countries[i]);
+        }
+    }
+
+    public boolean hasNeighbor(Country country) {
+        return neighbours.contains(country);
     }
 }
