@@ -171,7 +171,7 @@ public class Map {
     }
 
     public boolean hasCountry(String name) {
-        return countries.contains(getCountry("name"));
+        return countries.contains(getCountry(name));
     }
 
     public List<Country> getCountries() {
