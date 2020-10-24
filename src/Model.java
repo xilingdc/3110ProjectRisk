@@ -1,5 +1,5 @@
-
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Xiling Wang
@@ -8,17 +8,17 @@ import java.util.*;
 public class Model {
 
     private int playerNum;
-    private int armyDefaultNum;
-    private ArrayList<String> playerList;
+    private ArrayList<Player> players;
     private Parser parser;
-    private String currentPlayer;
+    private Player currentPlayer;
     private int currentPlayerIndex;
     private List<Country> countries;
+    private int[] troopAllocation = {50, 35, 30, 25, 20};
 
     /**
      * @constructor
      */
-    public Model(){
+    public Model() {
         parser = new Parser();
         countries = new ArrayList<>();
     }
@@ -29,29 +29,26 @@ public class Model {
     }
 
 
-
     /**
-     *  Main play routine.  Loops until end of play.
+     * Main play routine.  Loops until end of play.
      */
-    public void play(){
+    public void play() {
 
+        createMap();
         printBegin();//let user enter player number
 
-
-
-        //default army setting, need to implement another method to distribute army number by given player number(not finish yet)
-       //need to modify countryArmy and playerCountry two hashmaps
+        //need to modify countryArmy and playerCountry two hashmaps
 
 
         boolean finished = false;
-        while (! finished) {
+        while (!finished) {
             Command command = parser.getCommand();
             processCommand(command);
-            if(playerList.size()==1){//when only one player stands
-                finished=true;
+            if (players.size() == 1) {//when only one player stands
+                finished = true;
             }
         }
-        System.out.println(playerList.get(0)+" is winner. Gamer Over!");
+        System.out.println(players.get(0) + " is winner. Gamer Over!");
     }
 
     public void createMap() {
@@ -62,17 +59,17 @@ public class Model {
         countries.add(Alberta);
         Country Ontario = new Country("Ontario");
         countries.add(Ontario);
-        Country WesternAmerica = new Country("Western America");
+        Country WesternAmerica = new Country("WesternAmerica");
         countries.add(WesternAmerica);
-        Country EasternAmerica = new Country("Eastern America");
+        Country EasternAmerica = new Country("EasternAmerica");
         countries.add(EasternAmerica);
         Country Quebec = new Country("Quebec");
         countries.add(Quebec);
-        Country CentralAmerica = new Country("Central America");
+        Country CentralAmerica = new Country("CentralAmerica");
         countries.add(CentralAmerica);
         Country Greenland = new Country("Greenland");
         countries.add(Greenland);
-        Country NorthwestAmerica = new Country("Northwest America");
+        Country NorthwestAmerica = new Country("NorthwestAmerica");
         countries.add(NorthwestAmerica);
 
         //South America
@@ -86,9 +83,9 @@ public class Model {
         countries.add(Argentina);
 
         //Australia
-        Country WesternAustralia = new Country("Western Australia");
+        Country WesternAustralia = new Country("WesternAustralia");
         countries.add(WesternAustralia);
-        Country EasternAustralia = new Country("Eastern Australia");
+        Country EasternAustralia = new Country("EasternAustralia");
         countries.add(EasternAustralia);
         Country Indonesia = new Country("Indonesia");
         countries.add(Indonesia);
@@ -102,13 +99,13 @@ public class Model {
         countries.add(Scandinavia);
         Country Iceland = new Country("Iceland");
         countries.add(Iceland);
-        Country GreatBritain = new Country("Great Britain");
+        Country GreatBritain = new Country("GreatBritain");
         countries.add(GreatBritain);
-        Country NorthernEurope = new Country("Northern Europe");
+        Country NorthernEurope = new Country("NorthernEurope");
         countries.add(NorthernEurope);
-        Country WesternEurope = new Country("Western Europe");
+        Country WesternEurope = new Country("WesternEurope");
         countries.add(WesternEurope);
-        Country SouthernEurope = new Country("Southern Europe");
+        Country SouthernEurope = new Country("SouthernEurope");
         countries.add(SouthernEurope);
 
         //Asia
@@ -140,15 +137,15 @@ public class Model {
         //Africa
         Country Congo = new Country("Congo");
         countries.add(Congo);
-        Country EastAfrica = new Country("East Africa");
+        Country EastAfrica = new Country("EastAfrica");
         countries.add(EastAfrica);
         Country Egypt = new Country("Egypt");
         countries.add(Egypt);
         Country Madagascar = new Country("Madagascar");
         countries.add(Madagascar);
-        Country NorthAfrica = new Country("North Africa");
+        Country NorthAfrica = new Country("NorthAfrica");
         countries.add(NorthAfrica);
-        Country SouthAfrica = new Country("South Africa");
+        Country SouthAfrica = new Country("SouthAfrica");
         countries.add(SouthAfrica);
 
         //North America
@@ -209,97 +206,189 @@ public class Model {
     /**
      * the method prints the beginning of the game
      */
-    public void printBegin(){
+    public void printBegin() {
         System.out.println("Welcome to Risk.");
         System.out.println("Please enter player number(2-6):");
         playerNum = parser.getPlayerNum();
-        playerList = new ArrayList<>();
-        for (int i = 1; i <=playerNum; i++) {
-            playerList.add("player"+i);//add player1, player2.... into playerList
-            System.out.println("player"+i+" has been added;");
+        players = new ArrayList<>();
+        for (int i = 1; i <= playerNum; i++) {
+            Player p = new Player(Integer.toString(i));
+            players.add(p);//add player1, player2.... into playerList
+            System.out.println("Player " + i + " has been added;");
         }
-        currentPlayerIndex=0;
-        currentPlayer=playerList.get(0);
 
+        currentPlayerIndex = 0;
+        currentPlayer = players.get(0);
+
+        setUp();
+    }
+
+    public void setUp() {
+        Collections.shuffle(countries);
+        int countryCount = countries.size();
+        while (countryCount != 0) {
+            for (Player p : players) {
+                if (countryCount > 0) {
+                    p.addCountry(countries.get(countryCount - 1));
+                    countries.get(countryCount - 1).setOwner(p);
+                    countryCount--;
+                }
+            }
+        }
+
+        for (Player p : players) {
+            p.distributeTroops(troopAllocation[players.size() - 2]);
+        }
+    }
+
+    private void getState() {
+        for (Country country : countries) {
+            System.out.println(country.getName() + " is owned by Player " + country.getOwner().getName() + ", the number of troops: " + country.getArmySize());
+        }
     }
 
 
-    private void processCommand (Command command){
+    private void processCommand(Command command) {
 
-        if(command.isUnknown()){
+        if (command.isUnknown()) {
             System.out.println("Invalid Command.");
             return;
         }
 
         String commandWord = command.getCommandWord();
 
-        if(commandWord.equals("state")){
+        if (commandWord.equals("state")) {
             getState();
-        }else if(commandWord.equals("attack")){
+        } else if (commandWord.equals("attack")) {
             attack(command);
-        }else if(commandWord.equals("pass")){
+        } else if (commandWord.equals("pass")) {
             pass();
+        } else {
+
         }
 
     }
 
-
-    private void getState(){
-        for (Country country : countries) {
-            System.out.println(country.getName() + ", owned by: " + country.getOwner() + ", number of armies" + country.getArmySize());
-        }
-    }
 
     /**
-     *
+     * @param command
+     */
+    private void attack(Command command) {//command description "attack attackedCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
+        if (isValidAttack(command)) {
+
+            Country defendingCountry = new Country("");
+            Country attackingCountry = new Country("");
+
+            for (Country c : countries) {
+                if (c.getName().equals(command.getSecondWord())) {
+                    defendingCountry = c;
+                }
+                if (c.getName().equals(command.getThirdWord())) {
+                    attackingCountry = c;
+                }
+            }
+
+            // take input from the user
+            int attackDice[] = new int[3];
+            int defendDice[];
+            if (defendingCountry.getArmySize() == 1) {
+                defendDice = new int[1];
+            } else {
+                defendDice = new int[2];
+            }
+
+            for (int i = 0; i < attackDice.length; i++) {
+                attackDice[i] = ThreadLocalRandom.current().nextInt(1, 7);
+            }
+
+            for (int i = 0; i < defendDice.length; i++) {
+                defendDice[i] = ThreadLocalRandom.current().nextInt(1, 7);
+            }
+
+            for (int i = 0; i < defendDice.length; i++) {
+                Arrays.sort(attackDice);
+                Arrays.sort(defendDice);
+                if (attackDice[attackDice.length - 1] > defendDice[defendDice.length - 1]) {
+                    attackingCountry.removeTroops(1);
+                    System.out.println("Attacker won");
+                } else {
+                    defendingCountry.removeTroops(1);
+                    System.out.println("Defender won");
+                }
+
+                attackDice = Arrays.copyOf(attackDice, attackDice.length - 1);
+                defendDice = Arrays.copyOf(defendDice, defendDice.length - 1);
+            }
+
+            for (Country c : countries) {
+                if (c.getName().equals(attackingCountry.getName())) {
+                    c = attackingCountry;
+                }
+                if (c.getName().equals(defendingCountry.getName())) {
+                    c = defendingCountry;
+                }
+            }
+        }
+    }
+
+
+    /**
      * @param command
      * @return true/false (valid attack)
      */
-    private boolean isValidAttack(Command command){
-        if(!command.hasSecondWord()){//no second command
+    private boolean isValidAttack(Command command) {
+        if (!command.hasSecondWord()) {//no second command
             System.out.println("Which country will be attacked?");
             return false;
         }
-        if(!command.hasThirdWord()){//no third command
+        if (!command.hasThirdWord()) {//no third command
             System.out.println("Which country will launch attack?");
             return false;
         }
 
-        Country defendingCountry = new Country(command.getSecondWord());
-        Country attackingCountry = new Country(command.getThirdWord());
+        ArrayList<String> nameChecker = new ArrayList<String>();
 
-        if(!(countries.contains(defendingCountry))) {//second or third command are not included in country list
+        for (Country c : countries) {
+            nameChecker.add(c.getName());
+        }
+
+        if (!(nameChecker.contains(command.getSecondWord()))) {//second or third command are not included in country list
             System.out.println("There is no such country.");
             return false;
         }
 
-        if(!(countries.contains(attackingCountry))){//second or third command are not included in country list
+        if (!(nameChecker.contains(command.getThirdWord()))) {//second or third command are not included in country list
             System.out.println("There is no such country.");
             return false;
         }
 
-        if(attackingCountry.getArmySize() == 1){//if attack country's army is only 1 left
-            System.out.println(command.getThirdWord()+"'s army number is not enough to attack.");
+        Country defendingCountry = new Country("");
+        Country attackingCountry = new Country("");
+
+
+        for (Country c : countries) {
+            if (c.getName().equals(command.getSecondWord())) {
+                defendingCountry = c;
+            }
+            if (c.getName().equals(command.getThirdWord())) {
+                attackingCountry = c;
+            }
+        }
+
+        if (!(currentPlayer.getCountries().contains(attackingCountry))) {//if player doesn't control that country
+            System.out.println("Player " + currentPlayer.getName() + " does not have this country.");
+        }
+
+        if (attackingCountry.getArmySize() == 1) {//if attack country's army is only 1 left
+            System.out.println(command.getThirdWord() + "'s army number is not enough to attack.");
             return false;
         }
-        if(attackingCountry.hasNeighbor(defendingCountry)){//if attack country is neighbour country of attacked country
+
+        if (attackingCountry.hasNeighbor(defendingCountry)) {//if attack country is neighbour country of attacked country
             return true;
-        }else{
-            System.out.println(defendingCountry + " is not a neighbor of " + attackingCountry);
+        } else {
+            System.out.println(defendingCountry.getName() + " is not a neighbor of " + attackingCountry.getName());
             return false;
-        }
-
-    }
-
-    /**
-     *
-     * @param command
-     */
-    private void attack(Command command){//command description "attack attackedCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
-        if(isValidAttack(command)){//when attack's choice is valid
-            //dice rules, to decide who will win and lose how many army, and leave how many army at the country
-            //not finish yet
-            //make sure to check if the player still exists at least one country, otherwise delete the certain player from playerList
         }
     }
 
@@ -307,21 +396,15 @@ public class Model {
     /**
      * pass to next player
      */
-    private void pass(){
-        if(currentPlayerIndex==playerList.size()-1){
-            currentPlayerIndex=0;
-            currentPlayer=playerList.get(currentPlayerIndex);
-        }else{
+    private void pass() {
+        if (currentPlayerIndex == players.size() - 1) {
+            currentPlayerIndex = 0;
+        } else {
             currentPlayerIndex++;
-            currentPlayer=playerList.get(currentPlayerIndex);
         }
-
+        currentPlayer = players.get(currentPlayerIndex);
+        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
     }
-
-
-
-
-
 
 
 }
