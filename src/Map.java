@@ -166,6 +166,10 @@ public class Map {
         return null;
     }
 
+    public Country getCountry(int index) {
+        return countries.get(index);
+    }
+
     public List<Country> getCountries() {
         return countries;
     }
