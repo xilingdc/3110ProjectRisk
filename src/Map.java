@@ -170,6 +170,10 @@ public class Map {
         return countries.get(index);
     }
 
+    public boolean hasCountry(String name) {
+        return countries.contains(getCountry("name"));
+    }
+
     public List<Country> getCountries() {
         return countries;
     }
