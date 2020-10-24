@@ -289,12 +289,17 @@ public class Model {
             }
 
             // take input from the user
-            int attackDice[] = new int[3];
-            int defendDice[];
-            if (defendingCountry.getArmySize() == 1) {
-                defendDice = new int[1];
+            Integer attackDice[];
+            if (attackingCountry.getArmySize() <= 4) {
+                attackDice = new Integer[attackingCountry.getArmySize() - 1];
             } else {
-                defendDice = new int[2];
+                attackDice = new Integer[3];
+            }
+            Integer defendDice[];
+            if (defendingCountry.getArmySize() == 1) {
+                defendDice = new Integer[1];
+            } else {
+                defendDice = new Integer[2];
             }
 
             for (int i = 0; i < attackDice.length; i++) {
@@ -305,19 +310,17 @@ public class Model {
                 defendDice[i] = ThreadLocalRandom.current().nextInt(1, 7);
             }
 
-            for (int i = 0; i < defendDice.length; i++) {
-                Arrays.sort(attackDice);
-                Arrays.sort(defendDice);
-                if (attackDice[attackDice.length - 1] > defendDice[defendDice.length - 1]) {
-                    attackingCountry.removeTroops(1);
+            Arrays.sort(attackDice, Collections.reverseOrder());
+            Arrays.sort(defendDice, Collections.reverseOrder());
+            int lessDice = Math.min(attackDice.length, defendDice.length);
+            for (int i = 0; i < lessDice; i++) {
+                if (attackDice[i] > defendDice[i]) {
+                    defendingCountry.removeTroops(1);
                     System.out.println("Attacker won");
                 } else {
-                    defendingCountry.removeTroops(1);
+                    attackingCountry.removeTroops(1);
                     System.out.println("Defender won");
                 }
-
-                attackDice = Arrays.copyOf(attackDice, attackDice.length - 1);
-                defendDice = Arrays.copyOf(defendDice, defendDice.length - 1);
             }
 
             for (Country c : countries) {
