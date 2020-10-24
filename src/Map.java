@@ -157,7 +157,7 @@ public class Map {
         SouthAfrica.addNeighbours(new Country[]{Congo, EastAfrica, Madagascar});
     }
 
-    private Country getCountry(String name) {
+    public Country getCountry(String name) {
         for (Country country : countries) {
             if (country.getName().equals(name)) {
                 return country;
@@ -166,7 +166,11 @@ public class Map {
         return null;
     }
 
-    private int getNumberOfCountries() {
+    public List<Country> getCountries() {
+        return countries;
+    }
+
+    public int getNumberOfCountries() {
         return countries.size();
     }
 }
