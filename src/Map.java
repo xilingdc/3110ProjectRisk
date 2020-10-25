@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Map {
-    private List<Country> countries;
+    private List<Country> countries;//general country list
 
     public Map() {
         countries = new ArrayList<>();
         //North America
-        Country Alaska = new Country("Alaska");
+        Country Alaska = new Country("Alaska");//initialization and add the country into country list
         countries.add(Alaska);
         Country Alberta = new Country("Alberta");
         countries.add(Alberta);
@@ -103,7 +103,7 @@ public class Map {
         countries.add(SouthAfrica);
 
         //North America
-        Alaska.addNeighbours(new Country[]{Alberta, Kamchatka, NorthwestAmerica});
+        Alaska.addNeighbours(new Country[]{Alberta, Kamchatka, NorthwestAmerica});//add coresponding countries as the certain country's neighbour
         Alberta.addNeighbours(new Country[]{Alaska, NorthwestAmerica, Ontario, WesternAmerica});
         Ontario.addNeighbours(new Country[]{Quebec, WesternAmerica, EasternAmerica, Greenland, NorthwestAmerica, Alberta});
         WesternAmerica.addNeighbours(new Country[]{Alberta, Ontario, EasternAmerica, CentralAmerica});
@@ -156,7 +156,11 @@ public class Map {
         NorthAfrica.addNeighbours(new Country[]{Brazil, WesternEurope, Egypt, EastAfrica, Congo});
         SouthAfrica.addNeighbours(new Country[]{Congo, EastAfrica, Madagascar});
     }
-
+    
+    
+    /**
+    *@return from given name, return correspnding country
+    */
     public Country getCountry(String name) {
         for (Country country : countries) {
             if (country.getName().equals(name)) {
@@ -165,19 +169,35 @@ public class Map {
         }
         return null;
     }
-
+    
+    
+    /**
+    *@return from given index number, return corresponding country
+    */
     public Country getCountry(int index) {
         return countries.get(index);
     }
-
+    
+    
+    /**
+    *@return true, if country exists; false, if country does not exist
+    */
     public boolean hasCountry(String name) {
         return countries.contains(getCountry(name));
     }
-
+    
+    
+    /**
+    *@return general country list
+    */
     public List<Country> getCountries() {
         return countries;
     }
-
+    
+    
+    /**
+    *@return country list's size
+    */
     public int getNumberOfCountries() {
         return countries.size();
     }
