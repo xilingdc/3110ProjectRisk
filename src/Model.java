@@ -214,6 +214,11 @@ public class Model {
             return false;
         }
 
+        if (currentPlayer.getCountries().contains(defendingCountry)) {//if the player attacks their own country
+            System.out.println("You cannot attack a country you own.");
+            return false;
+        }
+
         if (attackingCountry.getArmySize() == 1) {//if attack country's army is only 1 left
             System.out.println(command.getThirdWord() + "'s army number is not enough to attack.");
             return false;
