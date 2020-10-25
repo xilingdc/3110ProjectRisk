@@ -1,6 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
+    /**
+    *@author Xiling Wang
+    *@author Aleksandar Veselinovic
+    *@author Ali Fahd
+    */
 public class Map {
     private List<Country> countries;//general country list
 
