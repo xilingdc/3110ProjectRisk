@@ -54,7 +54,7 @@ public class Model {
      */
     public void printBegin() {
         System.out.println("Welcome to Risk.");
-        System.out.println("Please enter player number(2-6):");
+        System.out.print("Please enter player number(2-6): ");
         playerNum = parser.getPlayerNum();
         players = new ArrayList<>();
         for (int i = 1; i <= playerNum; i++) {

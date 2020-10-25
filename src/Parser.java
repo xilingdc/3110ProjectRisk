@@ -26,13 +26,14 @@ public class Parser
         int playerNum=0;
         boolean isValid = false;
         while(!isValid) {//2<=playerNum<=6
-            System.out.println("Make sure it is between 2 to 6 integer number.");
             playerNum = reader.nextInt();
             if(playerNum<=6&&playerNum>=2){
                 isValid=true;
+            } else {
+                System.out.print("Make sure it is between 2 to 6 integer number: ");
             }
-
         }
+        reader.nextLine();
         return playerNum;
 
     }
