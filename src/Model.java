@@ -4,14 +4,15 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * @author Xiling Wang
  * @author Aleksandar Veselinovic
+ * @author Ali Fahd 
  */
 public class Model {
 
-    private int playerNum;
-    private ArrayList<Player> players;
+    private int playerNum;//player total number
+    private ArrayList<Player> players;// player list
     private Parser parser;
-    private Player currentPlayer;
-    private int currentPlayerIndex;
+    private Player currentPlayer;//current player
+    private int currentPlayerIndex;//current player index number 
     private Map map;
     private int[] troopAllocation = {50, 35, 30, 25, 20};
 
@@ -35,7 +36,7 @@ public class Model {
     public void play() {
         printBegin();//let user enter player number
         setUp();
-        //need to modify countryArmy and playerCountry two hashmaps
+        
 
 
         boolean finished = false;
@@ -63,11 +64,15 @@ public class Model {
             System.out.println("Player " + i + " has been added;");
         }
 
-        currentPlayerIndex = 0;
+        currentPlayerIndex = 0;//the game begins at player one
         currentPlayer = players.get(0);
         System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
     }
-
+    
+    
+    /**
+    *set up map, and randomly assign countries to each player
+    */
     public void setUp() {
         Collections.shuffle(map.getCountries());
         int countryCount = map.getNumberOfCountries();
@@ -85,14 +90,18 @@ public class Model {
             p.distributeTroops(troopAllocation[players.size() - 2]);
         }
     }
-
+    
+    
+    /**
+    *print current state of whole map with country and its owner, troop size.
+    */
     private void getState() {
         for (Country country : map.getCountries()) {
             System.out.println(country.getName() + " is owned by Player " + country.getOwner().getName() + ", the number of troops: " + country.getArmySize());
         }
     }
 
-
+    
     private void processCommand(Command command) {
 
         if (command.isUnknown()) {
@@ -114,12 +123,13 @@ public class Model {
 
     /**
      * @param command
+     * attack method
      */
-    private void attack(Command command) {//command description "attack attackedCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
+    private void attack(Command command) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
         if (isValidAttack(command)) {
 
-            Country defendingCountry = map.getCountry(command.getSecondWord());
-            Country attackingCountry = map.getCountry(command.getThirdWord());
+            Country defendingCountry = map.getCountry(command.getSecondWord());//defend country
+            Country attackingCountry = map.getCountry(command.getThirdWord());//attack country
 
             // take input from the user
             Integer attackDice[];
