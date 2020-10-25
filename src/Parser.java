@@ -38,6 +38,21 @@ public class Parser
 
     }
 
+    public int getNumberOfDice(int maxDice) {
+        int numberOfDice = 0;
+        boolean isValid = false;
+        while (!isValid) {
+            numberOfDice = reader.nextInt();
+            if (numberOfDice<= maxDice) {
+                isValid = true;
+            } else {
+                System.out.print("You cannot pick more than " + maxDice);
+            }
+        }
+        reader.nextLine();
+        return numberOfDice;
+    }
+
 
 
     /**

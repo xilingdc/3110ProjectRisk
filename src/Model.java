@@ -127,16 +127,25 @@ public class Model {
 
             // take input from the user
             Integer attackDice[];
-            if (attackingCountry.getArmySize() <= 4) {
-                attackDice = new Integer[attackingCountry.getArmySize() - 1];
-            } else {
-                attackDice = new Integer[3];
+            System.out.print("Player " + attackingCountry.getOwner().getName() + ", how many dice do you want to play?: ");
+            if (attackingCountry.getArmySize() == 2) {
+                attackDice = new Integer[1];
             }
+            else if (attackingCountry.getArmySize() == 3) {
+                int numberOfAttackDice = parser.getNumberOfDice(2);
+                attackDice = new Integer[numberOfAttackDice];
+            } else {
+                int numberOfAttackDice = parser.getNumberOfDice(3);
+                attackDice = new Integer[numberOfAttackDice];
+            }
+
             Integer defendDice[];
+            System.out.print("Player " + defendingCountry.getOwner().getName() + ", how many dice do you want to play?: ");
             if (defendingCountry.getArmySize() == 1) {
                 defendDice = new Integer[1];
             } else {
-                defendDice = new Integer[2];
+                int numberOfDefenceDice = parser.getNumberOfDice(2);
+                defendDice = new Integer[numberOfDefenceDice];
             }
 
             for (int i = 0; i < attackDice.length; i++) {
