@@ -46,7 +46,7 @@ public class Model {
                 finished = true;
             }
         }
-        System.out.println(players.get(0) + " is winner. Gamer Over!");
+        System.out.println(players.get(0).getName() + " is winner. Gamer Over!");
     }
 
     /**
@@ -167,9 +167,15 @@ public class Model {
             }
             if (defendingCountry.getArmySize() == 0) {
                 System.out.println("Player " + currentPlayer.getName() + " captured " + defendingCountry.getName());
-                defendingCountry.setOwner(currentPlayer);
+
                 currentPlayer.addCountry(defendingCountry);
-                defendingCountry.getOwner().removeCountry(defendingCountry);
+                defendingCountry.getOwner().removeCountry(defendingCountry);//remove captured country from defending countr owner's country list
+
+                if(defendingCountry.getOwner().getCountries().size()==0){//if defending country's owner does not have any other coutry
+                    players.remove(defendingCountry.getOwner());
+                }
+                defendingCountry.setOwner(currentPlayer);// update new owner
+
                 defendingCountry.addTroops(attackingCountry.getArmySize() - 1);
                 attackingCountry.removeTroops(attackingCountry.getArmySize() - 1);
             }
