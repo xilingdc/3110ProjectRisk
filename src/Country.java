@@ -6,7 +6,7 @@ import java.util.List;
  */
 public class Country {
     private String name;
-    //private Player owner;//currently choosing to have a list of countries in the player class of the countries the player owns
+    private Player owner;//currently choosing to have a list of countries in the player class of the countries the player owns
     private int armySize;
     private List<Country> neighbours;
 
@@ -20,9 +20,9 @@ public class Country {
         return name;
     }
 
-    /*public Player getOwner() {
+    public Player getOwner() {
         return owner;
-    }*/
+    }
 
     public int getArmySize() {
         return armySize;
@@ -34,9 +34,9 @@ public class Country {
         } else return null;
     }
 
-    /*public void setOwner(Player p) {
+    public void setOwner(Player p) {
         owner = p;
-    }*/
+    }
 
     public void addTroops(int troops) {
         this.armySize += troops;
