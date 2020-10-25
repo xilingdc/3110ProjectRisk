@@ -34,7 +34,7 @@ public class Model {
      */
     public void play() {
         printBegin();//let user enter player number
-
+        setUp();
         //need to modify countryArmy and playerCountry two hashmaps
 
 
@@ -65,8 +65,6 @@ public class Model {
 
         currentPlayerIndex = 0;
         currentPlayer = players.get(0);
-
-        setUp();
     }
 
     public void setUp() {
@@ -109,10 +107,7 @@ public class Model {
             attack(command);
         } else if (commandWord.equals("pass")) {
             pass();
-        } else {
-
         }
-
     }
 
 
