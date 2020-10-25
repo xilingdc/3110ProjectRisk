@@ -46,7 +46,7 @@ public class Parser
             if (numberOfDice<= maxDice) {
                 isValid = true;
             } else {
-                System.out.print("You cannot pick more than " + maxDice);
+                System.out.print("You cannot choose more than " + maxDice + " dice. Choose again: ");
             }
         }
         reader.nextLine();

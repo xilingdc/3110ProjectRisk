@@ -127,23 +127,24 @@ public class Model {
 
             // take input from the user
             Integer attackDice[];
-            System.out.print("Player " + attackingCountry.getOwner().getName() + ", how many dice do you want to play?: ");
             if (attackingCountry.getArmySize() == 2) {
                 attackDice = new Integer[1];
             }
             else if (attackingCountry.getArmySize() == 3) {
+                System.out.print("Player " + currentPlayer.getName() + ", how many dice do you want to play?: ");
                 int numberOfAttackDice = parser.getNumberOfDice(2);
                 attackDice = new Integer[numberOfAttackDice];
             } else {
+                System.out.print("Player " + currentPlayer.getName() + ", how many dice do you want to play?: ");
                 int numberOfAttackDice = parser.getNumberOfDice(3);
                 attackDice = new Integer[numberOfAttackDice];
             }
 
             Integer defendDice[];
-            System.out.print("Player " + defendingCountry.getOwner().getName() + ", how many dice do you want to play?: ");
             if (defendingCountry.getArmySize() == 1) {
                 defendDice = new Integer[1];
             } else {
+                System.out.print("Player " + defendingCountry.getOwner().getName() + ", how many dice do you want to play?: ");
                 int numberOfDefenceDice = parser.getNumberOfDice(2);
                 defendDice = new Integer[numberOfDefenceDice];
             }
@@ -160,13 +161,22 @@ public class Model {
             Arrays.sort(defendDice, Collections.reverseOrder());
             int lessDice = Math.min(attackDice.length, defendDice.length);
             for (int i = 0; i < lessDice; i++) {
+                System.out.print("Attack Dice: " + attackDice[i] + "\tDefence dice: " + defendDice[i]);
                 if (attackDice[i] > defendDice[i]) {
                     defendingCountry.removeTroops(1);
-                    System.out.println("Attacker won");
+                    System.out.println("\tAttacker wins");
                 } else {
                     attackingCountry.removeTroops(1);
-                    System.out.println("Defender won");
+                    System.out.println("\tDefender wins");
                 }
+            }
+            if (defendingCountry.getArmySize() == 0) {
+                System.out.println("Player " + currentPlayer.getName() + " captured " + defendingCountry.getName());
+                defendingCountry.setOwner(currentPlayer);
+                currentPlayer.addCountry(defendingCountry);
+                defendingCountry.getOwner().removeCountry(defendingCountry);
+                defendingCountry.addTroops(attackingCountry.getArmySize() - 1);
+                attackingCountry.removeTroops(attackingCountry.getArmySize() - 1);
             }
         }
     }
