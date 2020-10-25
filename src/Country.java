@@ -6,13 +6,12 @@ import java.util.List;
  */
 public class Country {
     private String name;
-    private String owner;
+    private Player owner;//currently choosing to have a list of countries in the player class of the countries the player owns
     private int armySize;
     private List<Country> neighbours;
 
     public Country(String name) {
         this.name = name;
-        owner = "";
         armySize = 0;
         neighbours = new ArrayList<>();
     }
@@ -21,7 +20,7 @@ public class Country {
         return name;
     }
 
-    public String getOwner() {
+    public Player getOwner() {
         return owner;
     }
 
@@ -35,12 +34,16 @@ public class Country {
         } else return null;
     }
 
-    public void setOwner(String player) {
-        owner = player;
+    public void setOwner(Player p) {
+        owner = p;
     }
 
-    public void setArmySize(int armySize) {
-        this.armySize = armySize;
+    public void addTroops(int troops) {
+        this.armySize += troops;
+    }
+
+    public void removeTroops(int troops) {
+        this.armySize -= troops;
     }
 
     public void addNeighbours(Country[] countries) {
