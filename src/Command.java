@@ -10,19 +10,11 @@ public class Command
     private String thirdWord;
 
     /**
-     * Create a command object. First and second word must be supplied, but
-     * either one (or both) can be null.
      * @param firstWord The first word of the command. Null if the command
      *                  was not recognised.
      * @param secondWord The second word of the command (attacked country).
      * @param thirdWord The third word of the command (attack side country)
      */
-/*    public Command(String firstWord, String secondWord)
-    {
-        commandWord = firstWord;
-        this.secondWord = secondWord;
-    }*/
-
     public Command(String firstWord, String secondWord, String thirdWord)
     {
         commandWord = firstWord;
