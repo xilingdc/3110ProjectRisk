@@ -46,7 +46,7 @@ public class Model {
                 finished = true;
             }
         }
-        System.out.println("Player "+players.get(0).getName() + " is winner. Gamer Over!");
+        System.out.println("Player "+players.get(0).getName() + " is winner. Game Over!");
     }
 
     /**
@@ -173,6 +173,7 @@ public class Model {
                 defendingCountry.getOwner().removeCountry(defendingCountry);//remove captured country from defending countr owner's country list
 
                 if(defendingCountry.getOwner().getCountries().size()==0){//if defending country's owner does not have any other coutry
+                    System.out.println("Player " + defendingCountry.getOwner().getName() + " has been eliminated.");
                     players.remove(defendingCountry.getOwner());
                 }
                 defendingCountry.setOwner(currentPlayer);// update new owner
