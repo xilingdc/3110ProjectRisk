@@ -46,7 +46,7 @@ public class Model {
                 finished = true;
             }
         }
-        System.out.println(players.get(0).getName() + " is winner. Gamer Over!");
+        System.out.println("Player "+players.get(0).getName() + " is winner. Gamer Over!");
     }
 
     /**
@@ -65,6 +65,7 @@ public class Model {
 
         currentPlayerIndex = 0;
         currentPlayer = players.get(0);
+        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
     }
 
     public void setUp() {
