@@ -1,0 +1,21 @@
+To run the game, double click on the jar file that is in the provided zipped folder. This will open a terminal which will ask you
+how many players will be playing in the game. To choose the number of players, type a number next to the question and press enter.
+
+At this point, the game will evenly distribute the countries among the players, and each player's troops among their countries.
+Player 1 has the first turn, and they will type their command next to the ">" in the terminal. There are three commands
+the player can type: "state", "pass", and "attack defendingCountry attackingCountry".
+	- "state" prints the name of the country, the owner of the country, and the number of troops in the country for each country in the map.
+	- "pass" ends the current player's turn and passes control of the game to the next player. The next player will be notified that it is
+	  their turn.
+	- "attack defendingCountry attackingCountry" attacks the country denoted defendingCountry from the country denoted attackingCountry.
+	  Type the country names identically as they appear when the state of the game is shown.
+	  If the attacking country has at least 3 troops, the attacking player will be prompted to choose the number of dice they want to roll.
+	  Type the number next to ">" and press enter to make your decision.
+	  If the defending country has at least 2 troops, the defending player will be prompted to choose the number of dice they want to roll.
+	  Input your decision in the same manner as for the attacking player.
+	  The outcome of the attack will be shown and then the current player will be prompted for a new command.
+	  When a country is captured, a message will appear and all but 1 troop from the attacking country will be moved to the captured country.
+Do not type the quotation marks when typing the command.
+
+When a player is eliminated from the game, a message indicating this will appear and they will not have any more turns. When a player has won the game
+a message will appear and the game will close.

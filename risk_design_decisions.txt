@@ -1,0 +1,22 @@
+When designing the overall structure of the game, we decided to use zuul as a framework because it also took input from the user
+in the terminal. This is where the Parser, Command, and CommandWords classes come from, as well as the processCommand method in
+the Model class. The processCommand method also provided a framework for applying the commands to the game by having one method
+for each command in the Model class.
+
+One of the first big design decisions was how to design and store the map. We needed to decide how many classes this could
+be broken up into and how to connect these classes. We originally decided to only have a Country class that contained its name,
+its owner, the number of troops, and its neighbouring countries, and then store a list of all countries in the Model class.
+This meant the Model class had an extra responsibility of creating the map, so its cohesion was lower. Therefore, we created
+a Map class which had the responsibility of creating and storing the map. This includes the arraylist of countries which was moved
+from the Model class.
+
+An important method was also added to the Map class which determined if there was a country in the arraylist with a name matching
+the string parameter. This brings up another design decision of whether the arraylist should be changed to a hashmap that has a
+string name key and Country object value. This would improve the efficiency of this method, but then there would be an overlap
+with the string name field in the Country class.
+
+Another decision that was discussed was whether a Player class is needed at all. Originally there was no Player class and players were
+stored as string names in an arraylist in the Model class. Country objects stored the player that owned them as a string name, but this
+asks the question of if a country should know who owns it. Alternatively, it might make more sense that players directly know all the
+countries they own, which can be represented by an arraylist of Country objects in a Player class. Since it makes more sense for a
+player to directly know which countries they own, we decided to currently implement a Player class.
