@@ -34,17 +34,19 @@ public class Country {
     
     
     /**
-    *@return armay number 
+    *@return army number
     */
     public int getArmySize() {
         return armySize;
     }
     
-    
+
     /**
-    *@return country 
+     * @param name - match the countries by their name property
+    *@return country
     */
     public Country getCountry(String name) {
+        //match name field
         if (this.name.equals(name)) {
             return this;
         } else return null;
@@ -52,7 +54,8 @@ public class Country {
     
     
     /**
-    *set up the country belongs to whom
+     * set up the country belongs to whom
+     * @param p - passing a Player object who will be the owner of the country
     */
     public void setOwner(Player p) {
         owner = p;
@@ -60,7 +63,8 @@ public class Country {
     
     
     /**
-    *add certain amount of troop
+     *add certain amount of troop
+     * @param troops - number of troops need to be added to a country
     */
     public void addTroops(int troops) {
         this.armySize += troops;
@@ -68,7 +72,8 @@ public class Country {
     
     
     /**
-    *remove certain amount of troop
+     *remove certain amount of troop
+     * @param troops - number of troops need to be removed from a country
     */
     public void removeTroops(int troops) {
         this.armySize -= troops;
@@ -76,9 +81,11 @@ public class Country {
     
     
     /**
-    *set neighbours of country
+     *set neighbours of country
+     * @param countries - array of countries that need to be added as neighbours of a country
     */
     public void addNeighbours(Country[] countries) {
+        //loop though the entire array passed so all countries can be added as neighbours
         for (int i = 0; i < countries.length; i++) {
             neighbours.add(countries[i]);
         }
@@ -87,7 +94,8 @@ public class Country {
     
     
     /**
-    *@return if the given country is the current country's neighbour then return true, otherwise return false
+     * @param country - which country we want to see is a neighbour
+     * @return boolean - if the given country is the current country's neighbour then return true, otherwise return false
     */
     public boolean hasNeighbor(Country country) {
         return neighbours.contains(country);

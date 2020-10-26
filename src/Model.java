@@ -47,6 +47,7 @@ public class Model {
                 finished = true;
             }
         }
+        //output winner
         System.out.println("Player "+players.get(0).getName() + " is winner. Game Over!");
     }
 
@@ -74,10 +75,10 @@ public class Model {
     *set up map, and randomly assign countries to each player
     */
     public void setUp() {
-        Collections.shuffle(map.getCountries());
+        Collections.shuffle(map.getCountries());//randomly shuffle countries so the distribution is different each time
         int countryCount = map.getNumberOfCountries();
         while (countryCount != 0) {
-            for (Player p : players) {
+            for (Player p : players) {//assign them one by one to players,like deaing the country cards in the beginning of the game
                 if (countryCount > 0) {
                     p.addCountry(map.getCountry(countryCount - 1));
                     map.getCountry(countryCount - 1).setOwner(p);
@@ -96,14 +97,19 @@ public class Model {
     *print current state of whole map with country and its owner, troop size.
     */
     private void getState() {
+        //loop for every country on the map
         for (Country country : map.getCountries()) {
             System.out.println(country.getName() + " is owned by Player " + country.getOwner().getName() + ", the number of troops: " + country.getArmySize());
         }
     }
 
-    
+    /**
+     *evaluate user input
+     * @param command - user's input
+     */
     private void processCommand(Command command) {
 
+        //if the command didn't exist
         if (command.isUnknown()) {
             System.out.println("Invalid Command.");
             return;
@@ -111,6 +117,7 @@ public class Model {
 
         String commandWord = command.getCommandWord();
 
+        //match the command to the appropriate method
         if (commandWord.equals("state")) {
             getState();
         } else if (commandWord.equals("attack")) {
@@ -122,8 +129,8 @@ public class Model {
 
 
     /**
-     * @param command
-     * attack method
+     * This is the attack method, outcomes of battles are printed here, the map/countries are updated here
+     * @param command - which countries are to attack and defend
      */
     private void attack(Command command) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
         if (isValidAttack(command)) {
@@ -163,6 +170,7 @@ public class Model {
                 defendDice[i] = ThreadLocalRandom.current().nextInt(1, 7);
             }
 
+            //output results of battle
             Arrays.sort(attackDice, Collections.reverseOrder());
             Arrays.sort(defendDice, Collections.reverseOrder());
             int lessDice = Math.min(attackDice.length, defendDice.length);
@@ -176,13 +184,15 @@ public class Model {
                     System.out.println("\tDefender wins");
                 }
             }
+
+            //output any changes to the map
             if (defendingCountry.getArmySize() == 0) {
                 System.out.println("Player " + currentPlayer.getName() + " captured " + defendingCountry.getName());
 
                 currentPlayer.addCountry(defendingCountry);
-                defendingCountry.getOwner().removeCountry(defendingCountry);//remove captured country from defending countr owner's country list
+                defendingCountry.getOwner().removeCountry(defendingCountry);//remove captured country from defending country owner's country list
 
-                if(defendingCountry.getOwner().getCountries().size()==0){//if defending country's owner does not have any other coutry
+                if(defendingCountry.getOwner().getCountries().size()==0){//if defending country's owner does not have any other country
                     System.out.println("Player " + defendingCountry.getOwner().getName() + " has been eliminated.");
                     players.remove(defendingCountry.getOwner());
                 }
@@ -196,6 +206,7 @@ public class Model {
 
 
     /**
+     * Check to see if the attack can be done based on the rules of the game
      * @param command
      * @return true/false (valid attack)
      */
@@ -251,12 +262,12 @@ public class Model {
      */
     private void pass() {
         if (currentPlayerIndex == players.size() - 1) {
-            currentPlayerIndex = 0;
+            currentPlayerIndex = 0;//go back to first player
         } else {
-            currentPlayerIndex++;
+            currentPlayerIndex++;//move on to next player
         }
         currentPlayer = players.get(currentPlayerIndex);
-        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
+        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");//print whose turn it is
     }
 
 

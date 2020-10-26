@@ -36,9 +36,12 @@ public class Player {
     
     
     /**
+     * This method is used for the initial setup to distribute troops between the countries
+     * currently evenly so that each country is able to attack (need to have more than 1 troop)
     *@param troops int
     */
     public void distributeTroops(int troops){
+        //loop through and evenly distribute the troops while there are still troops left to be placed
         while(troops != 0){
             for (Country c: countries){
                 if (troops > 0){

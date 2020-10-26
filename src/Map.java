@@ -8,7 +8,9 @@ import java.util.List;
     */
 public class Map {
     private List<Country> countries;//general country list
-
+    /**
+     *constructor Map()
+    */
     public Map() {
         countries = new ArrayList<>();
         //North America
@@ -48,7 +50,7 @@ public class Map {
         countries.add(EasternAustralia);
         Country Indonesia = new Country("Indonesia");
         countries.add(Indonesia);
-        Country NewGuinea = new Country("New Guinea");
+        Country NewGuinea = new Country("NewGuinea");
         countries.add(NewGuinea);
 
         //Europe
@@ -164,7 +166,9 @@ public class Map {
     
     
     /**
-    *@return from given name, return correspnding country
+     * Return a country we are looking for based on its name
+     * @param name - get country object based on name
+    *@return Country object - from given name, return corresponding country
     */
     public Country getCountry(String name) {
         for (Country country : countries) {
@@ -177,6 +181,8 @@ public class Map {
     
     
     /**
+     * Return a country we are looking for based on its index
+     * @param index - the position of the country in the countries field
     *@return from given index number, return corresponding country
     */
     public Country getCountry(int index) {
@@ -185,6 +191,7 @@ public class Map {
     
     
     /**
+     * @param name - the name of the country we are looking for
     *@return true, if country exists; false, if country does not exist
     */
     public boolean hasCountry(String name) {

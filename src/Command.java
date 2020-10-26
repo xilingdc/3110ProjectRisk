@@ -39,13 +39,13 @@ public class Command
     public String getSecondWord()
     {
         return secondWord;
-    }
+    }//for country defending
 
     /**
      * @return The third word of this command. Returns null if there was no
      * third word.
      */
-    public String getThirdWord() { return thirdWord; }
+    public String getThirdWord() { return thirdWord; }//for country attacking
 
 
 
@@ -56,7 +56,7 @@ public class Command
     public boolean isUnknown()
     {
         return (commandWord == null);
-    }
+    }//the command doesn't exist
 
     /**
      * @return true if the command has a second word.
@@ -64,13 +64,13 @@ public class Command
     public boolean hasSecondWord()
     {
         return (secondWord != null);
-    }
+    }//for country defending
 
 
 
     /**
      * @return true if the command has a third word.
      */
-    public boolean hasThirdWord() { return (thirdWord != null); }
+    public boolean hasThirdWord() { return (thirdWord != null); }//for country attacking
 }
 

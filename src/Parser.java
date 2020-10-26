@@ -19,7 +19,7 @@ public class Parser
 
 
     /**
-     *
+     *This will set the number of players the game will be played with and distribution is based on this.
      * @return player number
      */
     public int getPlayerNum(){
@@ -38,6 +38,11 @@ public class Parser
 
     }
 
+    /**
+     * This method will give us the number of dice the player wants to use based on restrictions
+     * @param maxDice - the max amount of dice the player can use
+     * @return number of dice player wanted to use
+     */
     public int getNumberOfDice(int maxDice) {
         int numberOfDice = 0;
         boolean isValid = false;
@@ -56,6 +61,7 @@ public class Parser
 
 
     /**
+     * Get the next part os the user's input
      * @return The next command from the user.
      */
     public Command getCommand()
