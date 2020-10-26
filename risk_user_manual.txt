@@ -1,5 +1,6 @@
-To run the game, double click on the jar file that is in the provided zipped folder. This will open a terminal which will ask you
-how many players will be playing in the game. To choose the number of players, type a number next to the question and press enter.
+To run the game, double click on the jar file that is in the provided zipped folder or execute it in the command line.
+This will open a terminal which will ask you how many players will be playing in the game. To choose the number of players,
+type a number next to the question and press enter.
 
 At this point, the game will evenly distribute the countries among the players, and each player's troops among their countries.
 Player 1 has the first turn, and they will type their command next to the ">" in the terminal. There are three commands
