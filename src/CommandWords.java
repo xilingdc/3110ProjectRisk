@@ -1,6 +1,7 @@
 /**
  * @author Xiling Wang
- *
+ * @author Aleksandar Veselinovic
+ * @author Ali Fahd
  */
 
 public class CommandWords

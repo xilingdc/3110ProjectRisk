@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
-    /**
-    * @author Ali Fahd
-    */
+/**
+ * @author Xiling Wang
+ * @author Aleksandar Veselinovic
+ * @author Ali Fahd
+ */
 
 public class Player {
 
