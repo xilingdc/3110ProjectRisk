@@ -10,6 +10,7 @@ public class View extends JFrame {
     private JTextField gameInfo,playerTurn;
     private  JButton pass, attack;
     private JPanel contentPane;
+    private MapComponent map;
 
     public View() throws IOException {
         super("Risk Domination");
@@ -63,7 +64,13 @@ public class View extends JFrame {
         topPanel.add(pass);
         this.add(topPanel, BorderLayout.NORTH);
 
-        this.add(new MapComponent("risk-board-white.png", model.getMap().getCountries()), BorderLayout.CENTER);
+        map = new MapComponent("risk-board-white.png");
+        for (Country country : model.getMap().getCountries()) {
+            JButton button = configureButton(country, controller);
+            map.add(button);
+        }
+
+        this.add(map, BorderLayout.CENTER);
         /*this.setLayout(new GridLayout(10,15));
 
         countries = new JButton[model.getMap().getCountries().size()];
@@ -88,6 +95,17 @@ public class View extends JFrame {
 
 
 
+    }
+
+    public JButton configureButton(Country country, Controller controller) {
+        JButton button = new JButton("" + country.getArmySize());
+        button.addActionListener(controller);
+        button.setActionCommand("Country");
+        button.setMargin(new Insets(0, 0, 0, 0));
+        button.setBounds(country.getX(), country.getY(), 30, 30);
+        button.setBackground(country.getColor());
+        //countryButtons.put(button, country);
+        return button;
     }
 
 
