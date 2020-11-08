@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @author Xiling
@@ -10,7 +11,7 @@ public class View extends JFrame {
     private JTextField gameInfo,playerTurn;
     private  JButton pass, attack;
     private JPanel contentPane;
-    private MapComponent map;
+    private HashMap<Country, CountryButton> countryButtons;
 
     public View() throws IOException {
         super("Risk Domination");
@@ -64,9 +65,16 @@ public class View extends JFrame {
         topPanel.add(pass);
         this.add(topPanel, BorderLayout.NORTH);
 
-        map = new MapComponent("risk-board-white.png");
+        MapComponent map = new MapComponent("risk-board-white.png");
+        countryButtons = new HashMap<>();
         for (Country country : model.getMap().getCountries()) {
-            JButton button = configureButton(country, controller);
+            CountryButton button = new CountryButton(country.getArmySize(), country);
+            button.addActionListener(controller);
+            button.setActionCommand("Country");
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setBounds(country.getX(), country.getY(), 30, 30);
+            button.setBackground(country.getColor());
+            countryButtons.put(country, button);
             map.add(button);
         }
 
@@ -96,18 +104,6 @@ public class View extends JFrame {
 
 
     }
-
-    public JButton configureButton(Country country, Controller controller) {
-        JButton button = new JButton("" + country.getArmySize());
-        button.addActionListener(controller);
-        button.setActionCommand("Country");
-        button.setMargin(new Insets(0, 0, 0, 0));
-        button.setBounds(country.getX(), country.getY(), 30, 30);
-        button.setBackground(country.getColor());
-        //countryButtons.put(button, country);
-        return button;
-    }
-
 
     public void updateTextInfoHandler(String countryName, String owner, int troop){
 //        System.out.println(countryName+owner+" troops: "+troop);
