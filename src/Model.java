@@ -80,8 +80,8 @@ public class Model {
 //        System.out.print("Please enter player number(2-6): ");
         this.playerNum=playerNum;
         players = new ArrayList<>();
-        for (int i = 1; i <= playerNum; i++) {
-            Player p = new Player(Integer.toString(i),colorPlayer[i]);
+        for (int i = 0; i < playerNum; i++) {
+            Player p = new Player(Integer.toString(i+1),colorPlayer[i]);
             System.out.println(p.getColor().toString());
             players.add(p);//add player1, player2.... into playerList
 //            System.out.println("Player " + i + " has been added;");
@@ -157,7 +157,7 @@ public class Model {
         if (commandWord.equals("state")) {
             getState();
         } else if (commandWord.equals("attack")) {
-            attack(command);
+            //attack(command);
         } else if (commandWord.equals("pass")) {
             pass();
             view.updatePlayerTurnTextHandler(currentPlayer.getName());
@@ -169,21 +169,14 @@ public class Model {
      * This is the attack method, outcomes of battles are printed here, the map/countries are updated here
      * @param command - which countries are to attack and defend
      */
-    private void attack(Command command) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
-        if (isValidAttack(command)) {
-
-            Country defendingCountry = map.getCountry(command.getSecondWord());//defend country
-            Country attackingCountry = map.getCountry(command.getThirdWord());//attack country
-
-            System.out.println("Attacking country has " + attackingCountry.getArmySize() + ".");
-            System.out.println("Defending country has " + defendingCountry.getArmySize() + ".");
-
+    public void attack(Country attacker, Country defender) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
+        if (isValidAttack(attacker, defender)) {
             // take input from the user
             Integer attackDice[];
-            if (attackingCountry.getArmySize() == 2) {
+            if (attacker.getArmySize() == 2) {
                 attackDice = new Integer[1];
             }
-            else if (attackingCountry.getArmySize() == 3) {
+            else if (attacker.getArmySize() == 3) {
                 System.out.print("Player " + currentPlayer.getName() + ", how many dice do you want to play?: ");
                 int numberOfAttackDice = parser.getNumberOfDice(2);
                 attackDice = new Integer[numberOfAttackDice];
@@ -194,10 +187,10 @@ public class Model {
             }
 
             Integer defendDice[];
-            if (defendingCountry.getArmySize() == 1) {
+            if (defender.getArmySize() == 1) {
                 defendDice = new Integer[1];
             } else {
-                System.out.print("Player " + defendingCountry.getOwner().getName() + ", how many dice do you want to play?: ");
+                System.out.print("Player " + defender.getOwner().getName() + ", how many dice do you want to play?: ");
                 int numberOfDefenceDice = parser.getNumberOfDice(2);
                 defendDice = new Integer[numberOfDefenceDice];
             }
@@ -217,30 +210,33 @@ public class Model {
             for (int i = 0; i < lessDice; i++) {
                 System.out.print("Attack Dice: " + attackDice[i] + "\tDefence dice: " + defendDice[i]);
                 if (attackDice[i] > defendDice[i]) {
-                    defendingCountry.removeTroops(1);
+                    defender.removeTroops(1);
                     System.out.print("\tAttacker wins");
                 } else {
-                    attackingCountry.removeTroops(1);
+                    attacker.removeTroops(1);
                     System.out.print("\tDefender wins");
                 }
             }
 
             //output any changes to the map
-            if (defendingCountry.getArmySize() == 0) {
-                System.out.println("Player " + currentPlayer.getName() + " captured " + defendingCountry.getName());
+            if (defender.getArmySize() == 0) {
+                System.out.println("Player " + currentPlayer.getName() + " captured " + defender.getName());
 
-                currentPlayer.addCountry(defendingCountry);
-                defendingCountry.getOwner().removeCountry(defendingCountry);//remove captured country from defending country owner's country list
+                currentPlayer.addCountry(defender);
+                defender.getOwner().removeCountry(defender);//remove captured country from defending country owner's country list
 
-                if(defendingCountry.getOwner().getCountries().size()==0){//if defending country's owner does not have any other country
-                    System.out.println("Player " + defendingCountry.getOwner().getName() + " has been eliminated.");
-                    players.remove(defendingCountry.getOwner());
+                if(defender.getOwner().getCountries().size()==0){//if defending country's owner does not have any other country
+                    System.out.println("Player " + defender.getOwner().getName() + " has been eliminated.");
+                    players.remove(defender.getOwner());
                 }
-                defendingCountry.setOwner(currentPlayer);// update new owner
-                view.updateCountryOwner(map.getIndex(defendingCountry.getName()),defendingCountry.getOwner().getColor());//update view (button color)
-                defendingCountry.addTroops(attackingCountry.getArmySize() - 1);
-                attackingCountry.removeTroops(attackingCountry.getArmySize() - 1);
+                defender.setOwner(currentPlayer);// update new owner
+                defender.addTroops(attacker.getArmySize() - 1);
+                attacker.removeTroops(attacker.getArmySize() - 1);
+                view.updateCountryButton(defender, attacker.getOwner().getColor(), defender.getArmySize());//update view (button color)
+            } else {
+                view.updateCountryButton(defender, defender.getOwner().getColor(), defender.getArmySize());
             }
+            view.updateCountryButton(attacker, attacker.getOwner().getColor(), attacker.getArmySize());
         }
     }
 
@@ -250,48 +246,26 @@ public class Model {
      * @param command
      * @return true/false (valid attack)
      */
-    private boolean isValidAttack(Command command) {
-        if (!command.hasSecondWord()) {//no second command
-            System.out.println("Which country will be attacked?");
-            return false;
-        }
-        if (!command.hasThirdWord()) {//no third command
-            System.out.println("Which country will launch attack?");
-            return false;
-        }
-
-        if (!(map.hasCountry(command.getSecondWord()))) {//second or third command are not included in country list
-            System.out.println("There is no such country to defend.");
-            return false;
-        }
-
-        if (!(map.hasCountry(command.getThirdWord()))) {//second or third command are not included in country list
-            System.out.println("There is no such country to attack with.");
-            return false;
-        }
-
-        Country defendingCountry = map.getCountry(command.getSecondWord());
-        Country attackingCountry = map.getCountry(command.getThirdWord());
-
-        if (!(currentPlayer.getCountries().contains(attackingCountry))) {//if player doesn't control that country
+    private boolean isValidAttack(Country attacker, Country defender) {
+        if (!(currentPlayer.getCountries().contains(attacker))) {//if player doesn't control that country
             System.out.println("Player " + currentPlayer.getName() + " does not have this country.");
             return false;
         }
 
-        if (currentPlayer.getCountries().contains(defendingCountry)) {//if the player attacks their own country
+        if (currentPlayer.getCountries().contains(defender)) {//if the player attacks their own country
             System.out.println("You cannot attack a country you own.");
             return false;
         }
 
-        if (attackingCountry.getArmySize() == 1) {//if attack country's army is only 1 left
-            System.out.println(command.getThirdWord() + "'s army number is not enough to attack.");
+        if (attacker.getArmySize() == 1) {//if attack country's army is only 1 left
+            System.out.println(attacker.getName() + "'s army number is not enough to attack.");
             return false;
         }
 
-        if (attackingCountry.hasNeighbor(defendingCountry)) {//if attack country is neighbour country of attacked country
+        if (attacker.hasNeighbor(defender)) {//if attack country is neighbour country of attacked country
             return true;
         } else {
-            System.out.println(defendingCountry.getName() + " is not a neighbor of " + attackingCountry.getName());
+            System.out.println(defender.getName() + " is not a neighbor of " + attacker.getName());
             return false;
         }
     }
@@ -300,7 +274,7 @@ public class Model {
     /**
      * pass to next player
      */
-    private void pass() {
+    public void pass() {
         if (currentPlayerIndex == players.size() - 1) {
             currentPlayerIndex = 0;//go back to first player
         } else {
