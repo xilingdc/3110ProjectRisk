@@ -23,7 +23,8 @@ public class MapComponent extends JComponent {
                     button.setBackground(Color.RED);
                 }
             });
-            button.setBounds(country.getX(), country.getY(), 100, 10);
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setBounds(country.getX(), country.getY(), 30, 30);
             button.setBackground(country.getColor());
             add(button);
         }
