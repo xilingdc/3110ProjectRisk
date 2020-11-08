@@ -9,14 +9,17 @@ import java.util.Collections;
  */
 
 public class Controller implements ActionListener {
-
-
     private Model model;
     private Command command;
     private ArrayList<String> commandStr;
+    private Country attacker;
+    private Country defender;
+
     public Controller(Model model){
         this.model = model;
         commandStr = new ArrayList<>();
+        attacker = null;
+        defender = null;
     }
 
 
@@ -26,9 +29,18 @@ public class Controller implements ActionListener {
             command = new Command("pass",null,null);
             model.processCommand(command);
 
-        }else if(e.getActionCommand().equals("Attack")){
-//            System.out.println(e.getActionCommand());
-            commandStr.add(0,"attack");
+        }else if(e.getActionCommand().equals("Country")){
+            //System.out.println(e.getActionCommand());
+            //commandStr.add(0,"attack");
+            CountryButton b = (CountryButton) e.getSource();
+            if (attacker == null) {
+                attacker = b.getCountry();
+            } else {
+                defender = b.getCountry();
+                model.attack(attacker, defender);
+                attacker = null;
+                defender = null;
+            }
 
         }else{
 
