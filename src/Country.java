@@ -1,3 +1,6 @@
+package src;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +14,7 @@ public class Country {
     private Player owner;//currently choosing to have a list of countries in the player class of the countries the player owns
     private int armySize;//country's troop size
     private List<Country> neighbours;//country's neighbour country list
-    
+    private Color color;
     /**
     *@Constructor
     */
@@ -41,7 +44,15 @@ public class Country {
     public int getArmySize() {
         return armySize;
     }
-    
+
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 
     /**
      * @param name - match the countries by their name property
@@ -101,5 +112,10 @@ public class Country {
     */
     public boolean hasNeighbor(Country country) {
         return neighbours.contains(country);
+    }
+
+    @Override
+    public String toString() {
+        return getName() + " is owned by Player " + getOwner().getName() + ", the number of troops: " + getArmySize();
     }
 }
