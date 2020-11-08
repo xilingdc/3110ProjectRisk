@@ -1,3 +1,5 @@
+package src;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +22,17 @@ public class Map {
         countries.add(Alberta);
         Country Ontario = new Country("Ontario");
         countries.add(Ontario);
-        Country WesternAmerica = new Country("WesternAmerica");
+        Country WesternAmerica = new Country("Western America");
         countries.add(WesternAmerica);
-        Country EasternAmerica = new Country("EasternAmerica");
+        Country EasternAmerica = new Country("Eastern America");
         countries.add(EasternAmerica);
         Country Quebec = new Country("Quebec");
         countries.add(Quebec);
-        Country CentralAmerica = new Country("CentralAmerica");
+        Country CentralAmerica = new Country("Central America");
         countries.add(CentralAmerica);
         Country Greenland = new Country("Greenland");
         countries.add(Greenland);
-        Country NorthwestAmerica = new Country("NorthwestAmerica");
+        Country NorthwestAmerica = new Country("Northwest America");
         countries.add(NorthwestAmerica);
 
         //South America
@@ -44,9 +46,9 @@ public class Map {
         countries.add(Argentina);
 
         //Australia
-        Country WesternAustralia = new Country("WesternAustralia");
+        Country WesternAustralia = new Country("Western Australia");
         countries.add(WesternAustralia);
-        Country EasternAustralia = new Country("EasternAustralia");
+        Country EasternAustralia = new Country("Eastern Australia");
         countries.add(EasternAustralia);
         Country Indonesia = new Country("Indonesia");
         countries.add(Indonesia);
@@ -60,13 +62,13 @@ public class Map {
         countries.add(Scandinavia);
         Country Iceland = new Country("Iceland");
         countries.add(Iceland);
-        Country GreatBritain = new Country("GreatBritain");
+        Country GreatBritain = new Country("Great Britain");
         countries.add(GreatBritain);
-        Country NorthernEurope = new Country("NorthernEurope");
+        Country NorthernEurope = new Country("Northern Europe");
         countries.add(NorthernEurope);
-        Country WesternEurope = new Country("WesternEurope");
+        Country WesternEurope = new Country("Western Europe");
         countries.add(WesternEurope);
-        Country SouthernEurope = new Country("SouthernEurope");
+        Country SouthernEurope = new Country("Southern Europe");
         countries.add(SouthernEurope);
 
         //Asia
@@ -86,7 +88,7 @@ public class Map {
         countries.add(Mongolia);
         Country China = new Country("China");
         countries.add(China);
-        Country MiddleEast = new Country("MiddleEast");
+        Country MiddleEast = new Country("Middle East");
         countries.add(MiddleEast);
         Country India = new Country("India");
         countries.add(India);
@@ -98,15 +100,15 @@ public class Map {
         //Africa
         Country Congo = new Country("Congo");
         countries.add(Congo);
-        Country EastAfrica = new Country("EastAfrica");
+        Country EastAfrica = new Country("East Africa");
         countries.add(EastAfrica);
         Country Egypt = new Country("Egypt");
         countries.add(Egypt);
         Country Madagascar = new Country("Madagascar");
         countries.add(Madagascar);
-        Country NorthAfrica = new Country("NorthAfrica");
+        Country NorthAfrica = new Country("North Africa");
         countries.add(NorthAfrica);
-        Country SouthAfrica = new Country("SouthAfrica");
+        Country SouthAfrica = new Country("South Africa");
         countries.add(SouthAfrica);
 
         //North America
@@ -178,7 +180,16 @@ public class Map {
         }
         return null;
     }
-    
+
+
+    public int getIndex(String name){
+        for (int i = 0; i < countries.size(); i++) {
+            if (countries.get(i).getName().equals(name)) {
+                return i;
+            }
+        }
+        return -1;
+    }
     
     /**
      * Return a country we are looking for based on its index

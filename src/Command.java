@@ -1,3 +1,5 @@
+package src;
+
 /**
  * @author Xiling Wang
  * @author Aleksandar Veselinovic
@@ -47,6 +49,11 @@ public class Command
      * third word.
      */
     public String getThirdWord() { return thirdWord; }//for country attacking
+
+    /**
+     * @return The whole line of command. Returns null if there was no command.
+     */
+    public String getCommand() { return commandWord + " " + secondWord + " " + thirdWord; }//for whole line
 
 
 
