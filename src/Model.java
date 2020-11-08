@@ -1,3 +1,6 @@
+package src;
+
+import java.awt.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,6 +18,29 @@ public class Model {
     private int currentPlayerIndex;//current player index number 
     private Map map;
     private int[] troopAllocation = {50, 35, 30, 25, 20};
+    private Color[] colorPlayer = {Color.red,Color.blue,Color.green,Color.yellow, Color.orange, Color.pink};
+    private View view;
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public View getView() {
+        return view;
+    }
+
+    public void setView(View view) {
+        this.view = view;
+    }
+
+    public void showInfo(String countryname){
+//        System.out.println(countryname);
+        Country country =  map.getCountry(countryname);
+//        System.out.println(country.getOwner().getName()+" "+country.getArmySize());
+        view.updateTextInfoHandler(country.getName(),country.getOwner().getName(),country.getArmySize());
+    }
+
+
 
     /**
      * @constructor
@@ -24,17 +50,14 @@ public class Model {
         map = new Map();
     }
 
-    public static void main(String[] args) {
-        Model model = new Model();
-        model.play();
-    }
+
 
 
     /**
      * Main play routine.  Loops until end of play.
      */
     public void play() {
-        printBegin();//let user enter player number
+//        printBegin();//let user enter player number
         setUp();
         
 
@@ -54,20 +77,21 @@ public class Model {
     /**
      * the method prints the beginning of the game
      */
-    public void printBegin() {
-        System.out.println("Welcome to Risk.");
-        System.out.print("Please enter player number(2-6): ");
-        playerNum = parser.getPlayerNum();
+    public void processBegin(int playerNum) {
+//        System.out.println("Welcome to Risk.");
+//        System.out.print("Please enter player number(2-6): ");
+        this.playerNum=playerNum;
         players = new ArrayList<>();
         for (int i = 1; i <= playerNum; i++) {
-            Player p = new Player(Integer.toString(i));
+            Player p = new Player(Integer.toString(i),colorPlayer[i]);
+            System.out.println(p.getColor().toString());
             players.add(p);//add player1, player2.... into playerList
-            System.out.println("Player " + i + " has been added;");
+//            System.out.println("Player " + i + " has been added;");
         }
 
         currentPlayerIndex = 0;//the game begins at player one
         currentPlayer = players.get(0);
-        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
+//        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
     }
     
     
@@ -82,14 +106,28 @@ public class Model {
                 if (countryCount > 0) {
                     p.addCountry(map.getCountry(countryCount - 1));
                     map.getCountry(countryCount - 1).setOwner(p);
+                    map.getCountry(countryCount-1).setColor(p.getColor());
                     countryCount--;
                 }
             }
         }
 
         for (Player p : players) {
-            p.distributeTroops(troopAllocation[players.size() - 2]);
+            int troops = troopAllocation[players.size() - 2];
+            while(troops != 0){
+                for (Country c : p.getCountries()){
+                    if (troops > 0){
+                        c.addTroops(1);
+                        troops--;
+                    }
+                }
+            }
         }
+    }
+
+
+    public Map getMap(){
+        return map;
     }
     
     
@@ -99,7 +137,7 @@ public class Model {
     private void getState() {
         //loop for every country on the map
         for (Country country : map.getCountries()) {
-            System.out.println(country.getName() + " is owned by Player " + country.getOwner().getName() + ", the number of troops: " + country.getArmySize());
+            System.out.println(country);
         }
     }
 
@@ -107,7 +145,7 @@ public class Model {
      *evaluate user input
      * @param command - user's input
      */
-    private void processCommand(Command command) {
+    public void processCommand(Command command) {
 
         //if the command didn't exist
         if (command.isUnknown()) {
@@ -124,6 +162,7 @@ public class Model {
             attack(command);
         } else if (commandWord.equals("pass")) {
             pass();
+            view.updatePlayerTurnTextHandler(currentPlayer.getName());
         }
     }
 
@@ -137,6 +176,9 @@ public class Model {
 
             Country defendingCountry = map.getCountry(command.getSecondWord());//defend country
             Country attackingCountry = map.getCountry(command.getThirdWord());//attack country
+
+            System.out.println("Attacking country has " + attackingCountry.getArmySize() + ".");
+            System.out.println("Defending country has " + defendingCountry.getArmySize() + ".");
 
             // take input from the user
             Integer attackDice[];
@@ -178,10 +220,10 @@ public class Model {
                 System.out.print("Attack Dice: " + attackDice[i] + "\tDefence dice: " + defendDice[i]);
                 if (attackDice[i] > defendDice[i]) {
                     defendingCountry.removeTroops(1);
-                    System.out.println("\tAttacker wins");
+                    System.out.print("\tAttacker wins");
                 } else {
                     attackingCountry.removeTroops(1);
-                    System.out.println("\tDefender wins");
+                    System.out.print("\tDefender wins");
                 }
             }
 
@@ -197,7 +239,7 @@ public class Model {
                     players.remove(defendingCountry.getOwner());
                 }
                 defendingCountry.setOwner(currentPlayer);// update new owner
-
+                view.updateCountryOwner(map.getIndex(defendingCountry.getName()),defendingCountry.getOwner().getColor());//update view (button color)
                 defendingCountry.addTroops(attackingCountry.getArmySize() - 1);
                 attackingCountry.removeTroops(attackingCountry.getArmySize() - 1);
             }
