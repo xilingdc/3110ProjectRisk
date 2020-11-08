@@ -1,7 +1,6 @@
-package src;
-
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * @author Xiling
@@ -12,9 +11,10 @@ public class View extends JFrame {
     private  JButton pass, attack;
     private JPanel contentPane;
 
-    public View(){
+    public View() throws IOException {
         super("Risk Domination");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BorderLayout());
 
         String userInput = JOptionPane.showInputDialog(this,"Enter Player Number(2-6): ");
         int numPlayer = 0;
@@ -61,9 +61,10 @@ public class View extends JFrame {
         topPanel.add(gameInfo);
         topPanel.add(attack);
         topPanel.add(pass);
-        this.add(topPanel);
+        this.add(topPanel, BorderLayout.NORTH);
 
-        this.setLayout(new GridLayout(10,15));
+        this.add(new MapComponent("risk-board-white.png", model.getMap().getCountries()), BorderLayout.CENTER);
+        /*this.setLayout(new GridLayout(10,15));
 
         countries = new JButton[model.getMap().getCountries().size()];
         for (int i = 0; i < new Map().getCountries().size(); i++) {
@@ -75,7 +76,7 @@ public class View extends JFrame {
             button.setActionCommand(model.getMap().getCountry(i).getName());
             this.add(button);//temporary
             //TODO set button's layout
-        }
+        }*/
 
 
 
@@ -103,7 +104,7 @@ public class View extends JFrame {
         countries[index].setBackground(color);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new View();
     }
 }
