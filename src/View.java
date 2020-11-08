@@ -114,8 +114,10 @@ public class View extends JFrame {
         playerTurn.setText("It is player "+playerName+"'s turn.");
     }
 
-    public void updateCountryOwner(int index, Color color){
-        countries[index].setBackground(color);
+    public void updateCountryButton(Country country, Color color, int troops){
+        CountryButton b = countryButtons.get(country);
+        b.setBackground(color);
+        b.setText(""+troops);
     }
 
     public static void main(String[] args) throws IOException {
