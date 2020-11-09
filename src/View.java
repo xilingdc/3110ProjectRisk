@@ -7,8 +7,8 @@ import java.util.HashMap;
  * @author Xiling
  */
 public class View extends JFrame {
-    private JTextField gameInfo,playerTurn;
-    private  JButton pass, attack;
+    private JTextArea playerTurn;
+    private  JButton pass;
     private HashMap<Country, CountryButton> countryButtons;
 
     public View() throws IOException {
@@ -41,19 +41,14 @@ public class View extends JFrame {
         Controller controller = new Controller(model);
 
         JPanel topPanel = new JPanel();
-        playerTurn = new JTextField("It is player "+model.getCurrentPlayer().getName()+"'s turn.");
-        gameInfo = new JTextField("Game Info Text Box");
+        playerTurn = new JTextArea("Current Player: Player "+model.getCurrentPlayer().getName());
+        playerTurn.setForeground(model.getCurrentPlayer().getColor());
+        playerTurn.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         pass = new JButton("Pass");
         pass.addActionListener(controller);
         pass.setActionCommand("pass");
 
-        attack = new JButton("Attack");
-        attack.addActionListener(controller);
-        attack.setActionCommand("Attack");
-
         topPanel.add(playerTurn);
-        topPanel.add(gameInfo);
-        topPanel.add(attack);
         topPanel.add(pass);
         this.add(topPanel, BorderLayout.NORTH);
 
@@ -75,13 +70,9 @@ public class View extends JFrame {
         this.setVisible(true);
     }
 
-    public void updateTextInfoHandler(String countryName, String owner, int troop){
-        //System.out.println(countryName+owner+" troops: "+troop);
-        gameInfo.setText(countryName+": player "+owner+", troop: "+troop);
-    }
-
-    public void updatePlayerTurnTextHandler(String playerName){
-        playerTurn.setText("It is player "+playerName+"'s turn.");
+    public void updatePlayerTurnTextHandler(Player player){
+        playerTurn.setText("Current Player: Player "+player.getName());
+        playerTurn.setForeground(player.getColor());
     }
 
     public void updateCountryButton(Country country, Color color, int troops){

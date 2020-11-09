@@ -9,13 +9,12 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Model {
 
-    private int playerNum;//player total number
     private ArrayList<Player> players;// player list
     private Player currentPlayer;//current player
     private int currentPlayerIndex;//current player index number 
     private Map map;
     private int[] troopAllocation = {50, 35, 30, 25, 20};
-    private Color[] colorPlayer = {Color.red,Color.cyan,Color.green,Color.yellow, Color.orange, Color.pink};
+    private Color[] colorPlayer = {Color.red,Color.cyan,Color.green,Color.magenta, Color.orange, Color.pink};
     private View view;
 
     public Player getCurrentPlayer() {
@@ -28,13 +27,6 @@ public class Model {
 
     public void setView(View view) {
         this.view = view;
-    }
-
-    public void showInfo(String countryname){
-        //System.out.println(countryname);
-        Country country =  map.getCountry(countryname);
-        //System.out.println(country.getOwner().getName()+" "+country.getArmySize());
-        view.updateTextInfoHandler(country.getName(),country.getOwner().getName(),country.getArmySize());
     }
 
     /**
@@ -50,18 +42,14 @@ public class Model {
      * the method prints the beginning of the game
      */
     private void processBegin(int playerNum) {
-        this.playerNum=playerNum;
         players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             Player p = new Player(Integer.toString(i+1),colorPlayer[i]);
-            System.out.println(p.getColor().toString());
             players.add(p);//add player1, player2.... into playerList
-            //System.out.println("Player " + i + " has been added;");
         }
 
         currentPlayerIndex = 0;//the game begins at player one
         currentPlayer = players.get(0);
-        //System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
     }
     
     /**
@@ -113,7 +101,6 @@ public class Model {
             int numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 2);
             attackDice = new Integer[numberOfAttackDice];
         } else {
-            System.out.print("Player " + currentPlayer.getName() + ", how many dice do you want to play?: ");
             int numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 3);
             attackDice = new Integer[numberOfAttackDice];
         }
@@ -218,7 +205,6 @@ public class Model {
             currentPlayerIndex++;//move on to next player
         }
         currentPlayer = players.get(currentPlayerIndex);
-        view.updatePlayerTurnTextHandler(currentPlayer.getName());
-        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");//print whose turn it is
+        view.updatePlayerTurnTextHandler(currentPlayer);
     }
 }
