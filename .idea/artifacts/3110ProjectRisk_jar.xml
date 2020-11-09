@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="3110ProjectRisk:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/3110ProjectRisk_jar</output-path>
+    <root id="archive" name="3110ProjectRisk.jar">
+      <element id="module-output" name="3110ProjectRisk" />
+      <element id="module-source" name="3110ProjectRisk" />
+    </root>
+  </artifact>
+</component>

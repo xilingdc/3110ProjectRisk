@@ -1,5 +1,3 @@
-package src;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,106 +7,106 @@ import java.util.List;
     *@author Ali Fahd
     */
 public class Map {
-    private List<Country> countries;//general country list
+    private ArrayList<Country> countries;//general country list
     /**
      *constructor Map()
     */
     public Map() {
         countries = new ArrayList<>();
         //North America
-        Country Alaska = new Country("Alaska");//initialization and add the country into country list
+        Country Alaska = new Country("Alaska", 365, 90);//initialization and add the country into country list
         countries.add(Alaska);
-        Country Alberta = new Country("Alberta");
+        Country Alberta = new Country("Alberta", 440, 160);
         countries.add(Alberta);
-        Country Ontario = new Country("Ontario");
+        Country Ontario = new Country("Ontario", 510, 160);
         countries.add(Ontario);
-        Country WesternAmerica = new Country("Western America");
+        Country WesternAmerica = new Country("Western America", 445, 220);
         countries.add(WesternAmerica);
-        Country EasternAmerica = new Country("Eastern America");
+        Country EasternAmerica = new Country("Eastern America", 525, 240);
         countries.add(EasternAmerica);
-        Country Quebec = new Country("Quebec");
+        Country Quebec = new Country("Quebec", 575, 160);
         countries.add(Quebec);
-        Country CentralAmerica = new Country("Central America");
+        Country CentralAmerica = new Country("Central America", 455, 300);
         countries.add(CentralAmerica);
-        Country Greenland = new Country("Greenland");
+        Country Greenland = new Country("Greenland", 640, 50);
         countries.add(Greenland);
-        Country NorthwestAmerica = new Country("Northwest America");
+        Country NorthwestAmerica = new Country("Northwest America", 455, 95);
         countries.add(NorthwestAmerica);
 
         //South America
-        Country Brazil = new Country("Brazil");
+        Country Brazil = new Country("Brazil", 605, 425);
         countries.add(Brazil);
-        Country Venezuela = new Country("Venezuela");
+        Country Venezuela = new Country("Venezuela", 525, 360);
         countries.add(Venezuela);
-        Country Peru = new Country("Peru");
+        Country Peru = new Country("Peru", 535, 440);
         countries.add(Peru);
-        Country Argentina = new Country("Argentina");
+        Country Argentina = new Country("Argentina", 545, 525);
         countries.add(Argentina);
 
         //Australia
-        Country WesternAustralia = new Country("Western Australia");
+        Country WesternAustralia = new Country("Western Australia", 1150, 560);
         countries.add(WesternAustralia);
-        Country EasternAustralia = new Country("Eastern Australia");
+        Country EasternAustralia = new Country("Eastern Australia", 1235, 560);
         countries.add(EasternAustralia);
-        Country Indonesia = new Country("Indonesia");
+        Country Indonesia = new Country("Indonesia", 1110, 470);
         countries.add(Indonesia);
-        Country NewGuinea = new Country("NewGuinea");
+        Country NewGuinea = new Country("NewGuinea", 1190, 445);
         countries.add(NewGuinea);
 
         //Europe
-        Country Ukraine = new Country("Ukraine");
+        Country Ukraine = new Country("Ukraine", 870, 190);
         countries.add(Ukraine);
-        Country Scandinavia = new Country("Scandinavia");
+        Country Scandinavia = new Country("Scandinavia", 780, 140);
         countries.add(Scandinavia);
-        Country Iceland = new Country("Iceland");
+        Country Iceland = new Country("Iceland", 715, 120);
         countries.add(Iceland);
-        Country GreatBritain = new Country("Great Britain");
+        Country GreatBritain = new Country("Great Britain", 700, 210);
         countries.add(GreatBritain);
-        Country NorthernEurope = new Country("Northern Europe");
+        Country NorthernEurope = new Country("Northern Europe", 780, 210);
         countries.add(NorthernEurope);
-        Country WesternEurope = new Country("Western Europe");
+        Country WesternEurope = new Country("Western Europe", 715, 300);
         countries.add(WesternEurope);
-        Country SouthernEurope = new Country("Southern Europe");
+        Country SouthernEurope = new Country("Southern Europe", 790, 280);
         countries.add(SouthernEurope);
 
         //Asia
-        Country Yakutsk = new Country("Yakustsk");
+        Country Yakutsk = new Country("Yakustsk", 1100, 65);
         countries.add(Yakutsk);
-        Country Siberia = new Country("Siberia");
+        Country Siberia = new Country("Siberia", 1020, 80);
         countries.add(Siberia);
-        Country Kamchatka = new Country("Kamchatka");
+        Country Kamchatka = new Country("Kamchatka", 1180, 85);
         countries.add(Kamchatka);
-        Country Irkutsk = new Country("Irkutsk");
+        Country Irkutsk = new Country("Irkutsk", 1090, 160);
         countries.add(Irkutsk);
-        Country Ural = new Country("Ural");
+        Country Ural = new Country("Ural", 980, 150);
         countries.add(Ural);
-        Country Japan = new Country("Japan");
+        Country Japan = new Country("Japan", 1190, 220);
         countries.add(Japan);
-        Country Mongolia = new Country("Mongolia");
+        Country Mongolia = new Country("Mongolia", 1100, 220);
         countries.add(Mongolia);
-        Country China = new Country("China");
+        Country China = new Country("China", 1090, 280);
         countries.add(China);
-        Country MiddleEast = new Country("Middle East");
+        Country MiddleEast = new Country("Middle East", 900, 360);
         countries.add(MiddleEast);
-        Country India = new Country("India");
+        Country India = new Country("India", 1020, 350);
         countries.add(India);
-        Country Siam = new Country("Siam");
+        Country Siam = new Country("Siam", 1090, 360);
         countries.add(Siam);
-        Country Afghanistan = new Country("Afghanistan");
+        Country Afghanistan = new Country("Afghanistan", 960, 240);
         countries.add(Afghanistan);
 
         //Africa
-        Country Congo = new Country("Congo");
+        Country Congo = new Country("Congo", 825, 480);
         countries.add(Congo);
-        Country EastAfrica = new Country("East Africa");
+        Country EastAfrica = new Country("East Africa", 870, 440);
         countries.add(EastAfrica);
-        Country Egypt = new Country("Egypt");
+        Country Egypt = new Country("Egypt", 825, 370);
         countries.add(Egypt);
-        Country Madagascar = new Country("Madagascar");
+        Country Madagascar = new Country("Madagascar", 915, 560);
         countries.add(Madagascar);
-        Country NorthAfrica = new Country("North Africa");
+        Country NorthAfrica = new Country("North Africa", 740, 400);
         countries.add(NorthAfrica);
-        Country SouthAfrica = new Country("South Africa");
+        Country SouthAfrica = new Country("South Africa", 825, 560);
         countries.add(SouthAfrica);
 
         //North America
@@ -150,7 +148,7 @@ public class Map {
         Irkutsk.addNeighbours(new Country[]{Yakutsk, Siberia, Kamchatka, Mongolia});
         Ural.addNeighbours(new Country[]{Siberia, China, Afghanistan, Ukraine});
         Japan.addNeighbours(new Country[]{Kamchatka, Mongolia});
-        Mongolia.addNeighbours(new Country[]{Irkutsk, Kamchatka, Siberia, Japan});
+        Mongolia.addNeighbours(new Country[]{Irkutsk, Kamchatka, Siberia, Japan, China});
         China.addNeighbours(new Country[]{Mongolia, Siberia, Ural, Afghanistan, India, Siam});
         MiddleEast.addNeighbours(new Country[]{India, Afghanistan, Ukraine, SouthernEurope, Egypt, EastAfrica});
         India.addNeighbours(new Country[]{MiddleEast, Afghanistan, China, Siam});
@@ -213,7 +211,7 @@ public class Map {
     /**
     *@return general country list
     */
-    public List<Country> getCountries() {
+    public ArrayList<Country> getCountries() {
         return countries;
     }
     

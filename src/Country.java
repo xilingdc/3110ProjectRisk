@@ -1,5 +1,3 @@
-package src;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +13,14 @@ public class Country {
     private int armySize;//country's troop size
     private List<Country> neighbours;//country's neighbour country list
     private Color color;
+    private Point location;
+
     /**
     *@Constructor
     */
-    public Country(String name) {
+    public Country(String name, int x, int y) {
         this.name = name;
+        location = new Point(x, y);
         armySize = 0;
         neighbours = new ArrayList<>();
     }
@@ -36,7 +37,10 @@ public class Country {
     public Player getOwner() {
         return owner;
     }
-    
+
+    public int getX() {return location.x;}
+
+    public int getY() {return location.y;}
     
     /**
     *@return army number
