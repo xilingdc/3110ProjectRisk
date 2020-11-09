@@ -34,12 +34,17 @@ public class Controller implements ActionListener {
             //commandStr.add(0,"attack");
             CountryButton b = (CountryButton) e.getSource();
             if (attacker == null) {
-                attacker = b.getCountry();
+                if (model.isAttacker(b.getCountry())) {
+                    attacker = b.getCountry();
+                }
+
             } else {
-                defender = b.getCountry();
-                model.attack(attacker, defender);
-                attacker = null;
-                defender = null;
+                if (model.canDefend(attacker, b.getCountry())) {
+                    defender = b.getCountry();
+                    model.attack(attacker, defender);
+                    attacker = null;
+                    defender = null;
+                }
             }
 
         }else{

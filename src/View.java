@@ -120,6 +120,29 @@ public class View extends JFrame {
         b.setText(""+troops);
     }
 
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
+    }
+
+    public int getDice(String message, int maxDice) {
+        String dice = JOptionPane.showInputDialog(this, message);
+        while (true) {
+            if (dice.isEmpty()) {
+                dice = JOptionPane.showInputDialog(this, message);
+            } else {
+                int numberOfDice = Integer.parseInt(dice);
+                if (numberOfDice < 1 || numberOfDice > maxDice) {
+                    dice = JOptionPane.showInputDialog(this, message);
+                } else return numberOfDice;
+            }
+        }
+    }
+
+    public void showEndMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+        this.dispose();
+    }
+
     public static void main(String[] args) throws IOException {
         new View();
     }
