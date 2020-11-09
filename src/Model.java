@@ -88,7 +88,8 @@ public class Model {
 
     /**
      * This is the attack method, outcomes of battles are printed here, the map/countries are updated here
-     * @param command - which countries are to attack and defend
+     * @param attacker - country attacking
+     * @param defender - country defending
      */
     public void attack(Country attacker, Country defender) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
         // take input from the user
@@ -164,7 +165,8 @@ public class Model {
 
     /**
      * Check to see if the attack can be done based on the rules of the game
-     * @param command
+     * @param attacker - country attacking
+     * @param defender - country defending
      * @return true/false (valid attack)
      */
     public boolean canDefend(Country attacker, Country defender) {
