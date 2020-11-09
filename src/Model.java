@@ -41,36 +41,17 @@ public class Model {
     /**
      * @constructor
      */
-    public Model() {
+    public Model(int numberOfPlayers) {
         parser = new Parser();
         map = new Map();
-    }
-
-    /**
-     * Main play routine.  Loops until end of play.
-     */
-    public void play() {
-//        printBegin();//let user enter player number
+        processBegin(numberOfPlayers);//let user enter player number
         setUp();
-        
-
-
-        boolean finished = false;
-        while (!finished) {
-            Command command = parser.getCommand();
-            processCommand(command);
-            if (players.size() == 1) {//when only one player stands
-                finished = true;
-            }
-        }
-        //output winner
-        view.showEndMessage("Player "+players.get(0).getName() + " is the winner. Game Over!");
     }
 
     /**
      * the method prints the beginning of the game
      */
-    public void processBegin(int playerNum) {
+    private void processBegin(int playerNum) {
 //        System.out.println("Welcome to Risk.");
 //        System.out.print("Please enter player number(2-6): ");
         this.playerNum=playerNum;
@@ -91,7 +72,7 @@ public class Model {
     /**
     *set up map, and randomly assign countries to each player
     */
-    public void setUp() {
+    private void setUp() {
         Collections.shuffle(map.getCountries());//randomly shuffle countries so the distribution is different each time
         int countryCount = map.getNumberOfCountries();
         while (countryCount != 0) {
@@ -118,11 +99,9 @@ public class Model {
         }
     }
 
-
     public Map getMap(){
         return map;
     }
-    
     
     /**
     *print current state of whole map with country and its owner, troop size.
@@ -232,6 +211,9 @@ public class Model {
             view.updateCountryButton(defender, defender.getOwner().getColor(), defender.getArmySize());
         }
         view.updateCountryButton(attacker, attacker.getOwner().getColor(), attacker.getArmySize());
+        if (players.size() == 1) {
+            view.showEndMessage("Player "+players.get(0).getName() + " is the winner. Game Over!");
+        }
     }
 
 

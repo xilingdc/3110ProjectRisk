@@ -36,12 +36,9 @@ public class View extends JFrame {
             }
         }
 
-        Model model = new Model();
+        Model model = new Model(numPlayer);
         model.setView(this);
         Controller controller = new Controller(model);
-
-        model.processBegin(numPlayer);
-        model.setUp();
 
         JPanel topPanel = new JPanel();
         playerTurn = new JTextField("It is player "+model.getCurrentPlayer().getName()+"'s turn.");
