@@ -11,7 +11,6 @@ public class Model {
 
     private int playerNum;//player total number
     private ArrayList<Player> players;// player list
-    private Parser parser;
     private Player currentPlayer;//current player
     private int currentPlayerIndex;//current player index number 
     private Map map;
@@ -32,9 +31,9 @@ public class Model {
     }
 
     public void showInfo(String countryname){
-//        System.out.println(countryname);
+        //System.out.println(countryname);
         Country country =  map.getCountry(countryname);
-//        System.out.println(country.getOwner().getName()+" "+country.getArmySize());
+        //System.out.println(country.getOwner().getName()+" "+country.getArmySize());
         view.updateTextInfoHandler(country.getName(),country.getOwner().getName(),country.getArmySize());
     }
 
@@ -42,7 +41,6 @@ public class Model {
      * @constructor
      */
     public Model(int numberOfPlayers) {
-        parser = new Parser();
         map = new Map();
         processBegin(numberOfPlayers);//let user enter player number
         setUp();
@@ -52,22 +50,19 @@ public class Model {
      * the method prints the beginning of the game
      */
     private void processBegin(int playerNum) {
-//        System.out.println("Welcome to Risk.");
-//        System.out.print("Please enter player number(2-6): ");
         this.playerNum=playerNum;
         players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             Player p = new Player(Integer.toString(i+1),colorPlayer[i]);
             System.out.println(p.getColor().toString());
             players.add(p);//add player1, player2.... into playerList
-//            System.out.println("Player " + i + " has been added;");
+            //System.out.println("Player " + i + " has been added;");
         }
 
         currentPlayerIndex = 0;//the game begins at player one
         currentPlayer = players.get(0);
-//        System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
+        //System.out.println("It is Player " + currentPlayer.getName() + "'s turn");
     }
-    
     
     /**
     *set up map, and randomly assign countries to each player
@@ -102,42 +97,6 @@ public class Model {
     public Map getMap(){
         return map;
     }
-    
-    /**
-    *print current state of whole map with country and its owner, troop size.
-    */
-    private void getState() {
-        //loop for every country on the map
-        for (Country country : map.getCountries()) {
-            System.out.println(country);
-        }
-    }
-
-    /**
-     *evaluate user input
-     * @param command - user's input
-     */
-    public void processCommand(Command command) {
-
-        //if the command didn't exist
-        if (command.isUnknown()) {
-            System.out.println("Invalid Command.");
-            return;
-        }
-
-        String commandWord = command.getCommandWord();
-
-        //match the command to the appropriate method
-        if (commandWord.equals("state")) {
-            getState();
-        } else if (commandWord.equals("attack")) {
-            //attack(command);
-        } else if (commandWord.equals("pass")) {
-            pass();
-            view.updatePlayerTurnTextHandler(currentPlayer.getName());
-        }
-    }
-
 
     /**
      * This is the attack method, outcomes of battles are printed here, the map/countries are updated here
@@ -216,7 +175,6 @@ public class Model {
         }
     }
 
-
     /**
      * Check to see if the attack can be done based on the rules of the game
      * @param command
@@ -260,8 +218,7 @@ public class Model {
             currentPlayerIndex++;//move on to next player
         }
         currentPlayer = players.get(currentPlayerIndex);
+        view.updatePlayerTurnTextHandler(currentPlayer.getName());
         System.out.println("It is Player " + currentPlayer.getName() + "'s turn");//print whose turn it is
     }
-
-
 }
