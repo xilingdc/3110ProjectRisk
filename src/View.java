@@ -10,6 +10,7 @@ public class View extends JFrame {
     private JTextArea playerTurn;
     private  JButton pass;
     private HashMap<Country, CountryButton> countryButtons;
+    private JPanel bottomPanel;
 
     public View() throws IOException {
         super("Risk Domination");
@@ -36,8 +37,14 @@ public class View extends JFrame {
             }
         }
 
-        Model model = new Model(numPlayer);
+        Model model = new Model();
         model.setView(this);
+
+        bottomPanel = new JPanel();
+        this.add(bottomPanel, BorderLayout.SOUTH);
+
+        model.processBegin(numPlayer);
+        model.setUp();
         Controller controller = new Controller(model);
 
         JPanel topPanel = new JPanel();
@@ -79,6 +86,13 @@ public class View extends JFrame {
         CountryButton b = countryButtons.get(country);
         b.setBackground(color);
         b.setText(""+troops);
+    }
+
+    public void addPlayer(String message, Color color) {
+        JLabel player = new JLabel("  " + message + "  ");
+        player.setForeground(color);
+        player.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        bottomPanel.add(player);
     }
 
     public void showMessage(String message) {

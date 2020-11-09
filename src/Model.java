@@ -32,20 +32,19 @@ public class Model {
     /**
      * @constructor
      */
-    public Model(int numberOfPlayers) {
+    public Model() {
         map = new Map();
-        processBegin(numberOfPlayers);//let user enter player number
-        setUp();
     }
 
     /**
      * the method prints the beginning of the game
      */
-    private void processBegin(int playerNum) {
+    public void processBegin(int playerNum) {
         players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             Player p = new Player(Integer.toString(i+1),colorPlayer[i]);
             players.add(p);//add player1, player2.... into playerList
+            view.addPlayer("Player " + (i+1), colorPlayer[i]);
         }
 
         currentPlayerIndex = 0;//the game begins at player one
@@ -55,7 +54,7 @@ public class Model {
     /**
     *set up map, and randomly assign countries to each player
     */
-    private void setUp() {
+    public void setUp() {
         Collections.shuffle(map.getCountries());//randomly shuffle countries so the distribution is different each time
         int countryCount = map.getNumberOfCountries();
         while (countryCount != 0) {
