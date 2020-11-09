@@ -148,7 +148,7 @@ public class Map {
         Irkutsk.addNeighbours(new Country[]{Yakutsk, Siberia, Kamchatka, Mongolia});
         Ural.addNeighbours(new Country[]{Siberia, China, Afghanistan, Ukraine});
         Japan.addNeighbours(new Country[]{Kamchatka, Mongolia});
-        Mongolia.addNeighbours(new Country[]{Irkutsk, Kamchatka, Siberia, Japan});
+        Mongolia.addNeighbours(new Country[]{Irkutsk, Kamchatka, Siberia, Japan, China});
         China.addNeighbours(new Country[]{Mongolia, Siberia, Ural, Afghanistan, India, Siam});
         MiddleEast.addNeighbours(new Country[]{India, Afghanistan, Ukraine, SouthernEurope, Egypt, EastAfrica});
         India.addNeighbours(new Country[]{MiddleEast, Afghanistan, China, Siam});
