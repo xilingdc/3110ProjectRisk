@@ -38,8 +38,6 @@ public class Model {
         view.updateTextInfoHandler(country.getName(),country.getOwner().getName(),country.getArmySize());
     }
 
-
-
     /**
      * @constructor
      */
@@ -47,9 +45,6 @@ public class Model {
         parser = new Parser();
         map = new Map();
     }
-
-
-
 
     /**
      * Main play routine.  Loops until end of play.

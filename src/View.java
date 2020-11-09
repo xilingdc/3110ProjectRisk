@@ -7,10 +7,8 @@ import java.util.HashMap;
  * @author Xiling
  */
 public class View extends JFrame {
-    private JButton[] countries;
     private JTextField gameInfo,playerTurn;
     private  JButton pass, attack;
-    private JPanel contentPane;
     private HashMap<Country, CountryButton> countryButtons;
 
     public View() throws IOException {
@@ -36,14 +34,11 @@ public class View extends JFrame {
                     userInput = JOptionPane.showInputDialog(this,"Enter Player Number(2-6): ");
                 }
             }
-
         }
 
         Model model = new Model();
         model.setView(this);
         Controller controller = new Controller(model);
-
-
 
         model.processBegin(numPlayer);
         model.setUp();
@@ -77,36 +72,14 @@ public class View extends JFrame {
             countryButtons.put(country, button);
             map.add(button);
         }
-
         this.add(map, BorderLayout.CENTER);
-        /*this.setLayout(new GridLayout(10,15));
-
-        countries = new JButton[model.getMap().getCountries().size()];
-        for (int i = 0; i < new Map().getCountries().size(); i++) {
-
-            JButton button = new JButton(model.getMap().getCountry(i).getName());
-            countries[i]=button;
-            button.setBackground(model.getMap().getCountry(i).getColor());
-            button.addActionListener(controller);
-            button.setActionCommand(model.getMap().getCountry(i).getName());
-            this.add(button);//temporary
-            //TODO set button's layout
-        }*/
-
-
-
-
-
 
         this.setSize(1600,1000);
         this.setVisible(true);
-
-
-
     }
 
     public void updateTextInfoHandler(String countryName, String owner, int troop){
-//        System.out.println(countryName+owner+" troops: "+troop);
+        //System.out.println(countryName+owner+" troops: "+troop);
         gameInfo.setText(countryName+": player "+owner+", troop: "+troop);
     }
 

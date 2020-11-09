@@ -10,14 +10,11 @@ import java.util.Collections;
 
 public class Controller implements ActionListener {
     private Model model;
-    private Command command;
-    private ArrayList<String> commandStr;
     private Country attacker;
     private Country defender;
 
     public Controller(Model model){
         this.model = model;
-        commandStr = new ArrayList<>();
         attacker = null;
         defender = null;
     }
@@ -26,18 +23,14 @@ public class Controller implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("pass")){
-            command = new Command("pass",null,null);
-            model.processCommand(command);
+            model.pass();
 
         }else if(e.getActionCommand().equals("Country")){
-            //System.out.println(e.getActionCommand());
-            //commandStr.add(0,"attack");
             CountryButton b = (CountryButton) e.getSource();
             if (attacker == null) {
                 if (model.isAttacker(b.getCountry())) {
                     attacker = b.getCountry();
                 }
-
             } else {
                 if (model.canDefend(attacker, b.getCountry())) {
                     defender = b.getCountry();
@@ -45,20 +38,6 @@ public class Controller implements ActionListener {
                     attacker = null;
                     defender = null;
                 }
-            }
-
-        }else{
-
-            if((!commandStr.isEmpty())&&commandStr.get(0).equals("attack")&&commandStr.size()<2){
-                commandStr.add(e.getActionCommand());
-            }else if((!commandStr.isEmpty())&&commandStr.get(0).equals("attack")&&commandStr.size()==2){
-                commandStr.add(e.getActionCommand());
-                command = new Command("attack",commandStr.get(2),commandStr.get(1));//after clicking attack, click your country first and then click the country you desired to attack
-                model.processCommand(command);
-                commandStr.clear();
-            }else{
-                System.out.println("where"+e.getActionCommand());
-                model.showInfo(e.getActionCommand());
             }
         }
     }
