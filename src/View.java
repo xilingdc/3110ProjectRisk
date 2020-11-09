@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public class View extends JFrame {
     private JTextArea playerTurn;
-    private  JButton pass;
+    private  JButton pass, cancel;
     private HashMap<Country, CountryButton> countryButtons;
     private JPanel bottomPanel;
 
@@ -54,9 +54,13 @@ public class View extends JFrame {
         pass = new JButton("Pass");
         pass.addActionListener(controller);
         pass.setActionCommand("pass");
+        cancel = new JButton("Cancel Attack");
+        cancel.addActionListener(controller);
+        cancel.setActionCommand("cancel");
 
         topPanel.add(playerTurn);
         topPanel.add(pass);
+        topPanel.add(cancel);
         this.add(topPanel, BorderLayout.NORTH);
 
         MapComponent map = new MapComponent("risk-board-white.png");

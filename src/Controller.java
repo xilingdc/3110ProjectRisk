@@ -24,7 +24,11 @@ public class Controller implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("pass")){
             model.pass();
-
+            attacker = null;
+            defender = null;
+        }else if (e.getActionCommand().equals("cancel")) {
+            attacker = null;
+            defender = null;
         }else if(e.getActionCommand().equals("Country")){
             CountryButton b = (CountryButton) e.getSource();
             if (attacker == null) {
