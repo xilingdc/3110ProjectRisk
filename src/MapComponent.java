@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
+ * @author Aleksandar Veselinovic
+ */
 public class MapComponent extends JComponent {
     private final Image background;
 

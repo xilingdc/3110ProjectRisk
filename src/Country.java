@@ -59,18 +59,6 @@ public class Country {
     }
 
     /**
-     * @param name - match the countries by their name property
-    *@return country
-    */
-    public Country getCountry(String name) {
-        //match name field
-        if (this.name.equals(name)) {
-            return this;
-        } else return null;
-    }
-    
-    
-    /**
      * set up the country belongs to whom
      * @param p - passing a Player object who will be the owner of the country
     */

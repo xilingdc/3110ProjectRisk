@@ -1,5 +1,7 @@
 import javax.swing.*;
-
+/**
+ * @author Aleksandar Veselinovic
+ */
 public class CountryButton extends JButton {
     private final Country country;
 

@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Xiling Wang
- * @author Aleksandar Veselinovic
  * @author Ali Fahd
  */
 

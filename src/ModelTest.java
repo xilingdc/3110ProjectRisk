@@ -4,7 +4,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Ali Fahd
+ */
 /**
  * Since number of players is chosen through the view, I can't set it manually here.
  * So please input 3 as number of players when you run the test.
