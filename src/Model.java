@@ -21,8 +21,8 @@ public class Model {
         return currentPlayer;
     }
 
-    public View getView() {
-        return view;
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 
     public void setView(View view) {
@@ -207,5 +207,18 @@ public class Model {
         }
         currentPlayer = players.get(currentPlayerIndex);
         view.updatePlayerTurnTextHandler(currentPlayer);
+    }
+
+    /**
+     * for testing purposes
+     */
+    public Player getNextPlayer() {
+        int nextPlayerIndex;
+        if (currentPlayerIndex == players.size() - 1) {
+            nextPlayerIndex = 0;//go back to first player
+        } else {
+            nextPlayerIndex = currentPlayerIndex++;//move on to next player
+        }
+        return players.get(nextPlayerIndex);
     }
 }

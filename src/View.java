@@ -11,6 +11,7 @@ public class View extends JFrame {
     private  JButton pass, cancel;
     private HashMap<Country, CountryButton> countryButtons;
     private JPanel bottomPanel;
+    private Model model;
 
     public View() throws IOException {
         super("Risk Domination");
@@ -37,7 +38,7 @@ public class View extends JFrame {
             }
         }
 
-        Model model = new Model();
+        model = new Model();
         model.setView(this);
 
         bottomPanel = new JPanel();
@@ -120,6 +121,10 @@ public class View extends JFrame {
     public void showEndMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
         this.dispose();
+    }
+
+    public Model getModel() {
+        return model;
     }
 
     public static void main(String[] args) throws IOException {
