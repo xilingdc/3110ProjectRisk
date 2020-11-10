@@ -1,22 +1,24 @@
-To run the game, double click on the jar file that is in the provided zipped folder or execute it in the command line.
-This will open a terminal which will ask you how many players will be playing in the game. To choose the number of players,
-type a number next to the question and press enter.
+To run the game, double click on the jar file that is in the provided zipped folder or execute it in the command line. This will open
+a dialog box that will ask you how many players will be playing in the game. After typing your number and pressing ok the game will open,
+showing the map with colored buttons on each country, the player with the current turn, and each player name.
 
-At this point, the game will evenly distribute the countries among the players, and each player's troops among their countries.
-Player 1 has the first turn, and they will type their command next to the ">" in the terminal. There are three commands
-the player can type: "state", "pass", and "attack defendingCountry attackingCountry".
-	- "state" prints the name of the country, the owner of the country, and the number of troops in the country for each country in the map.
-	- "pass" ends the current player's turn and passes control of the game to the next player. The next player will be notified that it is
-	  their turn.
-	- "attack defendingCountry attackingCountry" attacks the country denoted defendingCountry from the country denoted attackingCountry.
-	  Type the country names identically as they appear when the state of the game is shown.
-	  If the attacking country has at least 3 troops, the attacking player will be prompted to choose the number of dice they want to roll.
-	  Type the number next to ">" and press enter to make your decision.
-	  If the defending country has at least 2 troops, the defending player will be prompted to choose the number of dice they want to roll.
-	  Input your decision in the same manner as for the attacking player.
-	  The outcome of the attack will be shown and then the current player will be prompted for a new command.
-	  When a country is captured, a message will appear and all but 1 troop from the attacking country will be moved to the captured country.
-Do not type the quotation marks when typing the command.
+The color of a button represents which player owns that country, and the number on the button represents how many troops are in that country.
+To know which color you are, each player name is written in their color at the bottom of the screen. The top of the screen says whose turn it is,
+also written in their color. At the top of the screen there is also a pass button that you press when you are done your turn, and a cancel attack
+button which deselects the country you are attacking with.
 
-When a player is eliminated from the game, a message indicating this will appear and they will not have any more turns. When a player has won the game
-a message will appear and the game will close.
+To attack, press the button on the country you want to attack with. A dialog box will open saying which country you are attacking with.
+After closing the dialog box, press the button on the country you want to attack. A dialog box will open saying which country you are
+attacking. After closing the dialog box, a new dialog box will open that will either tell the attacking player how many dice they will use
+or ask the attacking player how many dice they want to use. After entering the number adhering to risk rules, if necessary, and closing the
+dialog box, the same process will occur for the defending player. Once the defending player closes their dialog box, the first result of the
+attack will be shown in a new dialog box, followed by the remaining results. The buttons of the two countries will change numbers according
+to the result of the attack, and the defending country button might change color to the attacking player's color if it was defeated.
+
+Once the player is done attacking, press pass to give control of the game to the next player. The text above the map will change to
+say the next player's name, written in their color. When a player is eliminated, a dialog box will open saying who was eliminated.
+When someone has won the game, a dialog box will open saying who won the game. When this dialog box is closed, the game closes and stops
+executing.
+
+Note: the jar file might make the map larger than it should be, so the map is cut off at the bottom and the bottom panel is not visible, but all
+the buttons are visible. To make the bottom panel visible make the frame full screen. If the game is run in intellij the frame looks as it should.
