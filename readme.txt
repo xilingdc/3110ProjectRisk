@@ -14,7 +14,7 @@ Changes:
 	- Design of program is now in MVC format
 	- Added a GUI for the user to use including a map
 	- Attack is done through buttons and clicking on the different countries' button
-	- C' button shows the number of troops it has while colour shows who owns it
+	- Countries' button shows the number of troops it has while colour shows who owns it
 	- State of game (ie whose turn it is) is shown in the text box at the top
 
 Future roadmap :
