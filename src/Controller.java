@@ -9,7 +9,11 @@ public class Controller implements ActionListener {
     private Model model;
     private Country attacker;
     private Country defender;
-
+    
+    
+    /**
+    *@Constructor
+    */
     public Controller(Model model){
         this.model = model;
         attacker = null;
