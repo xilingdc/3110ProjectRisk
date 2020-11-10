@@ -12,7 +12,12 @@ import java.util.HashMap;
  */
 public class MapComponent extends JComponent {
     private final Image background;
-
+    
+    
+    /**
+    *@Constructor
+    *@param fileName the background file
+    */
     public MapComponent(String fileName) throws IOException {
         background = ImageIO.read(new File(fileName));
         setLayout(null);
