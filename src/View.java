@@ -13,7 +13,12 @@ public class View extends JFrame {
     private HashMap<Country, CountryButton> countryButtons;
     private JPanel bottomPanel;
     private Model model;
-
+    
+    
+    
+    /**
+    *@Constructor
+    */
     public View() throws IOException {
         super("Risk Domination");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,29 +87,57 @@ public class View extends JFrame {
         this.setSize(1600,1000);
         this.setVisible(true);
     }
-
+    
+    
+    /**
+    *update view's textfield to show whose turn in game
+    *@param player - player
+    */
     public void updatePlayerTurnTextHandler(Player player){
         playerTurn.setText("Current Player: Player "+player.getName());
         playerTurn.setForeground(player.getColor());
     }
-
+    
+    
+    /**
+    *update the button's new state (its new owner which means new color, new troop number)
+    *@param country
+    *@param color - country's color
+    *@param troops - country's troops
+    */
     public void updateCountryButton(Country country, Color color, int troops){
         CountryButton b = countryButtons.get(country);
         b.setBackground(color);
         b.setText(""+troops);
     }
-
+    
+    
+    /**
+    *@param message
+    *@param color
+    */
     public void addPlayer(String message, Color color) {
         JLabel player = new JLabel("  " + message + "  ");
         player.setForeground(color);
         player.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         bottomPanel.add(player);
     }
-
+    
+    
+    
+    /**
+    *pop up windows
+    *@param message
+    */
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
 
+    
+    /**
+    *@param message
+    *@param maxDice
+    */
     public int getDice(String message, int maxDice) {
         String dice = JOptionPane.showInputDialog(this, message);
         while (true) {
@@ -118,16 +151,29 @@ public class View extends JFrame {
             }
         }
     }
-
+    
+    
+    /**
+    *@param message
+    */
     public void showEndMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
         this.dispose();
     }
-
+    
+    
+    /**
+    *@return model
+    */
     public Model getModel() {
         return model;
     }
-
+    
+    
+    /**
+    *main method
+    *@param args
+    */
     public static void main(String[] args) throws IOException {
         new View();
     }
