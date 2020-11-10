@@ -14,20 +14,10 @@ public class Model {
     private int currentPlayerIndex;//current player index number 
     private Map map;
     private int[] troopAllocation = {50, 35, 30, 25, 20};
-    private Color[] colorPlayer = {Color.red,Color.cyan,Color.green,Color.magenta, Color.orange, Color.pink};
+    private Color[] colorPlayer = {Color.red,Color.cyan,Color.green,Color.magenta, Color.orange, Color.pink};//setting up an array of color for each player
     private View view;
 
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
 
-    public ArrayList<Player> getPlayers() {
-        return players;
-    }
-
-    public void setView(View view) {
-        this.view = view;
-    }
 
     /**
      * @constructor
@@ -35,7 +25,31 @@ public class Model {
     public Model() {
         map = new Map();
     }
-
+    
+    /**
+    *@return currentPlayer
+    */
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+    
+    /**
+    *@return player list: players
+    */
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+    
+    
+    /**
+    *@param view
+    */
+    public void setView(View view) {
+        this.view = view;
+    }
+    
+    
+    
     /**
      * the method prints the beginning of the game
      */
@@ -80,7 +94,11 @@ public class Model {
             }
         }
     }
-
+    
+    
+    /**
+    *@return map
+    */
     public Map getMap(){
         return map;
     }
