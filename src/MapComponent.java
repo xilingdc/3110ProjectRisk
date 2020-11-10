@@ -11,15 +11,21 @@ import java.util.HashMap;
  * @author Aleksandar Veselinovic
  */
 public class MapComponent extends JComponent {
-    private final Image background;
+    private final Image background;//field that stores the map image
 
+    /**
+     * Constructor of MapComponent
+     *
+     * @param fileName the name of the image file
+     * @throws IOException if file can't be read
+     */
     public MapComponent(String fileName) throws IOException {
-        background = ImageIO.read(new File(fileName));
-        setLayout(null);
+        background = ImageIO.read(new File(fileName));//store the image referenced by the file name
+        setLayout(null);//set layout to absolute, allowing buttons to be placed by a point on the window
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        g.drawImage(background, 300, 0, null);
+        g.drawImage(background, 300, 0, null);//draw the image
     }
 }
