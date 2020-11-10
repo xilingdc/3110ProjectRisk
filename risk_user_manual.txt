@@ -22,3 +22,4 @@ executing.
 
 Note: the jar file might make the map larger than it should be, so the map is cut off at the bottom and the bottom panel is not visible, but all
 the buttons are visible. To make the bottom panel visible make the frame full screen. If the game is run in intellij the frame looks as it should.
+Also, there is a png file of the map that needs to be in the same folder as the jar file in order to run the game.
