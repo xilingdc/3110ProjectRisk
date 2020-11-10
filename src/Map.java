@@ -179,7 +179,11 @@ public class Map {
         return null;
     }
 
-
+    
+    /**
+    *@return the index of country in countries
+    *@param name country's name
+    */
     public int getIndex(String name){
         for (int i = 0; i < countries.size(); i++) {
             if (countries.get(i).getName().equals(name)) {
