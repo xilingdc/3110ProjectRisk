@@ -9,7 +9,7 @@ import java.util.List;
  */
 /**
  * Since number of players is chosen through the view, I can't set it manually here.
- * So please input 3 as number of players when you run the test.
+ * So please input 3 as number of players when you run the test for each of the views and just hit ok on all JOptionPanes.
  * I'm basically testing model through view because a lot of the methods require a view.
  * */
 public class ModelTest{

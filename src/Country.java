@@ -37,9 +37,16 @@ public class Country {
     public Player getOwner() {
         return owner;
     }
-
+    
+    /**
+    *@return country x's dimension value
+    */
     public int getX() {return location.x;}
-
+    
+    
+    /**
+    *@return country's y dimension value
+    */
     public int getY() {return location.y;}
     
     /**
@@ -49,11 +56,19 @@ public class Country {
         return armySize;
     }
 
-
+    
+    /**
+    *@return color
+    */
     public Color getColor() {
         return color;
     }
-
+    
+    
+    /**
+    *set color of country
+    *@oaram country's color
+    */
     public void setColor(Color color) {
         this.color = color;
     }

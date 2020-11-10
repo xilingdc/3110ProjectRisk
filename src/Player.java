@@ -19,6 +19,12 @@ public class Player {
         this.name = name;
     }
     
+    
+    /**
+    *@param name - player's name
+    *@param color - player's color
+    *@Constructor
+    */
     public Player(String name, Color color){
         this.name = name;
         this.color = color;
@@ -54,11 +60,19 @@ public class Player {
         return countries;
     }
 
-
+    
+    /**
+    *@return color
+    */
     public Color getColor() {
         return color;
     }
-
+    
+    
+    /**
+    *the setter of name
+    *@param name
+    */
     public void setName(String name) {
         this.name = name;
     }
