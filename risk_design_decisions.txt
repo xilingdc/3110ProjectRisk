@@ -1,22 +1,27 @@
-When designing the overall structure of the game, we decided to use zuul as a framework because it also took input from the user
-in the terminal. This is where the Parser, Command, and CommandWords classes come from, as well as the processCommand method in
-the Model class. The processCommand method also provided a framework for applying the commands to the game by having one method
-for each command in the Model class.
+Given that the game needed to be made GUI-based, one of the big design decisions was how to represent and interact with the map.
+The two options we were considering were to draw the map in a GUI component with polygons or add a full map as a background image
+and add regular buttons on top of each country. With drawing the map from scratch, you would be able to click anywhere on a country
+to select it, but handling those mouse clicks would be inefficient because you would have to loop through each polygon that represents
+a country to check if the click was inside the polygon. Therefore, we chose the second option of having a background image with buttons
+on top, sacrificing the ideal user experience to be able to handle mouse clicks much more efficiently. The MapComponent class is responsible
+for this by drawing the map image in the paintComponent method and setting the layout to absolute to allow buttons to be placed on top
+of the image at a specific point in the window.
 
-One of the first big design decisions was how to design and store the map. We needed to decide how many classes this could
-be broken up into and how to connect these classes. We originally decided to only have a Country class that contained its name,
-its owner, the number of troops, and its neighbouring countries, and then store a list of all countries in the Model class.
-This meant the Model class had an extra responsibility of creating the map, so its cohesion was lower. Therefore, we created
-a Map class which had the responsibility of creating and storing the map. This includes the arraylist of countries which was moved
-from the Model class.
+Another decision was how to output information to the user, since the console that was being used in milestone 1 was not an option.
+One option was to essentially move the console into a JTextArea in the View class, and the other option was to display a dialog box
+for each message the user needed to see. Since dialog boxes interrupt the game to ensure the user sees the message, and
+an update to a JTextArea may go unnoticed, we decided to use dialog boxes. Dialog boxes with inputs were also used to get the number
+of players and number of dice, so the Parser, Command, and CommandWord classes were no longer needed. This meant that the play and
+processCommand methods in Model were not needed and the attack and pass methods could be made public for the controller to call.
 
-An important method was also added to the Map class which determined if there was a country in the arraylist with a name matching
-the string parameter. This brings up another design decision of whether the arraylist should be changed to a hashmap that has a
-string name key and Country object value. This would improve the efficiency of this method, but then there would be an overlap
-with the string name field in the Country class.
-
-Another decision that was discussed was whether a Player class is needed at all. Originally there was no Player class and players were
-stored as string names in an arraylist in the Model class. Country objects stored the player that owned them as a string name, but this
-asks the question of if a country should know who owns it. Alternatively, it might make more sense that players directly know all the
-countries they own, which can be represented by an arraylist of Country objects in a Player class. Since it makes more sense for a
-player to directly know which countries they own, we decided to currently implement a Player class.
+As referenced above with the controller, the game needed to follow the MVC pattern, so we added a View and Controller class to adhere
+to the pattern. Whenever a button on the game is clicked the actionPerformed method in Controller is invoked, and it determines which
+Model method to call. Inside each Model method that changes the state of the game, there is a call to a method in View that updates the
+View based on what aspect of the Model was changed. This presented another design decision of how to connect buttons to Country objects
+and Country objects to buttons because a certain Country object should be accessed when its button is pressed and a certain button
+should be accessed when its Country object changes state. This could be easily solved by having a hashmap of buttons and countries
+and a hashmap of countries and buttons, but this seems to be overlapping. Instead there should be one hashmap of countries and buttons
+and another solution to connect buttons and countries. One solution is to make a specific controller for each button that stores the
+Country object that it represents, and the other solution is to make a new class that extends JButton that stores the Country object
+it represents. To keep the MVC pattern as simple as possible, we decided to choose the second option, and this new class that extends
+JButton is the CountryButton class.
