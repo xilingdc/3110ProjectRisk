@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public class View extends JFrame {
     private JTextArea playerTurn;
-    private  JButton pass, cancel;
+    private  JButton pass, cancel, fortify;
     private HashMap<Country, CountryButton> countryButtons;
     private JPanel bottomPanel;
     private Model model;
@@ -54,14 +54,18 @@ public class View extends JFrame {
         playerTurn.setForeground(model.getCurrentPlayer().getColor());
         playerTurn.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         pass = new JButton("Pass");
+        fortify = new JButton("Fortify");
         pass.addActionListener(controller);
         pass.setActionCommand("pass");
+        fortify.addActionListener(controller);
+        fortify.setActionCommand("fortify");
         cancel = new JButton("Cancel Attack");
         cancel.addActionListener(controller);
         cancel.setActionCommand("cancel");
 
         topPanel.add(playerTurn);
         topPanel.add(pass);
+        topPanel.add(fortify);
         topPanel.add(cancel);
         this.add(topPanel, BorderLayout.NORTH);
 
@@ -81,6 +85,11 @@ public class View extends JFrame {
 
         this.setSize(1600,1000);
         this.setVisible(true);
+
+
+        model.activatePlacement();
+        showMessage("Player " + model.getCurrentPlayer().getName() + " has " + model.bonusTroopCalculator() + " troops to place.");
+
     }
 
     /**
@@ -146,6 +155,20 @@ public class View extends JFrame {
                 if (numberOfDice < 1 || numberOfDice > maxDice) {//if the user entered an invalid number
                     dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
                 } else return numberOfDice;
+            }
+        }
+    }
+
+    public int dropTroops(String message, int maxTroops) {
+        String troops = JOptionPane.showInputDialog(this, message);//open the dialog box
+        while (true) {
+            if (troops.isEmpty()) {//if the player entered nothing
+                return 0;//open the dialog box again
+            } else {
+                int numberOfTroops = Integer.parseInt(troops);
+                if (numberOfTroops < 0 || numberOfTroops > maxTroops) {//if the user entered an invalid number
+                    troops = JOptionPane.showInputDialog(this, message);//open the dialog box again
+                } else return numberOfTroops;
             }
         }
     }
