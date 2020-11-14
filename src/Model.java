@@ -268,22 +268,20 @@ public class Model {
      * checks to see if the country can fortify to the other country
      */
     public boolean canFortify(Country fromCountry, Country toCountry){
+        ArrayList<Country> visited = new ArrayList<>();
+        ArrayList<Country> deadEnd = new ArrayList<>();
         if (!currentPlayer.getCountries().contains(toCountry)) {//if the player attacks their own country
             view.showMessage("You cannot fortify to a country you do not own.");//notify the view to show a message
             return false;
         }else{
-            if(fromCountry.neighbours().contains(toCountry)){
-                view.showMessage("Fortifying to Country: " + toCountry.getName());//notify the view to show a message
-                return true;
-            }else{
-                boolean result = findPath(fromCountry, toCountry);
+                visited.add(fromCountry);
+                boolean result = findPath(fromCountry, toCountry, visited, deadEnd);
                 if(result){
                     view.showMessage("Fortifying to Country: " + toCountry.getName());//notify the view to show a message
                     return true;
                 }else{
-                    view.showMessage("The country you selected is not a neighbor of " + fromCountry.getName());//notify the view to show a message
+                    view.showMessage("The country you selected is not connected to " + fromCountry.getName());//notify the view to show a message
                     return false;
-                }
             }
         }
     }
@@ -291,17 +289,24 @@ public class Model {
     /**
      * checks to see if the country can fortify another country through a connected path
      */
-    public boolean findPath(Country fromCountry, Country toCountry){
+    public boolean findPath(Country fromCountry, Country toCountry, ArrayList<Country> visited, ArrayList<Country> deadEnd){
+        if(fromCountry.neighbours().contains(toCountry)){
+            return true;
+        }
         for (Country c: fromCountry.neighbours()){
-            if(c.getOwner().equals(currentPlayer)){
-                if(c.equals(toCountry)){
-                    return true;
-                }else{
-                    return findPath(c, toCountry);
-                }
+                if (c.getOwner().equals(currentPlayer)) {
+                    if (!(visited.contains(c) || deadEnd.contains(c))) {
+                        visited.add(c);
+                        return findPath(c, toCountry, visited, deadEnd);
+                    }
             }
         }
-        return false;
+        deadEnd.add(fromCountry);
+        visited.remove(fromCountry);
+        if(visited.isEmpty()){
+            return false;
+        }
+        return findPath(visited.get(visited.size()-1), toCountry, visited, deadEnd);
     }
 
 
