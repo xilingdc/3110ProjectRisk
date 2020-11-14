@@ -121,6 +121,13 @@ public class Country {
         return neighbours.contains(country);
     }
 
+    /**
+     * @return ArrayList<Country></Country> - the list of countries that are neighbours of the given country
+     */
+    public List<Country> neighbours() {
+        return neighbours;
+    }
+
     @Override
     public String toString() {
         return getName() + " is owned by Player " + getOwner().getName() + ", the number of troops: " + getArmySize();

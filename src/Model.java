@@ -16,6 +16,8 @@ public class Model {
     private int[] troopAllocation = {50, 35, 30, 25, 20};
     private Color[] colorPlayer = {Color.red,Color.cyan,Color.green,Color.magenta, Color.orange, Color.pink};//setting up an array of color for each player
     private View view;
+    private boolean placementPhase;
+    private boolean fortifyPhase;
 
 
 
@@ -232,6 +234,142 @@ public class Model {
         }
         currentPlayer = players.get(currentPlayerIndex);
         view.updatePlayerTurnTextHandler(currentPlayer);
+
+        fortifyPhase = false;
+        placementPhase = true;
+
+        view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
+    }
+
+    public void fortify(Country fromCountry, Country toCountry){
+        int troops = view.dropTroops("How many troops do you want to move?", fromCountry.getArmySize() - 1);
+        fromCountry.removeTroops(troops);
+        toCountry.addTroops(troops);
+        view.updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
+        view.updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());
+        fortifyPhase = false;
+        pass();
+    }
+
+    public boolean isFortifying(Country country) {
+        if (!(currentPlayer.getCountries().contains(country))) {//if the player doesn't own the country
+            view.showMessage("You do not own this country");//notify the view to show a message
+            return false;
+        } else if (country.getArmySize() == 1) {
+            view.showMessage("This country does not have enough troops to fortify.");//notify the view to show a message
+            return false;
+        } else {
+            view.showMessage("Fortifying from Country: "+ country.getName());//notify the view to show a message
+            return true;
+        }
+    }
+
+    /**
+     * checks to see if the country can fortify to the other country
+     */
+    public boolean canFortify(Country fromCountry, Country toCountry){
+        ArrayList<Country> visited = new ArrayList<>();
+        ArrayList<Country> deadEnd = new ArrayList<>();
+        if (!currentPlayer.getCountries().contains(toCountry)) {//if the player attacks their own country
+            view.showMessage("You cannot fortify to a country you do not own.");//notify the view to show a message
+            return false;
+        }else{
+                visited.add(fromCountry);
+                boolean result = findPath(fromCountry, toCountry, visited, deadEnd);
+                if(result){
+                    view.showMessage("Fortifying to Country: " + toCountry.getName());//notify the view to show a message
+                    return true;
+                }else{
+                    view.showMessage("The country you selected is not connected to " + fromCountry.getName());//notify the view to show a message
+                    return false;
+            }
+        }
+    }
+
+    /**
+     * checks to see if the country can fortify another country through a connected path
+     */
+    public boolean findPath(Country fromCountry, Country toCountry, ArrayList<Country> visited, ArrayList<Country> deadEnd){
+        if(fromCountry.neighbours().contains(toCountry)){
+            return true;
+        }
+        for (Country c: fromCountry.neighbours()){
+                if (c.getOwner().equals(currentPlayer)) {
+                    if (!(visited.contains(c) || deadEnd.contains(c))) {
+                        visited.add(c);
+                        return findPath(c, toCountry, visited, deadEnd);
+                    }
+            }
+        }
+        deadEnd.add(fromCountry);
+        visited.remove(fromCountry);
+        if(visited.isEmpty()){
+            return false;
+        }
+        return findPath(visited.get(visited.size()-1), toCountry, visited, deadEnd);
+    }
+
+
+    /**
+     * player can place their bonus troops
+     */
+    public int troopPlacement(int newTroops, Country country) {
+        int input = view.dropTroops("How many troops do you want to place here?", newTroops);
+        country.addTroops(input);
+        view.updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
+        newTroops -= input;
+        if(newTroops == 0){
+            placementPhase = false;
+            view.showMessage("Placement Phase is done, Attack Phase has begun!");
+        }else{
+            return newTroops;
+        }
+        return 0;
+    }
+
+    /**
+     * assigns bonus troops based on territories and continents conquered
+     */
+    public int bonusTroopCalculator() {
+        int bonusTroops = 3;
+        if (currentPlayer.getCountries().containsAll(map.getAustralia())) {
+            bonusTroops += 2;
+        }
+        if (currentPlayer.getCountries().containsAll(map.getAsia())) {
+            bonusTroops += 7;
+        }
+        if (currentPlayer.getCountries().containsAll(map.getAfrica())) {
+            bonusTroops += 3;//go back to first player
+        }
+        if (currentPlayer.getCountries().containsAll(map.getEurope())) {
+            bonusTroops += 5;//go back to first player
+        }
+        if (currentPlayer.getCountries().containsAll(map.getNorthAmerica())) {
+            bonusTroops += 5;//go back to first player
+        }
+        if (currentPlayer.getCountries().containsAll(map.getSouthAmerica())) {
+            bonusTroops += 2;//go back to first player
+        }
+
+        int countriesConquered = currentPlayer.getCountries().size();
+        if(countriesConquered > 11){
+            bonusTroops += (countriesConquered / 3) - 3;
+        }
+
+        return bonusTroops;
+    }
+
+
+    public boolean isPlacementPhase(){ return placementPhase; }
+
+    public boolean isFortifyPhase(){ return fortifyPhase; }
+
+    public void activateFortify(){
+        fortifyPhase = true;
+    }
+
+    public void activatePlacement(){
+        placementPhase = true;
     }
 
     /**

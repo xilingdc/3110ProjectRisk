@@ -1,18 +1,31 @@
 import java.util.ArrayList;
 import java.util.List;
 
-    /**
-    *@author Xiling Wang
-    *@author Aleksandar Veselinovic
-    *@author Ali Fahd
-    */
+/**
+ * @author Xiling Wang
+ * @author Aleksandar Veselinovic
+ * @author Ali Fahd
+ */
 public class Map {
     private ArrayList<Country> countries;//general country list
+    private ArrayList<Country> australia;
+    private ArrayList<Country> asia;
+    private ArrayList<Country> africa;
+    private ArrayList<Country> europe;
+    private ArrayList<Country> southAmerica;
+    private ArrayList<Country> northAmerica;
+
     /**
-     *constructor Map()
-    */
+     * constructor Map()
+     */
     public Map() {
         countries = new ArrayList<>();
+        australia = new ArrayList<>();
+        asia = new ArrayList<>();
+        africa = new ArrayList<>();
+        europe = new ArrayList<>();
+        southAmerica = new ArrayList<>();
+        northAmerica = new ArrayList<>();
         //North America
         Country Alaska = new Country("Alaska", 365, 90);//initialization and add the country into country list
         countries.add(Alaska);
@@ -162,14 +175,63 @@ public class Map {
         Madagascar.addNeighbours(new Country[]{EastAfrica, SouthAfrica});
         NorthAfrica.addNeighbours(new Country[]{Brazil, WesternEurope, Egypt, EastAfrica, Congo});
         SouthAfrica.addNeighbours(new Country[]{Congo, EastAfrica, Madagascar});
+
+        australia.add(EasternAustralia);
+        australia.add(WesternAustralia);
+        australia.add(Indonesia);
+        australia.add(NewGuinea);
+
+        asia.add(Afghanistan);
+        asia.add(China);
+        asia.add(India);
+        asia.add(Irkutsk);
+        asia.add(Japan);
+        asia.add(Kamchatka);
+        asia.add(MiddleEast);
+        asia.add(Mongolia);
+        asia.add(Siam);
+        asia.add(Siberia);
+        asia.add(Ural);
+        asia.add(Yakutsk);
+
+        africa.add(Congo);
+        africa.add(EastAfrica);
+        africa.add(Egypt);
+        africa.add(Madagascar);
+        africa.add(NorthAfrica);
+        africa.add(SouthAfrica);
+
+        europe.add(GreatBritain);
+        europe.add(Iceland);
+        europe.add(NorthernEurope);
+        europe.add(Scandinavia);
+        europe.add(SouthernEurope);
+        europe.add(Ukraine);
+        europe.add(WesternEurope);
+
+        southAmerica.add(Argentina);
+        southAmerica.add(Brazil);
+        southAmerica.add(Peru);
+        southAmerica.add(Venezuela);
+
+        northAmerica.add(Alaska);
+        northAmerica.add(Alberta);
+        northAmerica.add(CentralAmerica);
+        northAmerica.add(EasternAmerica);
+        northAmerica.add(Greenland);
+        northAmerica.add(NorthwestAmerica);
+        northAmerica.add(Ontario);
+        northAmerica.add(Quebec);
+        northAmerica.add(WesternAmerica);
     }
-    
-    
+
+
     /**
      * Return a country we are looking for based on its name
+     *
      * @param name - get country object based on name
-    *@return Country object - from given name, return corresponding country
-    */
+     * @return Country object - from given name, return corresponding country
+     */
     public Country getCountry(String name) {
         for (Country country : countries) {
             if (country.getName().equals(name)) {
@@ -179,12 +241,12 @@ public class Map {
         return null;
     }
 
-    
+
     /**
-    *@return the index of country in countries
-    *@param name country's name
-    */
-    public int getIndex(String name){
+     * @param name country's name
+     * @return the index of country in countries
+     */
+    public int getIndex(String name) {
         for (int i = 0; i < countries.size(); i++) {
             if (countries.get(i).getName().equals(name)) {
                 return i;
@@ -192,37 +254,80 @@ public class Map {
         }
         return -1;
     }
-    
+
     /**
      * Return a country we are looking for based on its index
+     *
      * @param index - the position of the country in the countries field
-    *@return from given index number, return corresponding country
-    */
+     * @return from given index number, return corresponding country
+     */
     public Country getCountry(int index) {
         return countries.get(index);
     }
-    
-    
+
+
     /**
      * @param name - the name of the country we are looking for
-    *@return true, if country exists; false, if country does not exist
-    */
+     * @return true, if country exists; false, if country does not exist
+     */
     public boolean hasCountry(String name) {
         return countries.contains(getCountry(name));
     }
-    
-    
+
+
     /**
-    *@return general country list
-    */
+     * @return general country list
+     */
     public ArrayList<Country> getCountries() {
         return countries;
     }
-    
-    
+
     /**
-    *@return country list's size
-    */
+     * @return australia country list
+     */
+    public ArrayList<Country> getAustralia() {
+        return australia;
+    }
+
+    /**
+     * @return australia country list
+     */
+    public ArrayList<Country> getAsia() {
+        return asia;
+    }
+
+    /**
+     * @return australia country list
+     */
+    public ArrayList<Country> getAfrica() {
+        return africa;
+    }
+
+    /**
+     * @return australia country list
+     */
+    public ArrayList<Country> getEurope() {
+        return europe;
+    }
+
+    /**
+     * @return australia country list
+     */
+    public ArrayList<Country> getNorthAmerica() {
+        return northAmerica;
+    }
+
+    /**
+     * @return australia country list
+     */
+    public ArrayList<Country> getSouthAmerica() {
+        return southAmerica;
+    }
+
+
+    /**
+     * @return country list's size
+     */
     public int getNumberOfCountries() {
         return countries.size();
     }
