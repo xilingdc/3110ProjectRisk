@@ -14,15 +14,20 @@ import java.util.List;
  * */
 public class ModelTest{
     View v;
+    Model m;
 
     @Test
     public void testCountrySize() {
         try {
-            v = new View();
+        v = new View();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        assertEquals(42, v.getModel().getMap().getCountries().size());
+        Model m = new Model();
+        m.setView(v);
+        m.processBegin(3);
+        m.setUp();
+        assertEquals(42, m.getMap().getCountries().size());
     }
 
     @Test
@@ -32,13 +37,17 @@ public class ModelTest{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        assertEquals(3, v.getModel().getPlayers().size());
-        assertEquals("1", v.getModel().getCurrentPlayer().getName());
-        v.getModel().pass();
-        v.getModel().pass();
-        assertEquals("3", v.getModel().getCurrentPlayer().getName());
-        v.getModel().pass();
-        assertEquals("1", v.getModel().getCurrentPlayer().getName());
+        Model m = new Model();
+        m.setView(v);
+        m.processBegin(3);
+        m.setUp();
+        assertEquals(3, m.getPlayers().size());
+        assertEquals("1", m.getCurrentPlayer().getName());
+        m.pass();
+        m.pass();
+        assertEquals("3", m.getCurrentPlayer().getName());
+        m.pass();
+        assertEquals("1", m.getCurrentPlayer().getName());
     }
 
     @Test
@@ -48,30 +57,34 @@ public class ModelTest{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Country attacker = v.getModel().getMap().getCountry("Greenland");
-        Country defender = v.getModel().getMap().getCountry("Quebec");
-        if(!(v.getModel().getCurrentPlayer().getCountries().contains(attacker))){
-            attacker.setOwner(v.getModel().getCurrentPlayer());
-            v.getModel().getCurrentPlayer().addCountry(attacker);
+        Model m = new Model();
+        m.setView(v);
+        m.processBegin(3);
+        m.setUp();
+        Country attacker = m.getMap().getCountry("Greenland");
+        Country defender = m.getMap().getCountry("Quebec");
+        if(!(m.getCurrentPlayer().getCountries().contains(attacker))){
+            attacker.setOwner(m.getCurrentPlayer());
+            m.getCurrentPlayer().addCountry(attacker);
         }
-        if(!(v.getModel().getCurrentPlayer().getCountries().contains(defender))){
-            defender.setOwner(v.getModel().getCurrentPlayer());
-            v.getModel().getCurrentPlayer().addCountry(defender);
+        if(!(m.getCurrentPlayer().getCountries().contains(defender))){
+            defender.setOwner(m.getCurrentPlayer());
+            m.getCurrentPlayer().addCountry(defender);
         }
-        assertFalse(v.getModel().canDefend(attacker, defender));
+        assertFalse(m.canDefend(attacker, defender));
 
-        v.getModel().getCurrentPlayer().removeCountry(defender);
-        defender.setOwner(v.getModel().getNextPlayer());
-        v.getModel().getNextPlayer().addCountry(defender);
-        assertTrue(v.getModel().canDefend(attacker, defender));
+        m.getCurrentPlayer().removeCountry(defender);
+        defender.setOwner(m.getNextPlayer());
+        m.getNextPlayer().addCountry(defender);
+        assertTrue(m.canDefend(attacker, defender));
 
 
-        defender = v.getModel().getMap().getCountry("Brazil");
-        if(!(v.getModel().getNextPlayer().getCountries().contains(defender))){
-            defender.setOwner(v.getModel().getNextPlayer());
-            v.getModel().getNextPlayer().addCountry(defender);
+        defender = m.getMap().getCountry("Brazil");
+        if(!(m.getNextPlayer().getCountries().contains(defender))){
+            defender.setOwner(m.getNextPlayer());
+            m.getNextPlayer().addCountry(defender);
         }
-        assertFalse(v.getModel().canDefend(attacker, defender));
+        assertFalse(m.canDefend(attacker, defender));
     }
 
     @Test
@@ -81,23 +94,27 @@ public class ModelTest{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Country attacker = v.getModel().getMap().getCountry("Greenland");
-        if(!(v.getModel().getCurrentPlayer().getCountries().contains(attacker))){
-            attacker.setOwner(v.getModel().getCurrentPlayer());
-            v.getModel().getCurrentPlayer().addCountry(attacker);
+        Model m = new Model();
+        m.setView(v);
+        m.processBegin(3);
+        m.setUp();
+        Country attacker = m.getMap().getCountry("Greenland");
+        if(!(m.getCurrentPlayer().getCountries().contains(attacker))){
+            attacker.setOwner(m.getCurrentPlayer());
+            m.getCurrentPlayer().addCountry(attacker);
         }
-        v.getModel().getCurrentPlayer().removeCountry(attacker);
-        attacker.setOwner(v.getModel().getNextPlayer());
-        assertFalse(v.getModel().isAttacker(attacker));
+        m.getCurrentPlayer().removeCountry(attacker);
+        attacker.setOwner(m.getNextPlayer());
+        assertFalse(m.isAttacker(attacker));
 
-        attacker.setOwner(v.getModel().getCurrentPlayer());
-        v.getModel().getCurrentPlayer().addCountry(attacker);
+        attacker.setOwner(m.getCurrentPlayer());
+        m.getCurrentPlayer().addCountry(attacker);
         int num = attacker.getArmySize() - 1;
         attacker.removeTroops(num);
-        assertFalse(v.getModel().isAttacker(attacker));
+        assertFalse(m.isAttacker(attacker));
 
         attacker.addTroops(num);
-        assertTrue(v.getModel().isAttacker(attacker));
+        assertTrue(m.isAttacker(attacker));
     }
 
     @Test
@@ -107,28 +124,32 @@ public class ModelTest{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Country c1 = v.getModel().getMap().getCountry("Alaska");
-        v.getModel().getCurrentPlayer().addCountry(c1);
-        c1.setOwner(v.getModel().getCurrentPlayer());
-        Country c2 = v.getModel().getMap().getCountry("Northwest America");
-        v.getModel().getCurrentPlayer().addCountry(c2);
-        c2.setOwner(v.getModel().getCurrentPlayer());
-        Country c3 = v.getModel().getMap().getCountry("Greenland");
-        v.getModel().getCurrentPlayer().addCountry(c3);
-        c3.setOwner(v.getModel().getCurrentPlayer());
-        Country c4 = v.getModel().getMap().getCountry("Iceland");
-        v.getModel().getCurrentPlayer().addCountry(c4);
-        c4.setOwner(v.getModel().getCurrentPlayer());
-        Country c5 = v.getModel().getMap().getCountry("Eastern Australia");
-        v.getModel().getCurrentPlayer().addCountry(c5);
-        c5.setOwner(v.getModel().getCurrentPlayer());
-        Country c6 = v.getModel().getMap().getCountry("Siam");
-        v.getModel().getNextPlayer().addCountry(c6);
-        c6.setOwner(v.getModel().getNextPlayer());
+        Model m = new Model();
+        m.setView(v);
+        m.processBegin(3);
+        m.setUp();
+        Country c1 = m.getMap().getCountry("Alaska");
+        m.getCurrentPlayer().addCountry(c1);
+        c1.setOwner(m.getCurrentPlayer());
+        Country c2 = m.getMap().getCountry("Northwest America");
+        m.getCurrentPlayer().addCountry(c2);
+        c2.setOwner(m.getCurrentPlayer());
+        Country c3 = m.getMap().getCountry("Greenland");
+        m.getCurrentPlayer().addCountry(c3);
+        c3.setOwner(m.getCurrentPlayer());
+        Country c4 = m.getMap().getCountry("Iceland");
+        m.getCurrentPlayer().addCountry(c4);
+        c4.setOwner(m.getCurrentPlayer());
+        Country c5 = m.getMap().getCountry("Eastern Australia");
+        m.getCurrentPlayer().addCountry(c5);
+        c5.setOwner(m.getCurrentPlayer());
+        Country c6 = m.getMap().getCountry("Siam");
+        m.getNextPlayer().addCountry(c6);
+        c6.setOwner(m.getNextPlayer());
 
-        assertTrue(v.getModel().canFortify(c1, c4));
-        assertFalse(v.getModel().canFortify(c1, c5));
-        assertFalse(v.getModel().canFortify(c1, c6));
+        assertTrue(m.canFortify(c1, c4));
+        assertFalse(m.canFortify(c1, c5));
+        assertFalse(m.canFortify(c1, c6));
     }
 
     @Test
@@ -138,41 +159,45 @@ public class ModelTest{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        v.getModel().getCurrentPlayer().getCountries().clear();
-        for(Country c : v.getModel().getMap().getCountries()){
-            v.getModel().getCurrentPlayer().addCountry(c);
-            c.setOwner(v.getModel().getCurrentPlayer());
+        Model m = new Model();
+        m.setView(v);
+        m.processBegin(3);
+        m.setUp();
+        m.getCurrentPlayer().getCountries().clear();
+        for(Country c : m.getMap().getCountries()){
+            m.getCurrentPlayer().addCountry(c);
+            c.setOwner(m.getCurrentPlayer());
         }
-        assertTrue(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAfrica()));
-        assertTrue(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getSouthAmerica()));
-        assertTrue(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getNorthAmerica()));
-        assertTrue(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getEurope()));
-        assertTrue(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAsia()));
-        assertTrue(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAustralia()));
-        assertEquals(((v.getModel().getCurrentPlayer().getCountries().size()/3)+2+2+3+5+5+7), v.getModel().bonusTroopCalculator());
+        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
+        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getSouthAmerica()));
+        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getNorthAmerica()));
+        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getEurope()));
+        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAsia()));
+        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAustralia()));
+        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+2+3+5+5+7), m.bonusTroopCalculator());
 
-        v.getModel().getCurrentPlayer().removeCountry(v.getModel().getMap().getCountry("Madagascar"));
-        assertEquals(((v.getModel().getCurrentPlayer().getCountries().size()/3)+2+2+5+5+7), v.getModel().bonusTroopCalculator());
-        assertFalse(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAfrica()));
+        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Madagascar"));
+        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+2+5+5+7), m.bonusTroopCalculator());
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
 
-        v.getModel().getCurrentPlayer().removeCountry(v.getModel().getMap().getCountry("Peru"));
-        assertEquals(((v.getModel().getCurrentPlayer().getCountries().size()/3)+2+5+5+7), v.getModel().bonusTroopCalculator());
-        assertFalse(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAfrica()));
+        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Peru"));
+        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5+5+7), m.bonusTroopCalculator());
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
 
-        v.getModel().getCurrentPlayer().removeCountry(v.getModel().getMap().getCountry("Ontario"));
-        assertEquals(((v.getModel().getCurrentPlayer().getCountries().size()/3)+2+5+7), v.getModel().bonusTroopCalculator());
-        assertFalse(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAfrica()));
+        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Ontario"));
+        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5+7), m.bonusTroopCalculator());
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
 
-        v.getModel().getCurrentPlayer().removeCountry(v.getModel().getMap().getCountry("Japan"));
-        assertEquals(((v.getModel().getCurrentPlayer().getCountries().size()/3)+2+5), v.getModel().bonusTroopCalculator());
-        assertFalse(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAfrica()));
+        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Japan"));
+        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5), m.bonusTroopCalculator());
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
 
-        v.getModel().getCurrentPlayer().removeCountry(v.getModel().getMap().getCountry("Iceland"));
-        assertEquals(((v.getModel().getCurrentPlayer().getCountries().size()/3)+2), v.getModel().bonusTroopCalculator());
-        assertFalse(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAfrica()));
+        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Iceland"));
+        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2), m.bonusTroopCalculator());
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
 
-        v.getModel().getCurrentPlayer().removeCountry(v.getModel().getMap().getCountry("Indonesia"));
-        assertEquals(((v.getModel().getCurrentPlayer().getCountries().size()/3)), v.getModel().bonusTroopCalculator());
-        assertFalse(v.getModel().getCurrentPlayer().getCountries().containsAll(v.getModel().getMap().getAfrica()));
+        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Indonesia"));
+        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)), m.bonusTroopCalculator());
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
     }
 }
