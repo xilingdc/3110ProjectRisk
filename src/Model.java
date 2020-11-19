@@ -171,8 +171,9 @@ public class Model {
                 players.remove(defender.getOwner());//remove defending player from player list
             }
             defender.setOwner(currentPlayer);// update new owner
-            defender.addTroops(attacker.getArmySize() - 1);//move all but 1 troop to new country
-            attacker.removeTroops(attacker.getArmySize() - 1);//leave 1 troop in attacking country
+            int movingTroops = view.getTroops("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", attacker.getArmySize());
+            defender.addTroops(movingTroops);//move all but 1 troop to new country
+            attacker.removeTroops(movingTroops);//leave 1 troop in attacking country
             view.updateCountryButton(defender, attacker.getOwner().getColor(), defender.getArmySize());//update view (button color)
         } else {
             view.updateCountryButton(defender, defender.getOwner().getColor(), defender.getArmySize());//update view (number on button)

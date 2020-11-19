@@ -159,6 +159,20 @@ public class View extends JFrame {
         }
     }
 
+    public int getTroops(String message, int maxTroops) {
+        String dice = JOptionPane.showInputDialog(this, message);//open the dialog box
+        while (true) {
+            if (dice.isEmpty()) {//if the player entered nothing
+                dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
+            } else {
+                int numberOfTroops = Integer.parseInt(dice);
+                if (numberOfTroops < 1 || numberOfTroops > maxTroops - 1) {//if the user entered an invalid number
+                    dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
+                } else return numberOfTroops;
+            }
+        }
+    }
+
     public int dropTroops(String message, int maxTroops) {
         String troops = JOptionPane.showInputDialog(this, message);//open the dialog box
         while (true) {
