@@ -1,5 +1,8 @@
+//import jdk.swing.interop.SwingInterOpUtils;
+
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -18,6 +21,7 @@ public class Model {
     private View view;
     private boolean placementPhase;
     private boolean fortifyPhase;
+    private boolean isAiMode=false;
 
 
 
@@ -112,17 +116,26 @@ public class Model {
      * @param attacker - country attacking
      * @param defender - country defending
      */
-    public void attack(Country attacker, Country defender) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
+    public void attack(Country attacker, Country defender, boolean isAI) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
         Integer attackDice[];
+        int numberOfAttackDice, numberOfDefenceDice;
         if (attacker.getArmySize() == 2) {
             view.showMessage("Attacking country will get 1 dice");//notifies view to show message
             attackDice = new Integer[1];
         }
         else if (attacker.getArmySize() == 3) {
-            int numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            if (isAI) {
+                numberOfAttackDice = 2;
+            } else {
+                numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            }
             attackDice = new Integer[numberOfAttackDice];
         } else {
-            int numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 3);//notifies view to get number of dice
+            if (isAI) {
+                numberOfAttackDice = 3;
+            } else {
+                numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 3);//notifies view to get number of dice
+            }
             attackDice = new Integer[numberOfAttackDice];
         }
 
@@ -131,7 +144,11 @@ public class Model {
             view.showMessage("Defending country will get 1 dice");
             defendDice = new Integer[1];
         } else {
-            int numberOfDefenceDice = view.getDice("Defending player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            if (isAI) {
+                numberOfDefenceDice = 2;
+            } else {
+                numberOfDefenceDice = view.getDice("Defending player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            }
             defendDice = new Integer[numberOfDefenceDice];
         }
 
@@ -171,7 +188,12 @@ public class Model {
                 players.remove(defender.getOwner());//remove defending player from player list
             }
             defender.setOwner(currentPlayer);// update new owner
-            int movingTroops = view.getTroops("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", attacker.getArmySize());
+            int movingTroops;
+            if (isAI) {
+                movingTroops = 1;
+            } else {
+                movingTroops = view.getTroops("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", attacker.getArmySize());
+            }
             defender.addTroops(movingTroops);//move all but 1 troop to new country
             attacker.removeTroops(movingTroops);//leave 1 troop in attacking country
             view.updateCountryButton(defender, attacker.getOwner().getColor(), defender.getArmySize());//update view (button color)
@@ -238,8 +260,9 @@ public class Model {
 
         fortifyPhase = false;
         placementPhase = true;
-
-        view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
+//        if(!isAiMode||currentPlayer.equals(players.get(0))) {
+            view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
+//        }
     }
 
     public void fortify(Country fromCountry, Country toCountry){
@@ -315,18 +338,33 @@ public class Model {
      * player can place their bonus troops
      */
     public int troopPlacement(int newTroops, Country country) {
-        int input = view.dropTroops("How many troops do you want to place here?", newTroops);
-        country.addTroops(input);
-        view.updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
-        newTroops -= input;
-        if(newTroops == 0){
-            placementPhase = false;
-            view.showMessage("Placement Phase is done, Attack Phase has begun!");
+
+        if(isPlaceable(country)) {
+            int input = view.dropTroops("How many troops do you want to place here?", newTroops);
+            country.addTroops(input);
+            view.updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
+            newTroops -= input;
+            if (newTroops == 0) {
+                placementPhase = false;
+                view.showMessage("Placement Phase is done, Attack Phase has begun!");
+            } else {
+                return newTroops;
+            }
+            return 0;
         }else{
             return newTroops;
         }
-        return 0;
     }
+
+    public boolean isPlaceable(Country country){
+        if(country.getOwner().equals(currentPlayer)){
+            return true;
+        }else{
+            view.showMessage("Placement can not be done (country is not yours)");
+            return false;
+        }
+    }
+
 
     /**
      * assigns bonus troops based on territories and continents conquered
@@ -363,6 +401,7 @@ public class Model {
 
     public boolean isPlacementPhase(){ return placementPhase; }
 
+
     public boolean isFortifyPhase(){ return fortifyPhase; }
 
     public void activateFortify(){
@@ -385,4 +424,157 @@ public class Model {
         }
         return players.get(nextPlayerIndex);
     }
+
+    public void AiPlay(){
+
+        isAiMode=true;
+
+        for (int i = 0; i < players.size()-1; i++) {
+
+
+        //place troop
+        AiPlaceTroop();
+        //attack
+        AiAttack();
+
+        if(new Random().nextBoolean()){//fortify
+            AiFortify();
+            AiPass();
+        }else{//pass
+            AiPass();
+        }
+
+        }
+    }
+
+    public void AiPlaceTroop(){
+        Random random = new Random();
+        int countrySize = currentPlayer.getCountries().size();
+        int bonusTroop = bonusTroopCalculator();
+        int temp;
+        while(true) {
+            temp = random.nextInt(bonusTroop)+1;
+            Country country = currentPlayer.getCountries().get(random.nextInt(countrySize));
+            country.addTroops(temp);
+            System.out.println(temp);//test only
+            view.updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
+            bonusTroop-=temp;
+            if(bonusTroop==0){
+                break;
+            }
+        }
+
+        placementPhase = false;
+
+    }
+
+    public void AiAttack(){
+        System.out.println("Attacking!");//test only
+        //TODO implement attack function for computer player, the key point is make sure how to do the dice
+        for (Country country : currentPlayer.getCountries()) {
+            for (Country neighbor : country.neighbours()) {
+                if (!(currentPlayer.getCountries().contains(neighbor))) {
+                    int difference = country.compareTroops(neighbor);
+                    if (difference > 1) {
+                        attack(country, neighbor, true);
+                    }
+                }
+            }
+        }
+    }
+
+    public void AiFortify(){
+        System.out.println("fortifying");
+        if(isCountriesIsolate(currentPlayer.getCountries())){
+            System.out.println("fortifyable");
+            Country fromCountry=null;
+            Country toCountry=null;
+            Random random = new Random();
+            while(true){
+                int tempSize = currentPlayer.getCountries().size();
+                fromCountry = currentPlayer.getCountries().get(random.nextInt(tempSize));
+                toCountry = currentPlayer.getCountries().get(random.nextInt(tempSize));
+                if(AiCanFortify(fromCountry,toCountry)){
+                    break;
+                }
+            }
+
+            System.out.println("Player "+currentPlayer+" fortify troops from "+fromCountry.getName()+" to "+toCountry.getName());
+            AiDoFortify(fromCountry,toCountry);
+
+        }
+    }
+
+
+    public void AiDoFortify(Country fromCountry, Country toCountry){
+        int MaxTroops = fromCountry.getArmySize() - 1;
+        Random random = new Random();
+        int tempTroop = random.nextInt(MaxTroops)+1;
+        fromCountry.removeTroops(tempTroop);
+        toCountry.addTroops(tempTroop);
+        view.updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
+        view.updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());
+        fortifyPhase = false;
+    }
+
+
+    /**
+     * checks to see if the country can fortify to the other country
+     */
+    public boolean AiCanFortify(Country fromCountry, Country toCountry){
+        ArrayList<Country> visited = new ArrayList<>();
+        ArrayList<Country> deadEnd = new ArrayList<>();
+        if(fromCountry.getArmySize()<2){
+            return false;
+        }
+        visited.add(fromCountry);
+        boolean result = findPath(fromCountry, toCountry, visited, deadEnd);
+        if(result){
+
+            return true;
+        }else{
+
+            return false;
+        }
+
+    }
+
+
+    /**
+     *
+     * @param countries
+     * @return true if the countries are isolated each other, false if the countries are connected somehow (not absolute connected)
+     */
+    public boolean isCountriesIsolate(List<Country> countries){
+        //TODO has bug, i don't know why it can search out whether the list is connected or isolated
+        for (int i = 0; i < countries.size(); i++) {
+            Country country = countries.get(0);
+            for(int j=0; j<countries.size();j++){
+                boolean isolate=country.hasNeighbor(countries.get(j));//true if the two countries are neighbor
+                if(isolate){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void AiPass(){
+        if (currentPlayerIndex == players.size() - 1) {
+            currentPlayerIndex = 0;//go back to first player
+        } else {
+            currentPlayerIndex++;//move on to next player
+        }
+        currentPlayer = players.get(currentPlayerIndex);
+        view.updatePlayerTurnTextHandler(currentPlayer);
+
+        fortifyPhase = false;
+        placementPhase = true;
+
+        if(currentPlayer.equals(players.get(0))){
+            view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
+        }
+    }
+
+
 }
