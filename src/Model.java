@@ -1,4 +1,4 @@
-import jdk.swing.interop.SwingInterOpUtils;
+//import jdk.swing.interop.SwingInterOpUtils;
 
 import java.awt.*;
 import java.util.*;
@@ -116,17 +116,26 @@ public class Model {
      * @param attacker - country attacking
      * @param defender - country defending
      */
-    public void attack(Country attacker, Country defender) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
+    public void attack(Country attacker, Country defender, boolean isAI) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
         Integer attackDice[];
+        int numberOfAttackDice, numberOfDefenceDice;
         if (attacker.getArmySize() == 2) {
             view.showMessage("Attacking country will get 1 dice");//notifies view to show message
             attackDice = new Integer[1];
         }
         else if (attacker.getArmySize() == 3) {
-            int numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            if (isAI) {
+                numberOfAttackDice = 2;
+            } else {
+                numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            }
             attackDice = new Integer[numberOfAttackDice];
         } else {
-            int numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 3);//notifies view to get number of dice
+            if (isAI) {
+                numberOfAttackDice = 3;
+            } else {
+                numberOfAttackDice = view.getDice("Attacking player, how many dice do you want to play?", 3);//notifies view to get number of dice
+            }
             attackDice = new Integer[numberOfAttackDice];
         }
 
@@ -135,7 +144,11 @@ public class Model {
             view.showMessage("Defending country will get 1 dice");
             defendDice = new Integer[1];
         } else {
-            int numberOfDefenceDice = view.getDice("Defending player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            if (isAI) {
+                numberOfDefenceDice = 2;
+            } else {
+                numberOfDefenceDice = view.getDice("Defending player, how many dice do you want to play?", 2);//notifies view to get number of dice
+            }
             defendDice = new Integer[numberOfDefenceDice];
         }
 
@@ -453,6 +466,16 @@ public class Model {
     public void AiAttack(){
         System.out.println("Attacking!");//test only
         //TODO implement attack function for computer player, the key point is make sure how to do the dice
+        for (Country country : currentPlayer.getCountries()) {
+            for (Country neighbor : country.neighbours()) {
+                if (!(currentPlayer.getCountries().contains(neighbor))) {
+                    int difference = country.compareTroops(neighbor);
+                    if (difference > 1) {
+                        attack(country, neighbor, true);
+                    }
+                }
+            }
+        }
     }
 
     public void AiFortify(){

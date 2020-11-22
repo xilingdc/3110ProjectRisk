@@ -135,6 +135,7 @@ public class Country {
         return getName() + " is owned by Player " + getOwner().getName() + ", the number of troops: " + getArmySize();
     }
 
-
-
+    public int compareTroops(Country country) {
+        return this.armySize - country.getArmySize();
+    }
 }

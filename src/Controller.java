@@ -95,7 +95,7 @@ public class Controller implements ActionListener {
                 } else {//if the attacker has been selected
                     if (model.canDefend(attacker, b.getCountry())) {//if the country represented by the button can defend the attacking country
                         defender = b.getCountry();//store the country represented by the button
-                        model.attack(attacker, defender);
+                        model.attack(attacker, defender, false);
                         attacker = null;
                         defender = null;
                     }
