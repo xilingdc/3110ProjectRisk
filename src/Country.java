@@ -89,8 +89,9 @@ public class Country {
     public void addTroops(int troops) {
         this.armySize += troops;
     }
-    
-    
+
+
+
     /**
      *remove certain amount of troop
      * @param troops - number of troops need to be removed from a country
@@ -128,8 +129,12 @@ public class Country {
         return neighbours;
     }
 
+
     @Override
     public String toString() {
         return getName() + " is owned by Player " + getOwner().getName() + ", the number of troops: " + getArmySize();
     }
+
+
+
 }

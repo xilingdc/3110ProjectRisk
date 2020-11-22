@@ -13,30 +13,55 @@ public class Controller implements ActionListener {
     private Country country1;
     private Country country2;
     private int placementTroops;
+    private View view;
+    private Boolean isAiMode;
+
 
     /**
      * Constructor of Controller
      *
      * @param model the model that is controlled
      */
-    public Controller(Model model){
+    public Controller(Model model,View view){
         this.model = model;
+        this.view = view;
         attacker = null;
         defender = null;
+        placementTroops = model.bonusTroopCalculator();
+
     }
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("pass")){//if the pass button was pressed
-            model.pass();
-            attacker = null;
-            defender = null;
+            if(!model.isPlacementPhase()) {
+                if(!isAiMode) {//human mode
+                    model.pass();
+                    attacker = null;
+                    defender = null;
+
+                }else{//computer mode
+                    model.AiPass();
+                    attacker = null;
+                    defender = null;
+                    model.AiPlay();//Ai start to work
+                }
+            }else{
+                view.showMessage("Place your troop first!"+" You still have "+placementTroops+" more troop to add");
+            }
+            if(placementTroops == 0){
+                placementTroops = model.bonusTroopCalculator();
+            }
         }else if (e.getActionCommand().equals("cancel")) {//if the cancel button was pressed
             attacker = null;
             defender = null;
-        }else if (e.getActionCommand().equals("fortify")) {//if the cancel button was pressed
-            model.activateFortify();
+        }else if (e.getActionCommand().equals("fortify")) {//if the fortify button was pressed
+            if(!model.isPlacementPhase()) {
+                model.activateFortify();
+            }else{
+                view.showMessage("Place your troop first!"+" You still have "+placementTroops+" more troop to add");
+            }
         }else if(e.getActionCommand().equals("Country")){//if a country button was pressed
 
             CountryButton b = (CountryButton) e.getSource();//get the country button that was pressed
@@ -79,4 +104,13 @@ public class Controller implements ActionListener {
 
         }
     }
+
+    public void setAiMode(Boolean aiMode) {
+        isAiMode = aiMode;
+    }
+
+    public Boolean getAiMode() {
+        return isAiMode;
+    }
+
 }

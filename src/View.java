@@ -19,6 +19,15 @@ public class View extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
+        Object[] options = { "Human", "Computer" };
+        int opt=JOptionPane.showOptionDialog(null, "Choose Human or Computer player", "PLayer Mode",
+                JOptionPane.OK_OPTION, JOptionPane.NO_OPTION,
+                null, options, options[0]);//0 for human, 1 for computer
+
+
+
+
+//        set player number
         String userInput = JOptionPane.showInputDialog(this,"Enter Player Number(2-6): ");
         int numPlayer = 0;
         while(true) {
@@ -47,7 +56,9 @@ public class View extends JFrame {
 
         model.processBegin(numPlayer);
         model.setUp();
-        Controller controller = new Controller(model);
+        Controller controller = new Controller(model,this);
+        controller.setAiMode(opt==1);//opt(0 human or 1 computer), if opt is computer then it is in ai mode
+
 
         JPanel topPanel = new JPanel();
         playerTurn = new JTextArea("Current Player: Player "+model.getCurrentPlayer().getName());
