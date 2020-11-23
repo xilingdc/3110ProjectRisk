@@ -42,7 +42,7 @@ public class View extends JFrame {
         pass.setActionCommand("pass");
         fortify.addActionListener(controller);
         fortify.setActionCommand("fortify");
-        cancel = new JButton("Cancel Attack");
+        cancel = new JButton("Cancel Selection");
         cancel.addActionListener(controller);
         cancel.setActionCommand("cancel");
 

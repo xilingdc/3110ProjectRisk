@@ -48,6 +48,8 @@ public class Controller implements ActionListener {
         }else if (e.getActionCommand().equals("cancel")) {//if the cancel button was pressed
             attacker = null;
             defender = null;
+            country1 = null;
+            country2 = null;
         }else if (e.getActionCommand().equals("fortify")) {//if the fortify button was pressed
             if(!model.isPlacementPhase()) {
                 model.activateFortify();
