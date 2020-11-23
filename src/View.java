@@ -19,34 +19,8 @@ public class View extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        Object[] options = { "Human", "Computer" };
-        int opt=JOptionPane.showOptionDialog(null, "Choose Human or Computer player", "PLayer Mode",
-                JOptionPane.OK_OPTION, JOptionPane.NO_OPTION,
-                null, options, options[0]);//0 for human, 1 for computer
-
-
-
-
-//        set player number
-        String userInput = JOptionPane.showInputDialog(this,"Enter Player Number(2-6): ");
-        int numPlayer = 0;
-        while(true) {
-            if (userInput.isEmpty()) {
-                userInput = JOptionPane.showInputDialog(this,"Enter Player Number(2-6): ");
-            }else{
-                try{
-                    numPlayer = Integer.parseInt(userInput);
-                    if(numPlayer<2||numPlayer>6){
-                        userInput = JOptionPane.showInputDialog(this,"Enter Player Number(2-6): ");
-                    }else{
-                        break;
-                    }
-
-                }catch (NumberFormatException e){
-                    userInput = JOptionPane.showInputDialog(this,"Enter Player Number(2-6): ");
-                }
-            }
-        }
+        int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
+        int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
 
         model = new Model();
         model.setView(this);
@@ -54,11 +28,9 @@ public class View extends JFrame {
         bottomPanel = new JPanel();
         this.add(bottomPanel, BorderLayout.SOUTH);
 
-        model.processBegin(numPlayer);
+        model.processBegin(numPlayer, numAI);
         model.setUp();
         Controller controller = new Controller(model,this);
-        controller.setAiMode(opt==1);//opt(0 human or 1 computer), if opt is computer then it is in ai mode
-
 
         JPanel topPanel = new JPanel();
         playerTurn = new JTextArea("Current Player: Player "+model.getCurrentPlayer().getName());
@@ -99,8 +71,6 @@ public class View extends JFrame {
 
 
         model.activatePlacement();
-        showMessage("Player " + model.getCurrentPlayer().getName() + " has " + model.bonusTroopCalculator() + " troops to place.");
-
     }
 
     /**
@@ -149,51 +119,24 @@ public class View extends JFrame {
     }
 
     /**
-     * Opens a dialog box that asks the user how many dice they want to play.
+     * Opens a dialog box that asks the user for a number based on the given message.
      * Returns the number the player chose.
      *
      * @param message the message to be shown
-     * @param maxDice the maximum number of dice the player can choose
+     * @param max the maximum number the player can choose
+     * @param min the minimum number the player can choose
      * @return the number of dice the user chose
      */
-    public int getDice(String message, int maxDice) {
-        String dice = JOptionPane.showInputDialog(this, message);//open the dialog box
+    public int getNumber(String message, int min, int max) {
+        String input = JOptionPane.showInputDialog(this, message);//open the dialog box
         while (true) {
-            if (dice.isEmpty()) {//if the player entered nothing
-                dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
+            if (input.isEmpty()) {//if the player entered nothing
+                input = JOptionPane.showInputDialog(this, message);//open the dialog box again
             } else {
-                int numberOfDice = Integer.parseInt(dice);
-                if (numberOfDice < 1 || numberOfDice > maxDice) {//if the user entered an invalid number
-                    dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
-                } else return numberOfDice;
-            }
-        }
-    }
-
-    public int getTroops(String message, int maxTroops) {
-        String dice = JOptionPane.showInputDialog(this, message);//open the dialog box
-        while (true) {
-            if (dice.isEmpty()) {//if the player entered nothing
-                dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
-            } else {
-                int numberOfTroops = Integer.parseInt(dice);
-                if (numberOfTroops < 1 || numberOfTroops > maxTroops - 1) {//if the user entered an invalid number
-                    dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
-                } else return numberOfTroops;
-            }
-        }
-    }
-
-    public int dropTroops(String message, int maxTroops) {
-        String troops = JOptionPane.showInputDialog(this, message);//open the dialog box
-        while (true) {
-            if (troops.isEmpty()) {//if the player entered nothing
-                return 0;//open the dialog box again
-            } else {
-                int numberOfTroops = Integer.parseInt(troops);
-                if (numberOfTroops < 0 || numberOfTroops > maxTroops) {//if the user entered an invalid number
-                    troops = JOptionPane.showInputDialog(this, message);//open the dialog box again
-                } else return numberOfTroops;
+                int number = Integer.parseInt(input);
+                if (number < min || number > max) {//if the user entered an invalid number
+                    input = JOptionPane.showInputDialog(this, message);//open the dialog box again
+                } else return number;
             }
         }
     }

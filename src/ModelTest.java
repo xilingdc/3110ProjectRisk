@@ -25,7 +25,7 @@ public class ModelTest{
         }
         Model m = new Model();
         m.setView(v);
-        m.processBegin(3);
+        m.processBegin(3, 0);
         m.setUp();
         assertEquals(42, m.getMap().getCountries().size());
     }
@@ -39,7 +39,7 @@ public class ModelTest{
         }
         Model m = new Model();
         m.setView(v);
-        m.processBegin(3);
+        m.processBegin(3, 0);
         m.setUp();
         assertEquals(3, m.getPlayers().size());
         assertEquals("1", m.getCurrentPlayer().getName());
@@ -59,7 +59,7 @@ public class ModelTest{
         }
         Model m = new Model();
         m.setView(v);
-        m.processBegin(3);
+        m.processBegin(3, 0);
         m.setUp();
         Country attacker = m.getMap().getCountry("Greenland");
         Country defender = m.getMap().getCountry("Quebec");
@@ -96,7 +96,7 @@ public class ModelTest{
         }
         Model m = new Model();
         m.setView(v);
-        m.processBegin(3);
+        m.processBegin(3, 0);
         m.setUp();
         Country attacker = m.getMap().getCountry("Greenland");
         if(!(m.getCurrentPlayer().getCountries().contains(attacker))){
@@ -126,7 +126,7 @@ public class ModelTest{
         }
         Model m = new Model();
         m.setView(v);
-        m.processBegin(3);
+        m.processBegin(3, 0);
         m.setUp();
         Country c1 = m.getMap().getCountry("Alaska");
         m.getCurrentPlayer().addCountry(c1);
@@ -161,7 +161,7 @@ public class ModelTest{
         }
         Model m = new Model();
         m.setView(v);
-        m.processBegin(3);
+        m.processBegin(3, 0);
         m.setUp();
         m.getCurrentPlayer().getCountries().clear();
         for(Country c : m.getMap().getCountries()){
