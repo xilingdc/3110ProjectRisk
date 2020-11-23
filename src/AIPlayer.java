@@ -15,7 +15,6 @@ public class AIPlayer extends Player {
         aiPlaceTroops(bonusTroops);
         aiAttack();
         aiFortify();
-        model.pass();
     }
 
     public void aiAttack(){
@@ -87,30 +86,47 @@ public class AIPlayer extends Player {
 
     public void aiFortify() {
         ArrayList<Country> vulnerableCountries = getVulnerableCountries();
-        Country bestDefended = getMaxTroops();
-        if (model.canFortify(bestDefended, vulnerableCountries.get(0))) {
-            model.fortify(bestDefended, vulnerableCountries.get(0));
-        }
-    }
-
-    private Country getMaxTroops() {
-        int maxTroops = 0;
-        Country safest = null;
-        for (Country country : countries) {
+        Country fromCountry = null;
+        Country toCountry = null;
+        if (!(vulnerableCountries.isEmpty())) {
+            boolean notAbleToFortify = true;
             int i = 0;
-            boolean safe = true;
-            List<Country> neighbours = country.neighbours();
-            while (safe && i < neighbours.size()) {
-                if (!(countries.contains(neighbours.get(i)))) {
-                    safe = false;
+            while (notAbleToFortify && i < vulnerableCountries.size()) {
+                Country strongestCountry = getStrongestCountry(vulnerableCountries.get(i));
+                if (strongestCountry != null) {
+                    fromCountry = strongestCountry;
+                    toCountry = vulnerableCountries.get(i);
+                    notAbleToFortify = false;
                 }
                 i++;
             }
-            if (safe && country.getArmySize() > maxTroops) {
-                maxTroops = country.getArmySize();
-                safest = country;
+            if (notAbleToFortify) {
+                model.pass();
+            } else {
+                model.fortify(fromCountry, toCountry);
+            }
+        } else {
+            model.pass();
+        }
+    }
+
+    private Country getStrongestCountry(Country weakestCountry) {
+        ArrayList<Country> strongestCountries = new ArrayList<>();
+        Country strongCountry = null;
+        for (Country country : countries) {
+            if (country.getArmySize() - weakestCountry.getArmySize() > 1) {
+                strongestCountries.add(country);
             }
         }
-        return safest;
+        boolean notConnected = true;
+        int i = 0;
+        while (notConnected && i < strongestCountries.size()) {
+            if (model.canFortify(strongestCountries.get(i), weakestCountry)) {
+                notConnected = false;
+                strongCountry = strongestCountries.get(i);
+            }
+            i++;
+        }
+        return strongCountry;
     }
 }

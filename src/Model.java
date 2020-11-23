@@ -287,7 +287,7 @@ public class Model {
         if (currentPlayer instanceof AIPlayer) {
             AIPlayer player = (AIPlayer) currentPlayer;
             troops = player.chooseNumberOfTroops(fromCountry.getArmySize() - 1);
-            view.showMessage("Player " + currentPlayer.getName() + "is moving " + troops + "from " + fromCountry + "to " + toCountry);
+            view.showMessage("Player " + currentPlayer.getName() + " is moving " + troops + " troops from " + fromCountry.getName() + " to " + toCountry.getName());
         } else {
             troops = view.getNumber("How many troops do you want to move?", 1, fromCountry.getArmySize() - 1);
         }
@@ -328,7 +328,9 @@ public class Model {
                     view.showMessage("Fortifying to Country: " + toCountry.getName());//notify the view to show a message
                     return true;
                 }else{
-                    view.showMessage("The country you selected is not connected to " + fromCountry.getName());//notify the view to show a message
+                    if (!(currentPlayer instanceof AIPlayer)) {
+                        view.showMessage("The country you selected is not connected to " + fromCountry.getName());//notify the view to show a message
+                    }
                     return false;
             }
         }
