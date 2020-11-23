@@ -283,7 +283,14 @@ public class Model {
     }
 
     public void fortify(Country fromCountry, Country toCountry){
-        int troops = view.getNumber("How many troops do you want to move?", 1, fromCountry.getArmySize() - 1);
+        int troops = 0;
+        if (currentPlayer instanceof AIPlayer) {
+            AIPlayer player = (AIPlayer) currentPlayer;
+            troops = player.chooseNumberOfTroops(fromCountry.getArmySize() - 1);
+            view.showMessage("Player " + currentPlayer.getName() + "is moving " + troops + "from " + fromCountry + "to " + toCountry);
+        } else {
+            troops = view.getNumber("How many troops do you want to move?", 1, fromCountry.getArmySize() - 1);
+        }
         fromCountry.removeTroops(troops);
         toCountry.addTroops(troops);
         view.updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());

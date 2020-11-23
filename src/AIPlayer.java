@@ -14,6 +14,7 @@ public class AIPlayer extends Player {
     public void aiPlay(int bonusTroops) {
         aiPlaceTroops(bonusTroops);
         aiAttack();
+        aiFortify();
         model.pass();
     }
 
@@ -49,17 +50,20 @@ public class AIPlayer extends Player {
     private ArrayList<Country> getVulnerableCountries() {
         ArrayList<Country> vulnerableCountries = new ArrayList<>();
         for (Country country : countries) {
-            if (country.getArmySize() < 2) {
-                int i = 0;
-                boolean safe = true;
-                List<Country> neighbours = country.neighbours();
-                while (safe && i < neighbours.size()) {
-                    if (!(countries.contains(neighbours.get(i)))) {
+            int i = 0;
+            boolean safe = true;
+            List<Country> neighbours = country.neighbours();
+            while (safe && i < neighbours.size()) {
+                if (!(countries.contains(neighbours.get(i)))) {
+                    if (country.getArmySize() == 1) {
+                        vulnerableCountries.add(0, country);
+                        safe = false;
+                    } else if (country.getArmySize() == 2) {
                         vulnerableCountries.add(country);
                         safe = false;
                     }
-                    i++;
                 }
+                i++;
             }
         }
         return vulnerableCountries;
@@ -79,5 +83,34 @@ public class AIPlayer extends Player {
                 i = (i + 1) % vulnerableCountries.size();
             }
         }
+    }
+
+    public void aiFortify() {
+        ArrayList<Country> vulnerableCountries = getVulnerableCountries();
+        Country bestDefended = getMaxTroops();
+        if (model.canFortify(bestDefended, vulnerableCountries.get(0))) {
+            model.fortify(bestDefended, vulnerableCountries.get(0));
+        }
+    }
+
+    private Country getMaxTroops() {
+        int maxTroops = 0;
+        Country safest = null;
+        for (Country country : countries) {
+            int i = 0;
+            boolean safe = true;
+            List<Country> neighbours = country.neighbours();
+            while (safe && i < neighbours.size()) {
+                if (!(countries.contains(neighbours.get(i)))) {
+                    safe = false;
+                }
+                i++;
+            }
+            if (safe && country.getArmySize() > maxTroops) {
+                maxTroops = country.getArmySize();
+                safest = country;
+            }
+        }
+        return safest;
     }
 }
