@@ -122,8 +122,8 @@ public class AIPlayer extends Player {
         int i = 0;
         while (notConnected && i < strongestCountries.size()) {
             if (model.canFortify(strongestCountries.get(i), weakestCountry)) {
-                notConnected = false;
                 strongCountry = strongestCountries.get(i);
+                notConnected = false;
             }
             i++;
         }
