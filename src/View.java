@@ -20,7 +20,7 @@ public class View extends JFrame {
         this.setLayout(new BorderLayout());
 
         int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
-        int numAI = getNumber("Enter the number of AI players:", 0, numPlayer - 1);
+        int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
 
         model = new Model();
         model.setView(this);
