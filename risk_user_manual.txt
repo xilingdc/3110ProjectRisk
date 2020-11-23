@@ -8,7 +8,7 @@ has to place in their countries.
 Focusing on the map, the color of a button represents which player owns that country, and the number on the button represents how many troops are
 in that country. To know which color you are, each player name is written in their color at the bottom of the screen. The top of the screen says
 whose turn it is, also written in their color. At the top of the screen there is also a pass button that you press when you are done your turn,
-a fortify button if you want to move troops among your countries, and a cancel attack button which deselects the country you are attacking with.
+a fortify button if you want to move troops among your countries, and a cancel slection button which deselects the country you clicked on.
 
 To place your new troops, click on the button of the country you want to add troops to. This will open a dialog box asking how many troops
 you want to place in the country. This number can be anything from 1 to the number of troops you have to place. After pressing ok, the number on the
