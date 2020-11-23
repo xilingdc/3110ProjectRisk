@@ -1,27 +1,36 @@
-Given that the game needed to be made GUI-based, one of the big design decisions was how to represent and interact with the map.
-The two options we were considering were to draw the map in a GUI component with polygons or add a full map as a background image
-and add regular buttons on top of each country. With drawing the map from scratch, you would be able to click anywhere on a country
-to select it, but handling those mouse clicks would be inefficient because you would have to loop through each polygon that represents
-a country to check if the click was inside the polygon. Therefore, we chose the second option of having a background image with buttons
-on top, sacrificing the ideal user experience to be able to handle mouse clicks much more efficiently. The MapComponent class is responsible
-for this by drawing the map image in the paintComponent method and setting the layout to absolute to allow buttons to be placed on top
-of the image at a specific point in the window.
+One aspect of the game that was missing from the second milestone was to ask the player how many troops they wanted to move into a country
+they had just captured. Originally, the game would move all but 1 troop from the attacking country to the new country, but it should be
+the player's choice to do this. Therefore, in the corresponding code for capturing a country, we added a call to a new method in view that
+asks the player for the number of troops they want to move and returned the number to the model. The model could then move this number of
+troops to the new country. After making this new method in view, we realized that we had a few methods with very similar responsibilities.
+The methods would output a dialog box with the given message, and only after accepting a number in the given range it would return the number.
+The only differences were variable names in the method, so we were able to convert all these methods into one method that had more generic
+variable names. In our updated Model class, whenever a number is needed from the player the more generic getNumber method is now used.
 
-Another decision was how to output information to the user, since the console that was being used in milestone 1 was not an option.
-One option was to essentially move the console into a JTextArea in the View class, and the other option was to display a dialog box
-for each message the user needed to see. Since dialog boxes interrupt the game to ensure the user sees the message, and
-an update to a JTextArea may go unnoticed, we decided to use dialog boxes. Dialog boxes with inputs were also used to get the number
-of players and number of dice, so the Parser, Command, and CommandWord classes were no longer needed. This meant that the play and
-processCommand methods in Model were not needed and the attack and pass methods could be made public for the controller to call.
+With the addition of bonus army placement in this milestone, we needed to incorporate continents into our model, specifically the
+Map class. Originally, the Map class simply stored all the countries in a single arraylist of Country objects which could be easily
+used in the model when neccesary. For this decision, it was important that this arraylist was still available after the continents
+were incorporated for the mentioned reason. There were two approaches to this decision, one was to store a reference to the continent
+with each country, the other was to create a new list of countries for each continent. Since continents were only needed to check if
+they were completely occupied by one player, it was more efficient to implement this using a list of countries for each continent.
+Therefore, we chose the second approach despite the extra space that is used by the higher number of lists.
 
-As referenced above with the controller, the game needed to follow the MVC pattern, so we added a View and Controller class to adhere
-to the pattern. Whenever a button on the game is clicked the actionPerformed method in Controller is invoked, and it determines which
-Model method to call. Inside each Model method that changes the state of the game, there is a call to a method in View that updates the
-View based on what aspect of the Model was changed. This presented another design decision of how to connect buttons to Country objects
-and Country objects to buttons because a certain Country object should be accessed when its button is pressed and a certain button
-should be accessed when its Country object changes state. This could be easily solved by having a hashmap of buttons and countries
-and a hashmap of countries and buttons, but this seems to be overlapping. Instead there should be one hashmap of countries and buttons
-and another solution to connect buttons and countries. One solution is to make a specific controller for each button that stores the
-Country object that it represents, and the other solution is to make a new class that extends JButton that stores the Country object
-it represents. To keep the MVC pattern as simple as possible, we decided to choose the second option, and this new class that extends
-JButton is the CountryButton class.
+As mentioned above with bonus troop placement, as well as with troop movement, we had a design decision of how to implement these features.
+Since milestone 2 only required attacking as a country-specific action, we were able to have one button for each country that had one
+responsibility. Therefore, the Controller class only had to keep track of which countries were attacking and defending and then call
+the attack method when a country's button was pressed. Now, with multiple country-specific actions, either more buttons needed to be added
+or the controller would have to keep track of the state of the current turn. Focusing on the extra buttons, the buttons on the map would
+open a popup box with three buttons, one for each possible player action. Even in this case only one button could be active at a time, so this
+option is redundant. Instead, we chose the second option where there are no new extra buttons, but when a country's button is pressed
+the controller needs to determine what method it could call in Model. Therefore, we added booleans in the Model class that kept track
+of the phase of the player's turn, and used those booleans to allow the controller to call the appropriate methods in the model.
+If the player is in the bonus troop phase, selecting two connected countries will call troopPlacement in Model with the associated countries.
+If the player is in the attack phase, selecting two neighbouring countries will call attack in Model with the associated countries.
+
+Lastly, with the requirement for AI players for this milestone, we needed to decide how to implement this feature. Since an AI player is just
+a regular player with the ability to play by itself, we made an AIPlayer class that extends the Player class, and then has its own methods
+for attacking, placing bonus troops, and moving troops. The AIPlayer class used its list of countries frequently, so we made the countries field
+in Player protected to give AIPlayer direct access to it. Since an AIPlayer object inherits from Player, the players list in Model did not need to be
+changed. To have specific code in Model methods when the current player was an AI player, we checked if currentPlayer was an instance of AIPlayer,
+then cast currentPlayer to an AIPlayer to call one of its methods. This allowed us to bypass user input from a player when the player was an
+AI player.
