@@ -1,11 +1,23 @@
 To run the game, double click on the jar file that is in the provided zipped folder or execute it in the command line. This will open
-a dialog box that will ask you how many players will be playing in the game. After typing your number and pressing ok the game will open,
-showing the map with colored buttons on each country, the player with the current turn, and each player name.
+a dialog box that will ask you how many players will be playing in the game. After typing your number and pressing ok, another dialog
+box will open that will ask you how many of the players will be AI. This number can be anything from 0 to the number of players you
+just entered. After typing your number and pressing ok, the game will open, showing the map with colored buttons on each country,
+the player with the current turn, and each player name. Also, there will be a dialog box that says how many troops the current player
+has to place in their countries.
 
-The color of a button represents which player owns that country, and the number on the button represents how many troops are in that country.
-To know which color you are, each player name is written in their color at the bottom of the screen. The top of the screen says whose turn it is,
-also written in their color. At the top of the screen there is also a pass button that you press when you are done your turn, and a cancel attack
-button which deselects the country you are attacking with.
+Focusing on the map, the color of a button represents which player owns that country, and the number on the button represents how many troops are
+in that country. To know which color you are, each player name is written in their color at the bottom of the screen. The top of the screen says
+whose turn it is, also written in their color. At the top of the screen there is also a pass button that you press when you are done your turn,
+a fortify button if you want to move troops among your countries, and a cancel attack button which deselects the country you are attacking with.
+
+To place your new troops, click on the button of the country you want to add troops to. This will open a dialog box asking how many troops
+you want to place in the country. This number can be anything from 1 to the number of troops you have to place. After pressing ok, the number on the
+button of the country will be updated with the extra troops. If an invalid number is entered, the box will reopen. If you do not place all your
+troops in one country, you must continue selecting countries to add troops to. Once you have added all your troops, a message will appear, and then
+you can start attacking. If you press pass or fortify before adding all your troops, a dialog box will open saying that you need to add
+all your troops first. At this stage, you can now attack by pressing buttons on the map, activate the fortifying phase by pressing fortify,
+or pass your turn by pressing pass. When the current player is AI, there will be dialog boxes that say what the AI's decisions are throughout
+their turn.
 
 To attack, press the button on the country you want to attack with. A dialog box will open saying which country you are attacking with.
 After closing the dialog box, press the button on the country you want to attack. A dialog box will open saying which country you are
@@ -13,12 +25,21 @@ attacking. After closing the dialog box, a new dialog box will open that will ei
 or ask the attacking player how many dice they want to use. After entering the number adhering to risk rules, if necessary, and closing the
 dialog box, the same process will occur for the defending player. Once the defending player closes their dialog box, the first result of the
 attack will be shown in a new dialog box, followed by the remaining results. The buttons of the two countries will change numbers according
-to the result of the attack, and the defending country button might change color to the attacking player's color if it was defeated.
+to the result of the attack, and the defending country button might change color to the attacking player's color if it was defeated. When a
+player captures a country, a dialog box will open asking the player how many troops they want to move to the captured country. The player must
+move at least 1 troop from the attacking country but also leave at least 1 troop. There is no limit to the number of attacks a player can do.
 
-Once the player is done attacking, press pass to give control of the game to the next player. The text above the map will change to
-say the next player's name, written in their color. When a player is eliminated, a dialog box will open saying who was eliminated.
-When someone has won the game, a dialog box will open saying who won the game. When this dialog box is closed, the game closes and stops
-executing.
+Once the player is done attacking or if they choose not to attack, they can either press the pass button to give control of the game to the next player,
+or they can press the fortify button to activate the fortifying phase of their turn. When the fortifying phase is active, the player can first press
+the button of a country they want to move troops from. Then, the player can select another country to move troops to. If the two countries are not
+connected, a dialog box will open with the appropriate message. After closing the box, the player can select another country to move troops to.
+If the two countries are connected, a dialog box will open asking how many troops the player wants to move. The number to be entered must follow
+the same rules as for when moving troops to a defeated country. After successfully moving the troops, the turn will automatically be passed to the
+next player.
+
+After fortifying or passing, the turn will go the next player. The text above the map will change to say the next player's name, written in their color.
+When a player is eliminated, a dialog box will open saying who was eliminated. When someone has won the game, a dialog box will open saying who won the game.
+When this dialog box is closed, the game closes and stops executing.
 
 Note: the jar file might make the map larger than it should be, so the map is cut off at the bottom and the bottom panel is not visible, but all
 the buttons are visible. To make the bottom panel visible make the frame full screen. If the game is run in intellij the frame looks as it should.
