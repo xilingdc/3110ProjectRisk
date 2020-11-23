@@ -288,6 +288,8 @@ public class Model {
         toCountry.addTroops(troops);
         view.updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
         view.updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());
+        fortifyPhase = false;
+        pass();
     }
 
     public boolean isFortifying(Country country) {
