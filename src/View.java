@@ -121,28 +121,6 @@ public class View extends JFrame {
     }
 
     /**
-     * Opens a dialog box that asks the user how many dice they want to play.
-     * Returns the number the player chose.
-     *
-     * @param message the message to be shown
-     * @param maxDice the maximum number of dice the player can choose
-     * @return the number of dice the user chose
-     */
-    public int getDice(String message, int maxDice) {
-        String dice = JOptionPane.showInputDialog(this, message);//open the dialog box
-        while (true) {
-            if (dice.isEmpty()) {//if the player entered nothing
-                dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
-            } else {
-                int numberOfDice = Integer.parseInt(dice);
-                if (numberOfDice < 1 || numberOfDice > maxDice) {//if the user entered an invalid number
-                    dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
-                } else return numberOfDice;
-            }
-        }
-    }
-
-    /**
      * Opens a dialog box that asks the user for a number based on the given message.
      * Returns the number the player chose.
      *
@@ -161,34 +139,6 @@ public class View extends JFrame {
                 if (number < min || number > max) {//if the user entered an invalid number
                     input = JOptionPane.showInputDialog(this, message);//open the dialog box again
                 } else return number;
-            }
-        }
-    }
-
-    public int getTroops(String message, int maxTroops) {
-        String dice = JOptionPane.showInputDialog(this, message);//open the dialog box
-        while (true) {
-            if (dice.isEmpty()) {//if the player entered nothing
-                dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
-            } else {
-                int numberOfTroops = Integer.parseInt(dice);
-                if (numberOfTroops < 1 || numberOfTroops > maxTroops - 1) {//if the user entered an invalid number
-                    dice = JOptionPane.showInputDialog(this, message);//open the dialog box again
-                } else return numberOfTroops;
-            }
-        }
-    }
-
-    public int dropTroops(String message, int maxTroops) {
-        String troops = JOptionPane.showInputDialog(this, message);//open the dialog box
-        while (true) {
-            if (troops.isEmpty()) {//if the player entered nothing
-                return 0;//open the dialog box again
-            } else {
-                int numberOfTroops = Integer.parseInt(troops);
-                if (numberOfTroops < 0 || numberOfTroops > maxTroops) {//if the user entered an invalid number
-                    troops = JOptionPane.showInputDialog(this, message);//open the dialog box again
-                } else return numberOfTroops;
             }
         }
     }
