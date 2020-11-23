@@ -53,11 +53,9 @@ public class AIPlayer extends Player {
         for (int i = 0; i < attackers.size(); i++) {
             Country attacker = attackers.get(i);
             Country defender = defenders.get(i);
-//            while (!(countries.contains(defender))) {
-                while (!(countries.contains(defender))&&(attacker.compareTroops(defender) > 1||berserkerMode&&attacker.getArmySize()>1)) {
-                    model.attack(attacker, defender);
-                }
-//            }
+            while (!(countries.contains(defender))&&(attacker.compareTroops(defender) > 1||berserkerMode&&attacker.getArmySize()>1)) {
+                model.attack(attacker, defender);
+            }
         }
         berserkerMode=false;
     }
