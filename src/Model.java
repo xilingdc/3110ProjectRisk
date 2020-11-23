@@ -138,6 +138,7 @@ public class Model {
         else if (attacker.getArmySize() == 3) {
             if (attackerAI) {
                 numberOfAttackDice = 2;
+                view.showMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
             } else {
                 numberOfAttackDice = view.getNumber("Attacking player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
             }
@@ -145,6 +146,7 @@ public class Model {
         } else {
             if (attackerAI) {
                 numberOfAttackDice = 3;
+                view.showMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
             } else {
                 numberOfAttackDice = view.getNumber("Attacking player, how many dice do you want to play?", 1, 3);//notifies view to get number of dice
             }
@@ -158,6 +160,7 @@ public class Model {
         } else {
             if (defenderAI) {
                 numberOfDefenceDice = 2;
+                view.showMessage("Player " + defendingPlayer.getName() + " will use " + numberOfDefenceDice + " dice");
             } else {
                 numberOfDefenceDice = view.getNumber("Defending player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
             }
@@ -355,6 +358,7 @@ public class Model {
             int input = 0;
             if (currentPlayer instanceof AIPlayer) {
                 input = 1;
+                view.showMessage("Player " + currentPlayer.getName() + " moved " + input + " troop to " + country.getName());
             } else {
                 input = view.getNumber("How many troops do you want to place here?", 1, newTroops);
             }
