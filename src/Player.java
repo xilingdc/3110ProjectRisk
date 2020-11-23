@@ -9,7 +9,7 @@ import java.util.List;
 public class Player {
 
     private String name;//player name
-    private List<Country> countries = new ArrayList<>();//player's country list
+    protected List<Country> countries = new ArrayList<>();//player's country list
     private Color color;
     
     /**

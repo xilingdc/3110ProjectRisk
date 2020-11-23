@@ -14,7 +14,6 @@ public class Controller implements ActionListener {
     private Country country2;
     private int placementTroops;
     private View view;
-    private Boolean isAiMode;
 
 
     /**
@@ -36,19 +35,11 @@ public class Controller implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("pass")){//if the pass button was pressed
             if(!model.isPlacementPhase()) {
-                if(!isAiMode) {//human mode
-                    model.pass();
-                    attacker = null;
-                    defender = null;
-
-                }else{//computer mode
-                    model.AiPass();
-                    attacker = null;
-                    defender = null;
-                    model.AiPlay();//Ai start to work
-                }
+                model.pass();
+                attacker = null;
+                defender = null;
             }else{
-                view.showMessage("Place your troop first!"+" You still have "+placementTroops+" more troop to add");
+                view.showMessage("Place your troops first!"+" You still have "+placementTroops+" more troops to add");
             }
             if(placementTroops == 0){
                 placementTroops = model.bonusTroopCalculator();
@@ -60,7 +51,7 @@ public class Controller implements ActionListener {
             if(!model.isPlacementPhase()) {
                 model.activateFortify();
             }else{
-                view.showMessage("Place your troop first!"+" You still have "+placementTroops+" more troop to add");
+                view.showMessage("Place your troops first!"+" You still have "+placementTroops+" more troops to add");
             }
         }else if(e.getActionCommand().equals("Country")){//if a country button was pressed
 
@@ -95,22 +86,13 @@ public class Controller implements ActionListener {
                 } else {//if the attacker has been selected
                     if (model.canDefend(attacker, b.getCountry())) {//if the country represented by the button can defend the attacking country
                         defender = b.getCountry();//store the country represented by the button
-                        model.attack(attacker, defender, false);
+                        model.attack(attacker, defender);
                         attacker = null;
                         defender = null;
                     }
                 }
             }
-
         }
-    }
-
-    public void setAiMode(Boolean aiMode) {
-        isAiMode = aiMode;
-    }
-
-    public Boolean getAiMode() {
-        return isAiMode;
     }
 
 }
