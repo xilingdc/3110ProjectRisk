@@ -42,15 +42,19 @@ public class AIPlayer extends Player {
         }
     }
 
+    public int chooseNumberOfTroops(int maxTroops) {
+        return (maxTroops + 1)/2;
+    }
+
     private ArrayList<Country> getVulnerableCountries() {
         ArrayList<Country> vulnerableCountries = new ArrayList<>();
-        int i = 0;
-        boolean safe = true;
         for (Country country : countries) {
             if (country.getArmySize() < 2) {
+                int i = 0;
+                boolean safe = true;
                 List<Country> neighbours = country.neighbours();
-                while (safe) {
-                    if (countries.contains(neighbours.get(i))) {
+                while (safe && i < neighbours.size()) {
+                    if (!(countries.contains(neighbours.get(i)))) {
                         vulnerableCountries.add(country);
                         safe = false;
                     }
@@ -77,9 +81,10 @@ public class AIPlayer extends Player {
         }
     }
 
-    /*public void aiFortify(){
-        System.out.println("fortifying");
-        if(isCountriesIsolate(currentPlayer.getCountries())){
+    public void aiFortify() {
+        ArrayList<Country> vulnerableCountries = getVulnerableCountries();
+
+        /*if(isCountriesIsolate(currentPlayer.getCountries())){
             System.out.println("fortifyable");
             Country fromCountry=null;
             Country toCountry=null;
@@ -96,11 +101,23 @@ public class AIPlayer extends Player {
             System.out.println("Player "+currentPlayer+" fortify troops from "+fromCountry.getName()+" to "+toCountry.getName());
             AiDoFortify(fromCountry,toCountry);
 
+        }*/
+    }
+
+    private Country getMaxTroops() {
+        int maxTroops = 0;
+        Country bestDefended = null;
+        for (Country country : countries) {
+            if (country.getArmySize() > maxTroops) {
+                maxTroops = country.getArmySize();
+                bestDefended = country;
+            }
         }
+        return bestDefended;
     }
 
 
-    public void aiDoFortify(Country fromCountry, Country toCountry){
+    /*public void aiDoFortify(Country fromCountry, Country toCountry){
         int MaxTroops = fromCountry.getArmySize() - 1;
         Random random = new Random();
         int tempTroop = random.nextInt(MaxTroops)+1;

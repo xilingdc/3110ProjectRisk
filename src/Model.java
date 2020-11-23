@@ -202,7 +202,8 @@ public class Model {
             defender.setOwner(currentPlayer);// update new owner
             int movingTroops;
             if (attackerAI) {
-                movingTroops = 1;
+                AIPlayer player = (AIPlayer) currentPlayer;
+                movingTroops = player.chooseNumberOfTroops(attacker.getArmySize() - 1);
             } else {
                 movingTroops = view.getNumber("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", 1, attacker.getArmySize() - 1);
             }
@@ -272,10 +273,9 @@ public class Model {
 
         fortifyPhase = false;
         placementPhase = true;
+        view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
         if (currentPlayer instanceof AIPlayer) {
             ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());
-        } else {
-            view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
         }
     }
 
