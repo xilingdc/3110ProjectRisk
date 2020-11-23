@@ -129,7 +129,7 @@ public class Model {
         boolean attackerAI = attackingPlayer instanceof AIPlayer;
         boolean defenderAI = defendingPlayer instanceof AIPlayer;
         if (attackerAI) {
-            view.showMessage("Player " + currentPlayer.getName() + "is attacking " + defender.getName() + "from " + attacker.getName());
+            view.showMessage("Player " + currentPlayer.getName() + " is attacking " + defender.getName() + " from " + attacker.getName());
         }
         if (attacker.getArmySize() == 2) {
             view.showMessage("Attacking country will get 1 dice");//notifies view to show message
@@ -285,8 +285,6 @@ public class Model {
         toCountry.addTroops(troops);
         view.updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
         view.updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());
-        fortifyPhase = false;
-        pass();
     }
 
     public boolean isFortifying(Country country) {

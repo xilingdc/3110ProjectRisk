@@ -27,7 +27,6 @@ public class Controller implements ActionListener {
         attacker = null;
         defender = null;
         placementTroops = model.bonusTroopCalculator();
-
     }
 
 
@@ -38,6 +37,8 @@ public class Controller implements ActionListener {
                 model.pass();
                 attacker = null;
                 defender = null;
+                country1 = null;
+                country2 = null;
             }else{
                 view.showMessage("Place your troops first!"+" You still have "+placementTroops+" more troops to add");
             }
@@ -65,8 +66,9 @@ public class Controller implements ActionListener {
             }
             else if(model.isFortifyPhase()){
                 if(country1 == null){
-                    model.isFortifying(b.getCountry());
-                    country1 = b.getCountry();
+                    if (model.isFortifying(b.getCountry())) {
+                        country1 = b.getCountry();
+                    }
                 }
                 else{
                     if(model.canFortify(country1, b.getCountry())){
