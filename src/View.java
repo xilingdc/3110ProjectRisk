@@ -71,8 +71,6 @@ public class View extends JFrame {
 
 
         model.activatePlacement();
-        showMessage("Player " + model.getCurrentPlayer().getName() + " has " + model.bonusTroopCalculator() + " troops to place.");
-
     }
 
     /**

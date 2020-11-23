@@ -429,6 +429,7 @@ public class Model {
 
     public void activatePlacement(){
         placementPhase = true;
+        view.showMessage("Player " + getCurrentPlayer().getName() + " has " + bonusTroopCalculator() + " troops to place.");
     }
 
     /**
