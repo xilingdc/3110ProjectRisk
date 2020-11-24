@@ -11,25 +11,20 @@ Authors:
 	- Xiling Wang
 	
 Changes:
-	- Design of program is now in MVC format
-	- Added a GUI for the user to use including a map
-	- Attack is done through buttons and clicking on the different countries' button
-	- Pass is also done through a button, so Parser, Command, and CommandWords classes are not needed
-	- Countries' button shows the number of troops it has while colour shows who owns it
-	- State of game (ie whose turn it is) is shown in the text box at the top
+	- User enters number of troops they want to move into a captured country
+	- User gets bonus troops at the start of their turn and must place all troops before attacking
+	- Added a fortify button that allows the user to move troops once from one country to another connected country
+	- Created an AI player that makes decisions based on the state of their countries
 
 Future roadmap :
-	- Adding additional bonus army placement based on number of territoires and area conquered
-	- Adding the fortify phase after attack to move troops
-	- Adding AI players
 	- Enable ability to save and load games
 	- Enable ability to load custom maps
 	
 Issues:
 	- The executable jar file for some does not open the game due to the Image reader. 
-	If it does does open up, the jar makes the map a little bigger and you need to fullscreen to see the whole map.
+	If it does does open up, the map might be a little bigger and you need to fullscreen to see the bottom panel.
 	The program works as it should if ran in IntelliJ
 	- For the test file, model needs a view in order to do all of its funcitonalilty, so the user/TA must input the
 	number of players when they run the test class and go through the JOptionPane for the different tests hitting ok
-	or entering the nuber of players (TA should try it with 3 players, passTest is adjusted for that number since
+	or entering the number of players (TA should try it with 3 players, passTest is adjusted for that number since
 	the test class itself can not set the number of players).
