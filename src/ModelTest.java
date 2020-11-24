@@ -2,8 +2,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 /**
  * @author Ali Fahd
  */
@@ -196,8 +194,16 @@ public class ModelTest{
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2), m.bonusTroopCalculator());
         assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
 
-        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Indonesia"));
+        Country indo = m.getMap().getCountry("Indonesia");
+
+        m.getCurrentPlayer().removeCountry(indo);
+        indo.setOwner(m.getNextPlayer());
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)), m.bonusTroopCalculator());
         assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
+
+        m.getNextPlayer().addCountry(indo);
+        indo.setOwner(m.getNextPlayer());
+        int troops = m.troopPlacement(5, indo);
+        assertEquals(5, troops);
     }
 }
