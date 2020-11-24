@@ -391,7 +391,6 @@ public class Model {
             int input = 0;
             if (currentPlayer instanceof AIPlayer) {//if the current player is AI
                 input = 1;//add 1 troop
-                view.showMessage("Player " + currentPlayer.getName() + " moved " + input + " troop to " + country.getName());
             } else {
                 input = view.getNumber("How many troops do you want to place here?", 1, newTroops);
             }
