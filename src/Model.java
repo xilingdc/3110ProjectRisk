@@ -128,7 +128,8 @@ public class Model {
         Player defendingPlayer = defender.getOwner();
         boolean attackerAI = attackingPlayer instanceof AIPlayer;
         boolean defenderAI = defendingPlayer instanceof AIPlayer;
-        if (attackerAI) {
+        if (attackerAI) {//if the attacker is an AI
+            //show their attack decision
             view.showMessage("Player " + currentPlayer.getName() + " is attacking " + defender.getName() + " from " + attacker.getName());
         }
         if (attacker.getArmySize() == 2) {
@@ -136,8 +137,8 @@ public class Model {
             attackDice = new Integer[1];
         }
         else if (attacker.getArmySize() == 3) {
-            if (attackerAI) {
-                numberOfAttackDice = 2;
+            if (attackerAI) {//if the attacker is an AI
+                numberOfAttackDice = 2;//use the maximum number of dice
                 view.showMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
             } else {
                 numberOfAttackDice = view.getNumber("Attacking player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
@@ -158,8 +159,8 @@ public class Model {
             view.showMessage("Defending country will get 1 dice");
             defendDice = new Integer[1];
         } else {
-            if (defenderAI) {
-                numberOfDefenceDice = 2;
+            if (defenderAI) {//if the defender is an AI
+                numberOfDefenceDice = 2;//use the maximum number of dice
                 view.showMessage("Player " + defendingPlayer.getName() + " will use " + numberOfDefenceDice + " dice");
             } else {
                 numberOfDefenceDice = view.getNumber("Defending player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
@@ -206,6 +207,7 @@ public class Model {
             int movingTroops;
             if (attackerAI) {
                 AIPlayer player = (AIPlayer) currentPlayer;
+                //get the AI's choice for troops to move
                 movingTroops = player.chooseNumberOfTroops(attacker.getArmySize() - 1);
             } else {
                 movingTroops = view.getNumber("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", 1, attacker.getArmySize() - 1);
@@ -277,28 +279,42 @@ public class Model {
         fortifyPhase = false;
         placementPhase = true;
         view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
-        if (currentPlayer instanceof AIPlayer) {
-            ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());
+        if (currentPlayer instanceof AIPlayer) {//if the current player is AI
+            ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());//start their turn
         }
     }
 
+    /**
+     * Moves troops from one country to the other, then passes the turn.
+     *
+     * @param fromCountry the country sending troops
+     * @param toCountry the country receiving troops
+     */
     public void fortify(Country fromCountry, Country toCountry){
         int troops = 0;
-        if (currentPlayer instanceof AIPlayer) {
+        if (currentPlayer instanceof AIPlayer) {//if the current player is AI
             AIPlayer player = (AIPlayer) currentPlayer;
+            //get the AI's choice of troops to move
             troops = player.chooseNumberOfTroops(fromCountry.getArmySize() - 1);
             view.showMessage("Player " + currentPlayer.getName() + " is moving " + troops + " troops from " + fromCountry.getName() + " to " + toCountry.getName());
         } else {
             troops = view.getNumber("How many troops do you want to move?", 1, fromCountry.getArmySize() - 1);
         }
         fromCountry.removeTroops(troops);
-        toCountry.addTroops(troops);
+        toCountry.addTroops(troops);//move the troops
         view.updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
-        view.updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());
+        view.updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());//update the buttons
         fortifyPhase = false;
         pass();
     }
 
+    /**
+     * Determines if the country can send troops
+     * for fortifying.
+     *
+     * @param country the country to check
+     * @return true if the country can send troops, false otherwise
+     */
     public boolean isFortifying(Country country) {
         if (!(currentPlayer.getCountries().contains(country))) {//if the player doesn't own the country
             view.showMessage("You do not own this country");//notify the view to show a message
@@ -314,6 +330,9 @@ public class Model {
 
     /**
      * checks to see if the country can fortify to the other country
+     * @param fromCountry the country sending troops
+     * @param toCountry the country receiving troops
+     * @return
      */
     public boolean canFortify(Country fromCountry, Country toCountry){
         ArrayList<Country> visited = new ArrayList<>();
@@ -361,14 +380,17 @@ public class Model {
 
 
     /**
-     * player can place their bonus troops
+     * Places bonus troops in the country
+     *
+     * @param newTroops the number of troops that can be placed
+     * @param country the country to receive troops
      */
     public int troopPlacement(int newTroops, Country country) {
 
         if(isPlaceable(country)) {
             int input = 0;
-            if (currentPlayer instanceof AIPlayer) {
-                input = 1;
+            if (currentPlayer instanceof AIPlayer) {//if the current player is AI
+                input = 1;//add 1 troop
                 view.showMessage("Player " + currentPlayer.getName() + " moved " + input + " troop to " + country.getName());
             } else {
                 input = view.getNumber("How many troops do you want to place here?", 1, newTroops);
@@ -376,8 +398,8 @@ public class Model {
             country.addTroops(input);
             view.updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
             newTroops -= input;
-            if (newTroops == 0) {
-                placementPhase = false;
+            if (newTroops == 0) {//once there are no more troops to place
+                placementPhase = false;//end the placement phase
                 view.showMessage("Placement Phase is done, Attack Phase has begun!");
             } else {
                 return newTroops;
@@ -388,6 +410,13 @@ public class Model {
         }
     }
 
+    /**
+     * Determines if the country can receive troops in
+     * the bonus troop placement phase.
+     *
+     * @param country the country to check
+     * @return true if the country can receive troops, false otherwise
+     */
     public boolean isPlaceable(Country country){
         if(country.getOwner().equals(currentPlayer)){
             return true;
@@ -400,6 +429,7 @@ public class Model {
 
     /**
      * assigns bonus troops based on territories and continents conquered
+     * @return the number of bonus troops the player will get
      */
     public int bonusTroopCalculator() {
         int bonusTroops = 3;
@@ -440,11 +470,14 @@ public class Model {
         fortifyPhase = true;
     }
 
+    /**
+     * Starts the placement phase of the first turn
+     */
     public void activatePlacement(){
         placementPhase = true;
         view.showMessage("Player " + getCurrentPlayer().getName() + " has " + bonusTroopCalculator() + " troops to place.");
-        if (currentPlayer instanceof AIPlayer) {
-            ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());
+        if (currentPlayer instanceof AIPlayer) {//if the first player is AI
+            ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());//start their turn
         }
     }
 
