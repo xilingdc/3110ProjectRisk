@@ -5,11 +5,6 @@ import java.io.IOException;
 /**
  * @author Ali Fahd
  */
-/**
- * Since number of players is chosen through the view, I can't set it manually here.
- * So please input 3 as number of players when you run the test for each of the views and just hit ok on all JOptionPanes.
- * I'm basically testing model through view because a lot of the methods require a view.
- * */
 public class ModelTest{
     View v;
     Model m;
@@ -197,5 +192,7 @@ public class ModelTest{
         m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Indonesia"));
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)), m.bonusTroopCalculator());
         assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAustralia()));
+
+        assertTrue(m.isPlaceable(m.getMap().getCountry("Western Australia")));
     }
 }
