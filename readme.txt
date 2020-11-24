@@ -28,3 +28,4 @@ Issues:
 	number of players when they run the test class and go through the JOptionPane for the different tests hitting ok
 	or entering the number of players (TA should try it with 3 players, passTest is adjusted for that number since
 	the test class itself can not set the number of players).
+	- When a dialog box with user input appears, if the user closes the box, the game does not function anymore
