@@ -6,6 +6,7 @@ import java.util.HashMap;
 /**
  * @author Xiling
  * @author Aleksandar Veselinovic
+ * @author Ali Fahd
  */
 public class View extends JFrame {
     private JTextArea playerTurn;
