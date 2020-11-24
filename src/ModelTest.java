@@ -180,30 +180,22 @@ public class ModelTest{
 
         m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Peru"));
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5+5+7), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getSouthAmerica()));
 
         m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Ontario"));
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5+7), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getNorthAmerica()));
 
         m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Japan"));
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAsia()));
 
         m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Iceland"));
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getEurope()));
 
-        Country indo = m.getMap().getCountry("Indonesia");
-
-        m.getCurrentPlayer().removeCountry(indo);
-        indo.setOwner(m.getNextPlayer());
+        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Indonesia"));
         assertEquals(((m.getCurrentPlayer().getCountries().size()/3)), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
-
-        m.getNextPlayer().addCountry(indo);
-        indo.setOwner(m.getNextPlayer());
-        int troops = m.troopPlacement(5, indo);
-        assertEquals(5, troops);
+        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAustralia()));
     }
 }
