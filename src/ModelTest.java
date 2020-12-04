@@ -17,7 +17,7 @@ public class ModelTest{
             e.printStackTrace();
         }
         Model m = new Model();
-        m.setView(v);
+        m.addView(v);
         m.processBegin(3, 0);
         m.setUp();
         assertEquals(42, m.getMap().getCountries().size());
@@ -31,7 +31,7 @@ public class ModelTest{
             e.printStackTrace();
         }
         Model m = new Model();
-        m.setView(v);
+        m.addView(v);
         m.processBegin(3, 0);
         m.setUp();
         assertEquals(3, m.getPlayers().size());
@@ -51,7 +51,7 @@ public class ModelTest{
             e.printStackTrace();
         }
         Model m = new Model();
-        m.setView(v);
+        m.addView(v);
         m.processBegin(3, 0);
         m.setUp();
         Country attacker = m.getMap().getCountry("Greenland");
@@ -88,7 +88,7 @@ public class ModelTest{
             e.printStackTrace();
         }
         Model m = new Model();
-        m.setView(v);
+        m.addView(v);
         m.processBegin(3, 0);
         m.setUp();
         Country attacker = m.getMap().getCountry("Greenland");
@@ -118,7 +118,7 @@ public class ModelTest{
             e.printStackTrace();
         }
         Model m = new Model();
-        m.setView(v);
+        m.addView(v);
         m.processBegin(3, 0);
         m.setUp();
         Country c1 = m.getMap().getCountry("Alaska");
@@ -153,7 +153,7 @@ public class ModelTest{
             e.printStackTrace();
         }
         Model m = new Model();
-        m.setView(v);
+        m.addView(v);
         m.processBegin(3, 0);
         m.setUp();
         m.getCurrentPlayer().getCountries().clear();
