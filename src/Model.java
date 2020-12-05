@@ -23,6 +23,7 @@ public class Model {
     private boolean fortifyPhase;
 //    private boolean isAiMode=false;
     private List<View> viewLists;
+    private int numberOfAttackDice, numberOfDefenceDice;
 
 
 
@@ -152,37 +153,46 @@ public class Model {
      * @param defender - country defending
      */
     public void attack(Country attacker, Country defender) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
-        Integer attackDice[];
-        int numberOfAttackDice, numberOfDefenceDice;
+        Integer attackDice[],  defendDice[];
         Player attackingPlayer = attacker.getOwner();
         Player defendingPlayer = defender.getOwner();
         boolean attackerAI = attackingPlayer instanceof AIPlayer;
         boolean defenderAI = defendingPlayer instanceof AIPlayer;
-        if (attackerAI) {//if the attacker is an AI
-            //show their attack decision
-            sendMessage("Player " + currentPlayer.getName() + " is attacking " + defender.getName() + " from " + attacker.getName());
-        }
-        if (attacker.getArmySize() == 2) {
-            sendMessage("Attacking country will get 1 dice");//notifies view to show message
-            attackDice = new Integer[1];
-        } else if (attacker.getArmySize() == 3) {
-            if (attackerAI) {//if the attacker is an AI
-                numberOfAttackDice = 2;//use the maximum number of dice
-                sendMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
-            } else {
-                numberOfAttackDice = getNumber("Attacking player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
+        numberOfAttackDice=0;
+        numberOfDefenceDice=0;
+
+        attackDice = attackerDice(attackerAI, defender, attacker);
+        defendDice = defenderDice(defenderAI, defender, defendingPlayer, attackDice);
+        //output results of battle
+        Arrays.sort(attackDice, Collections.reverseOrder());//sort in descending order
+        Arrays.sort(defendDice, Collections.reverseOrder());//sort in descending order
+        int lessDice = Math.min(attackDice.length, defendDice.length);
+        for (int i = 0; i < lessDice; i++) {//loop through dice
+            String message = "Attack Dice: " + attackDice[i] + "   Defence dice: " + defendDice[i];
+            if (attackDice[i] > defendDice[i]) {//if attcking dice wins
+                defender.removeTroops(1);
+                message += "   Attacker wins";
+            } else {//if defending dice wins
+                attacker.removeTroops(1);
+                message += "   Defender wins";
             }
-            attackDice = new Integer[numberOfAttackDice];
-        } else {
-            if (attackerAI) {
-                numberOfAttackDice = 3;
-                sendMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
-            } else {
-                numberOfAttackDice = getNumber("Attacking player, how many dice do you want to play?", 1, 3);//notifies view to get number of dice
-            }
-            attackDice = new Integer[numberOfAttackDice];
+            sendMessage(message);//notify view to show message
         }
 
+        updateAttackMapChanges(defender,attacker, defendingPlayer,attackingPlayer, defenderAI, attackerAI, numberOfAttackDice);
+
+        checkWinner();
+    }
+
+    /**
+     * preparation for defender side
+     * @param defenderAI
+     * @param defender
+     * @param defendingPlayer
+     * @param attackDice
+     * @return
+     */
+    private Integer[] defenderDice(Boolean defenderAI, Country defender, Player defendingPlayer, Integer[] attackDice){
         Integer defendDice[];
         if (defender.getArmySize() == 1) {
             sendMessage("Defending country will get 1 dice");
@@ -205,22 +215,63 @@ public class Model {
             defendDice[i] = ThreadLocalRandom.current().nextInt(1, 7);//roll the dice
         }
 
-        //output results of battle
-        Arrays.sort(attackDice, Collections.reverseOrder());//sort in descending order
-        Arrays.sort(defendDice, Collections.reverseOrder());//sort in descending order
-        int lessDice = Math.min(attackDice.length, defendDice.length);
-        for (int i = 0; i < lessDice; i++) {//loop through dice
-            String message = "Attack Dice: " + attackDice[i] + "   Defence dice: " + defendDice[i];
-            if (attackDice[i] > defendDice[i]) {//if attcking dice wins
-                defender.removeTroops(1);
-                message += "   Attacker wins";
-            } else {//if defending dice wins
-                attacker.removeTroops(1);
-                message += "   Defender wins";
+        return defendDice;
+    }
+
+
+
+
+
+    /**
+     * preparation for attacker side
+     * @param attackerAI
+     * @param defender
+     * @param attacker
+     * @return
+     */
+    private Integer[] attackerDice(Boolean attackerAI, Country defender, Country attacker){
+        Integer attackDice[];
+        if (attackerAI) {//if the attacker is an AI
+            sendMessage("Player " + currentPlayer.getName() + " is attacking " + defender.getName() + " from " + attacker.getName());//show their attack decision
+        }
+        if (attacker.getArmySize() == 2) {
+            sendMessage("Attacking country will get 1 dice");//notifies view to show message
+            attackDice = new Integer[1];
+        } else if (attacker.getArmySize() == 3) {
+            if (attackerAI) {//if the attacker is an AI
+                numberOfAttackDice = 2;//use the maximum number of dice
+                sendMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
+            } else {
+                numberOfAttackDice = getNumber("Attacking player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
             }
-            sendMessage(message);//notify view to show message
+            attackDice = new Integer[numberOfAttackDice];
+        } else {
+            if (attackerAI) {
+                numberOfAttackDice = 3;
+                sendMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
+            } else {
+                numberOfAttackDice = getNumber("Attacking player, how many dice do you want to play?", 1, 3);//notifies view to get number of dice
+            }
+            attackDice = new Integer[numberOfAttackDice];
         }
 
+        return attackDice;
+    }
+
+
+
+
+    /**
+     * update any changes in map after player finish a single attack
+     * @param defender
+     * @param attacker
+     * @param defendingPlayer
+     * @param attackingPlayer
+     * @param defenderAI
+     * @param attackerAI
+     * @param numberOfAttackDice
+     */
+    private void updateAttackMapChanges(Country defender, Country attacker, Player defendingPlayer, Player attackingPlayer, Boolean defenderAI, Boolean attackerAI, int numberOfAttackDice){
         //output any changes to the map
         if (defender.getArmySize() == 0) {
             sendMessage("Player " + currentPlayer.getName() + " captured " + defender.getName());//notify view to show message
@@ -239,7 +290,7 @@ public class Model {
                 //get the AI's choice for troops to move
                 movingTroops = player.chooseNumberOfTroops(attacker.getArmySize() - 1);
             } else {
-                movingTroops = getNumber("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", 1, attacker.getArmySize() - 1);
+                movingTroops = getNumber("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", numberOfAttackDice, attacker.getArmySize() - 1);
             }
             defender.addTroops(movingTroops);//move all but 1 troop to new country
             attacker.removeTroops(movingTroops);//leave 1 troop in attacking country
@@ -247,7 +298,16 @@ public class Model {
         } else {
             updateCountryButton(defender, defendingPlayer.getColor(), defender.getArmySize());//update view (number on button)
         }
-            updateCountryButton(attacker, attackingPlayer.getColor(), attacker.getArmySize());//update view (number on button)
+        updateCountryButton(attacker, attackingPlayer.getColor(), attacker.getArmySize());//update view (number on button)
+
+    }
+
+
+
+    /**
+     * check if there is winner
+     */
+    public void checkWinner(){
         if (players.size() == 1) {
             for (View view : viewLists) {
                 view.showEndMessage(new Event(this,"Player "+players.get(0).getName() + " is the winner. Game Over!"));
@@ -255,6 +315,16 @@ public class Model {
 //            view.showEndMessage("Player "+players.get(0).getName() + " is the winner. Game Over!");//notify view to show end message
         }
     }
+
+
+
+
+
+
+
+
+
+
 
     /**
      * update Country Button
