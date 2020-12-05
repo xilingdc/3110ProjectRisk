@@ -29,6 +29,32 @@ public class Player {
         this.name = name;
         this.color = color;
     }
+
+    public String toSimpleXML(){
+        String str="<player>";
+        str+="<name>"+this.name+"</name>";
+        str+="<color>"+this.color.toString()+"</color>";
+        str+="</player>";
+        return str;
+    }
+
+
+
+    public String toXML(){
+        String str="<player>";
+        str+="<name>"+this.name+"</name>";
+        str+="<color>"+this.color.toString()+"</color>";
+        str+="<countries>";
+        for (Country country : countries) {
+            str+=country.toSimpleXML();
+        }
+        str+="</countries>";
+        str+="</player>";
+        return str;
+    }
+
+
+
     /**
     *@param c Country, add c into list
     */
