@@ -24,7 +24,43 @@ public class Country {
         armySize = 0;
         neighbours = new ArrayList<>();
     }
-    
+
+    public String toSimpleXML(){
+        String str="<country>";
+        str+="<name>"+name+"</name>";
+        str+="<x>"+getX()+"</x>";
+        str+="<y>"+getY()+"</y>";
+        str+="</country>";
+        return str;
+    }
+
+    /**
+     * get neighbours list
+     * @return
+     */
+    public List<Country> getNeighbours() {
+        return neighbours;
+    }
+
+    public String toXML(){
+        String str="<country>";
+        str+="<name>"+name+"</name>";
+        str+="<player>"+owner.toSimpleXML()+"</player>";//TODO
+        str+="<troop>"+armySize+"</troop>";
+        str+="<color>"+color.toString()+"</color>";
+        str+="<x>"+getX()+"</x>";
+        str+="<y>"+getY()+"</y>";
+        str+="<neighbours>";
+        for (Country country : neighbours) {
+            str+=country.toSimpleXML();
+        }
+        str+="</neighbours>";
+        return str;
+
+    }
+
+
+
     /**
     *@return name of country
     */

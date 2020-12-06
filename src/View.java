@@ -8,8 +8,8 @@ import java.util.HashMap;
  * @author Aleksandar Veselinovic
  * @author Ali Fahd
  */
-public class View extends JFrame {
-    private JTextArea playerTurn;
+public class View extends JFrame implements Views{
+    private JTextArea playerTurn,placeNum;
     private  JButton pass, cancel, fortify;
     private HashMap<Country, CountryButton> countryButtons;
     private JPanel bottomPanel;
@@ -24,13 +24,13 @@ public class View extends JFrame {
         int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
 
         model = new Model();
-        model.setView(this);
-
+//        model.setView(this);
+        model.addView(this);
         bottomPanel = new JPanel();
         this.add(bottomPanel, BorderLayout.SOUTH);
 
         model.processBegin(numPlayer, numAI);
-        model.setUp();
+//        model.setUp();
         Controller controller = new Controller(model,this);
 
         JPanel topPanel = new JPanel();
@@ -46,11 +46,14 @@ public class View extends JFrame {
         cancel = new JButton("Cancel Selection");
         cancel.addActionListener(controller);
         cancel.setActionCommand("cancel");
+        placeNum = new JTextArea("Bonus Troop Number: "+  model.bonusTroopCalculator());
+        placeNum.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
 
         topPanel.add(playerTurn);
         topPanel.add(pass);
         topPanel.add(fortify);
         topPanel.add(cancel);
+        topPanel.add(placeNum);
         this.add(topPanel, BorderLayout.NORTH);
 
         MapComponent map = new MapComponent("risk-board-white.png");
@@ -75,51 +78,17 @@ public class View extends JFrame {
     }
 
     /**
-     * Updates the playerTurn JTextArea when the player changes
-     *
-     * @param player current player
-     */
-    public void updatePlayerTurnTextHandler(Player player){
-        playerTurn.setText("Current Player: Player "+player.getName());
-        playerTurn.setForeground(player.getColor());//set the color of the text to the player's color
-    }
-
-    /**
-     * Updates the button whose country changed state
-     *
-     * @param country the country whose state changed
-     * @param color the color the button should change to
-     * @param troops the number the button should say
-     */
-    public void updateCountryButton(Country country, Color color, int troops){
-        CountryButton b = countryButtons.get(country);//find the button corresponding to the country
-        b.setBackground(color);
-        b.setText(""+troops);
-    }
-
-    /**
-     * Adds the player name to the bottom panel
-     *
-     * @param message the player name
-     * @param color the color of the player name
-     */
-    public void addPlayer(String message, Color color) {
-        JLabel player = new JLabel("  " + message + "  ");
-        player.setForeground(color);//set the color of the player name to their color
-        player.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));//increase the font size
-        bottomPanel.add(player);//add the player name to the bottom panel
-    }
-
-    /**
      * Opens a dialog box with the given message
      *
      * @param message the message to be shown
      */
+
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
 
-    /**
+
+    /*
      * Opens a dialog box that asks the user for a number based on the given message.
      * Returns the number the player chose.
      *
@@ -143,20 +112,111 @@ public class View extends JFrame {
     }
 
     /**
-     * Opens a dialog box that says who won the game, then closes the game
      *
-     * @param message the message to be shown
+     * @return
      */
-    public void showEndMessage(String message) {
-        JOptionPane.showMessageDialog(this, message);//open the dialog box
-        this.dispose();//close the frame
-    }
-
     public Model getModel() {
         return model;
     }
 
+
+
     public static void main(String[] args) throws IOException {
         new View();
     }
+
+
+
+
+    /**
+     * Opens a dialog box with the given message
+     * @param event
+     */
+    @Override
+    public void showMessage(Event event) {
+        String message = event.getMessage();
+        JOptionPane.showMessageDialog(null, message);
+    }
+
+
+    /**
+     *  Opens a dialog box that asks the user for a number based on the given message.
+     *  Returns the number the player chose.
+     * @param event
+     * @return
+     */
+    @Override
+    public int getNumberFromDiolog(Event event) {
+        String message = event.getMessage();
+        int max = event.getMax();
+        int min = event.getMin();
+        String input = JOptionPane.showInputDialog(this, message);//open the dialog box
+        while (true) {
+            if (input.isEmpty()) {//if the player entered nothing
+                input = JOptionPane.showInputDialog(this, message);//open the dialog box again
+            } else {
+                int number = Integer.parseInt(input);
+                if (number < min || number > max) {//if the user entered an invalid number
+                    input = JOptionPane.showInputDialog(this, message);//open the dialog box again
+                } else return number;
+            }
+        }
+    }
+
+    @Override
+    public void updateCountryButton(Event event) {
+        CountryButton b = countryButtons.get(event.getCountry());//find the button corresponding to the country
+        b.setBackground(event.getColor());
+        b.setText(""+event.getTroop());
+    }
+
+
+    /**
+     * Adds the player name to the bottom panel
+     * @param event
+     */
+    @Override
+    public void addPlayer(Event event) {
+        JLabel player = new JLabel("  " + event.getPlayerName() + "  ");
+        player.setForeground(event.getColor());//set the color of the player name to their color
+        player.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));//increase the font size
+        bottomPanel.add(player);//add the player name to the bottom panel
+    }
+
+
+
+    /**
+     * Opens a dialog box that says who won the game, then closes the game
+     * @param event
+     */
+    @Override
+    public void showEndMessage(Event event) {
+        JOptionPane.showMessageDialog(this, event.getMessage());//open the dialog box
+        this.dispose();//close the frame
+    }
+
+    /**
+     * Updates the playerTurn JTextArea when the player changes
+     * @param event
+     */
+    @Override
+    public void updatePlayerTurnTextHandler(Event event) {
+        playerTurn.setText("Current Player: Player "+event.getPlayer().getName());
+        playerTurn.setForeground(event.getPlayer().getColor());//set the color of the text to the player's color
+//        updatePlaceNum(model.bonusTroopCalculator());
+    }
+
+    @Override
+    public void updatePlaceNum(Event event) {
+        placeNum.setText("Bonus Troop Number: "+ event.getTroop());
+    }
+
+   /* *//**
+     * update placeNum's text
+     * @param troop
+     *//*
+    public void updatePlaceNum(int troop){
+        placeNum.setText("Bonus Troop Number: "+ troop);
+    }
+*/
 }
