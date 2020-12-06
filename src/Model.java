@@ -18,10 +18,12 @@ public class Model {
     private Map map;
     private int[] troopAllocation = {50, 35, 30, 25, 20};
     private Color[] colorPlayer = {Color.red,Color.cyan,Color.green,Color.magenta, Color.orange, Color.pink};//setting up an array of color for each player
-    private View view;
+//    private View view;
     private boolean placementPhase;
     private boolean fortifyPhase;
-    private boolean isAiMode=false;
+//    private boolean isAiMode=false;
+    private List<Views> viewLists;
+    private int numberOfAttackDice, numberOfDefenceDice;
 
 
 
@@ -30,6 +32,7 @@ public class Model {
      */
     public Model() {
         map = new Map();
+        viewLists=new ArrayList<>();
     }
     
     /**
@@ -45,16 +48,25 @@ public class Model {
     public ArrayList<Player> getPlayers() {
         return players;
     }
-    
-    
+
     /**
-    *@param view
-    */
-    public void setView(View view) {
-        this.view = view;
+     * @param view
+     * add view into viewList
+     */
+    public void addView(View view){
+        viewLists.add(view);
     }
-    
-    
+
+    /**
+     *
+     * @param view
+     * remove view from viewList
+     */
+    public void removeView(View view){
+        viewLists.remove(view);
+    }
+
+
     
     /**
      * the method prints the beginning of the game
@@ -71,7 +83,10 @@ public class Model {
                 p = new AIPlayer(Integer.toString(i+1),colorPlayer[i], this);
             }
             players.add(p);//add player1, player2.... into playerList
-            view.addPlayer("Player " + (i+1), colorPlayer[i]);//display players in the view
+            for (Views view : viewLists) {
+                view.addPlayer(new Event(this,"Player " + (i+1), colorPlayer[i]));
+            }
+//            view.addPlayer("Player " + (i+1), colorPlayer[i]);//display players in the view
         }
 
         currentPlayerIndex = 0;//the game begins at player one
@@ -117,65 +132,37 @@ public class Model {
     }
 
     /**
+     * get the input number
+     * @param str
+     * @param min
+     * @param max
+     * @return
+     */
+    public int getNumber(String str, int min, int max){
+        int userInput=-1;
+        for (Views view : viewLists) {
+            userInput = view.getNumberFromDiolog(new Event(this, str, min, max));
+        }
+        return userInput;
+    }
+
+
+    /**
      * This is the attack method, outcomes of battles are determined here, the map/countries are notified to be updated here
      * @param attacker - country attacking
      * @param defender - country defending
      */
     public void attack(Country attacker, Country defender) {//command description "attack defendCountry attackCountry" second command represents the country will be attacked, third command represents the country will launch attack.
-        Integer attackDice[];
-        int numberOfAttackDice, numberOfDefenceDice;
+        Integer attackDice[],  defendDice[];
         Player attackingPlayer = attacker.getOwner();
         Player defendingPlayer = defender.getOwner();
         boolean attackerAI = attackingPlayer instanceof AIPlayer;
         boolean defenderAI = defendingPlayer instanceof AIPlayer;
-        if (attackerAI) {//if the attacker is an AI
-            //show their attack decision
-            view.showMessage("Player " + currentPlayer.getName() + " is attacking " + defender.getName() + " from " + attacker.getName());
-        }
-        if (attacker.getArmySize() == 2) {
-            view.showMessage("Attacking country will get 1 dice");//notifies view to show message
-            attackDice = new Integer[1];
-        }
-        else if (attacker.getArmySize() == 3) {
-            if (attackerAI) {//if the attacker is an AI
-                numberOfAttackDice = 2;//use the maximum number of dice
-                view.showMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
-            } else {
-                numberOfAttackDice = view.getNumber("Attacking player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
-            }
-            attackDice = new Integer[numberOfAttackDice];
-        } else {
-            if (attackerAI) {
-                numberOfAttackDice = 3;
-                view.showMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
-            } else {
-                numberOfAttackDice = view.getNumber("Attacking player, how many dice do you want to play?", 1, 3);//notifies view to get number of dice
-            }
-            attackDice = new Integer[numberOfAttackDice];
-        }
+        numberOfAttackDice=0;
+        numberOfDefenceDice=0;
 
-        Integer defendDice[];
-        if (defender.getArmySize() == 1) {
-            view.showMessage("Defending country will get 1 dice");
-            defendDice = new Integer[1];
-        } else {
-            if (defenderAI) {//if the defender is an AI
-                numberOfDefenceDice = 2;//use the maximum number of dice
-                view.showMessage("Player " + defendingPlayer.getName() + " will use " + numberOfDefenceDice + " dice");
-            } else {
-                numberOfDefenceDice = view.getNumber("Defending player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
-            }
-            defendDice = new Integer[numberOfDefenceDice];
-        }
-
-        for (int i = 0; i < attackDice.length; i++) {
-            attackDice[i] = ThreadLocalRandom.current().nextInt(1, 7);//roll the dice
-        }
-
-        for (int i = 0; i < defendDice.length; i++) {
-            defendDice[i] = ThreadLocalRandom.current().nextInt(1, 7);//roll the dice
-        }
-
+        attackDice = attackerDice(attackerAI, defender, attacker);
+        defendDice = defenderDice(defenderAI, defender, defendingPlayer, attackDice);
         //output results of battle
         Arrays.sort(attackDice, Collections.reverseOrder());//sort in descending order
         Arrays.sort(defendDice, Collections.reverseOrder());//sort in descending order
@@ -189,18 +176,111 @@ public class Model {
                 attacker.removeTroops(1);
                 message += "   Defender wins";
             }
-            view.showMessage(message);//notify view to show message
+            sendMessage(message);//notify view to show message
         }
 
+        updateAttackMapChanges(defender,attacker, defendingPlayer,attackingPlayer, defenderAI, attackerAI, numberOfAttackDice);
+
+        checkWinner();
+    }
+
+    /**
+     * preparation for defender side
+     * @param defenderAI
+     * @param defender
+     * @param defendingPlayer
+     * @param attackDice
+     * @return
+     */
+    private Integer[] defenderDice(Boolean defenderAI, Country defender, Player defendingPlayer, Integer[] attackDice){
+        Integer defendDice[];
+        if (defender.getArmySize() == 1) {
+            sendMessage("Defending country will get 1 dice");
+            defendDice = new Integer[1];
+        } else {
+            if (defenderAI) {//if the defender is an AI
+                numberOfDefenceDice = 2;//use the maximum number of dice
+                sendMessage("Player " + defendingPlayer.getName() + " will use " + numberOfDefenceDice + " dice");
+            } else {
+                numberOfDefenceDice = getNumber("Defending player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
+            }
+            defendDice = new Integer[numberOfDefenceDice];
+        }
+
+        for (int i = 0; i < attackDice.length; i++) {
+            attackDice[i] = ThreadLocalRandom.current().nextInt(1, 7);//roll the dice
+        }
+
+        for (int i = 0; i < defendDice.length; i++) {
+            defendDice[i] = ThreadLocalRandom.current().nextInt(1, 7);//roll the dice
+        }
+
+        return defendDice;
+    }
+
+
+
+
+
+    /**
+     * preparation for attacker side
+     * @param attackerAI
+     * @param defender
+     * @param attacker
+     * @return
+     */
+    private Integer[] attackerDice(Boolean attackerAI, Country defender, Country attacker){
+        Integer attackDice[];
+        if (attackerAI) {//if the attacker is an AI
+            sendMessage("Player " + currentPlayer.getName() + " is attacking " + defender.getName() + " from " + attacker.getName());//show their attack decision
+        }
+        if (attacker.getArmySize() == 2) {
+            sendMessage("Attacking country will get 1 dice");//notifies view to show message
+            attackDice = new Integer[1];
+        } else if (attacker.getArmySize() == 3) {
+            if (attackerAI) {//if the attacker is an AI
+                numberOfAttackDice = 2;//use the maximum number of dice
+                sendMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
+            } else {
+                numberOfAttackDice = getNumber("Attacking player, how many dice do you want to play?", 1, 2);//notifies view to get number of dice
+            }
+            attackDice = new Integer[numberOfAttackDice];
+        } else {
+            if (attackerAI) {
+                numberOfAttackDice = 3;
+                sendMessage("Player " + currentPlayer.getName() + " will use " + numberOfAttackDice + " dice");
+            } else {
+                numberOfAttackDice = getNumber("Attacking player, how many dice do you want to play?", 1, 3);//notifies view to get number of dice
+            }
+            attackDice = new Integer[numberOfAttackDice];
+        }
+
+        return attackDice;
+    }
+
+
+
+
+    /**
+     * update any changes in map after player finish a single attack
+     * @param defender
+     * @param attacker
+     * @param defendingPlayer
+     * @param attackingPlayer
+     * @param defenderAI
+     * @param attackerAI
+     * @param numberOfAttackDice
+     */
+    private void updateAttackMapChanges(Country defender, Country attacker, Player defendingPlayer, Player attackingPlayer, Boolean defenderAI, Boolean attackerAI, int numberOfAttackDice){
         //output any changes to the map
         if (defender.getArmySize() == 0) {
-            view.showMessage("Player " + currentPlayer.getName() + " captured " + defender.getName());//notify view to show message
+            sendMessage("Player " + currentPlayer.getName() + " captured " + defender.getName());//notify view to show message
 
             currentPlayer.addCountry(defender);
             defendingPlayer.removeCountry(defender);//remove captured country from defending country owner's country list
 
             if(defendingPlayer.getCountries().size()==0){//if defending country's owner does not have any other country
-                view.showMessage("Player " + defendingPlayer.getName() + " has been eliminated.");//notify view to show message
+                sendMessage("Player " + defendingPlayer.getName() + " has been eliminated.");//notify view to show message
                 players.remove(defendingPlayer);//remove defending player from player list
             }
             defender.setOwner(currentPlayer);// update new owner
@@ -210,19 +290,54 @@ public class Model {
                 //get the AI's choice for troops to move
                 movingTroops = player.chooseNumberOfTroops(attacker.getArmySize() - 1);
             } else {
-                movingTroops = view.getNumber("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", 1, attacker.getArmySize() - 1);
+                movingTroops = getNumber("Player " + currentPlayer.getName() + ", how many troops do you want to move to your new country?", numberOfAttackDice, attacker.getArmySize() - 1);
             }
             defender.addTroops(movingTroops);//move all but 1 troop to new country
             attacker.removeTroops(movingTroops);//leave 1 troop in attacking country
-            view.updateCountryButton(defender, attackingPlayer.getColor(), defender.getArmySize());//update view (button color)
+            updateCountryButton(defender, attackingPlayer.getColor(), defender.getArmySize());//update view (button color)
         } else {
-            view.updateCountryButton(defender, defendingPlayer.getColor(), defender.getArmySize());//update view (number on button)
+            updateCountryButton(defender, defendingPlayer.getColor(), defender.getArmySize());//update view (number on button)
         }
-        view.updateCountryButton(attacker, attackingPlayer.getColor(), attacker.getArmySize());//update view (number on button)
+        updateCountryButton(attacker, attackingPlayer.getColor(), attacker.getArmySize());//update view (number on button)
+
+    }
+
+
+
+    /**
+     * check if there is winner
+     */
+    public void checkWinner(){
         if (players.size() == 1) {
-            view.showEndMessage("Player "+players.get(0).getName() + " is the winner. Game Over!");//notify view to show end message
+            for (Views view : viewLists) {
+                view.showEndMessage(new Event(this,"Player "+players.get(0).getName() + " is the winner. Game Over!"));
+            }
+//            view.showEndMessage("Player "+players.get(0).getName() + " is the winner. Game Over!");//notify view to show end message
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * update Country Button
+     * @param country
+     * @param color
+     * @param troop
+     */
+    public void updateCountryButton(Country country, Color color, int troop){
+        for (Views view : viewLists) {
+            view.updateCountryButton(new Event(this, country, color, troop));
+        }
+    }
+
 
     /**
      * Check to see if the attack can be done based on the rules of the game
@@ -232,15 +347,15 @@ public class Model {
      */
     public boolean canDefend(Country attacker, Country defender) {
         if (currentPlayer.getCountries().contains(defender)) {//if the player attacks their own country
-            view.showMessage("You cannot attack a country you own.");//notify the view to show a message
+            sendMessage("You cannot attack a country you own.");//notify the view to show a message
             return false;
         }
 
         if (attacker.hasNeighbor(defender)) {//if attack country is neighbour country of attacked country
-            view.showMessage("Defending Country: " + defender.getName());//notify the view to show a message
+            sendMessage("Defending Country: " + defender.getName());//notify the view to show a message
             return true;
         } else {
-            view.showMessage("The country you selected is not a neighbor of " + attacker.getName());//notify the view to show a message
+            sendMessage("The country you selected is not a neighbor of " + attacker.getName());//notify the view to show a message
             return false;
         }
     }
@@ -253,13 +368,13 @@ public class Model {
      */
     public boolean isAttacker(Country country) {
         if (!(currentPlayer.getCountries().contains(country))) {//if the player doesn't own the country
-            view.showMessage("You do not own this country");//notify the view to show a message
+            sendMessage("You do not own this country");//notify the view to show a message
             return false;
         } else if (country.getArmySize() == 1) {
-            view.showMessage("This country does not have enough troops to attack");//notify the view to show a message
+            sendMessage("This country does not have enough troops to attack");//notify the view to show a message
             return false;
         } else {
-            view.showMessage("Attacking Country: "+ country.getName());//notify the view to show a message
+            sendMessage("Attacking Country: "+ country.getName());//notify the view to show a message
             return true;
         }
     }
@@ -274,13 +389,28 @@ public class Model {
             currentPlayerIndex++;//move on to next player
         }
         currentPlayer = players.get(currentPlayerIndex);
-        view.updatePlayerTurnTextHandler(currentPlayer);
+
+        for (Views view : viewLists) {
+            view.updatePlayerTurnTextHandler(new Event(this,currentPlayer));
+        }
+//        view.updatePlayerTurnTextHandler(currentPlayer);
 
         fortifyPhase = false;
         placementPhase = true;
-        view.showMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
+        sendMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
         if (currentPlayer instanceof AIPlayer) {//if the current player is AI
             ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());//start their turn
+        }
+        updateBonusTroopView(bonusTroopCalculator());
+    }
+
+    /**
+     * send message to view
+     * @param message
+     */
+    public void sendMessage(String message){
+        for (Views view : viewLists) {
+            view.showMessage(new Event(this,message));
         }
     }
 
@@ -296,14 +426,14 @@ public class Model {
             AIPlayer player = (AIPlayer) currentPlayer;
             //get the AI's choice of troops to move
             troops = player.chooseNumberOfTroops(fromCountry.getArmySize() - 1);
-            view.showMessage("Player " + currentPlayer.getName() + " is moving " + troops + " troops from " + fromCountry.getName() + " to " + toCountry.getName());
+            sendMessage("Player " + currentPlayer.getName() + " is moving " + troops + " troops from " + fromCountry.getName() + " to " + toCountry.getName());
         } else {
-            troops = view.getNumber("How many troops do you want to move?", 1, fromCountry.getArmySize() - 1);
+            troops = getNumber("How many troops do you want to move?", 1, fromCountry.getArmySize() - 1);
         }
         fromCountry.removeTroops(troops);
         toCountry.addTroops(troops);//move the troops
-        view.updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
-        view.updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());//update the buttons
+        updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
+        updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());//update the buttons
         fortifyPhase = false;
         pass();
     }
@@ -317,16 +447,29 @@ public class Model {
      */
     public boolean isFortifying(Country country) {
         if (!(currentPlayer.getCountries().contains(country))) {//if the player doesn't own the country
-            view.showMessage("You do not own this country");//notify the view to show a message
+            sendMessage("You do not own this country");//notify the view to show a message
             return false;
         } else if (country.getArmySize() == 1) {
-            view.showMessage("This country does not have enough troops to fortify.");//notify the view to show a message
+            sendMessage("This country does not have enough troops to fortify.");//notify the view to show a message
             return false;
         } else {
-            view.showMessage("Fortifying from Country: "+ country.getName());//notify the view to show a message
+            sendMessage("Fortifying from Country: "+ country.getName());//notify the view to show a message
             return true;
         }
     }
+
+
+    /**
+     *
+     * @param troop
+     */
+    public void updateBonusTroopView(int troop){
+        for (Views view : viewLists) {
+            view.updatePlaceNum(new Event(this, troop));
+        }
+    }
+
+
 
     /**
      * checks to see if the country can fortify to the other country
@@ -338,17 +481,17 @@ public class Model {
         ArrayList<Country> visited = new ArrayList<>();
         ArrayList<Country> deadEnd = new ArrayList<>();
         if (!currentPlayer.getCountries().contains(toCountry)) {//if the player attacks their own country
-            view.showMessage("You cannot fortify to a country you do not own.");//notify the view to show a message
+            sendMessage("You cannot fortify to a country you do not own.");//notify the view to show a message
             return false;
         }else{
                 visited.add(fromCountry);
                 boolean result = findPath(fromCountry, toCountry, visited, deadEnd);
                 if(result){
-                    view.showMessage("Fortifying to Country: " + toCountry.getName());//notify the view to show a message
+                    sendMessage("Fortifying to Country: " + toCountry.getName());//notify the view to show a message
                     return true;
                 }else{
                     if (!(currentPlayer instanceof AIPlayer)) {
-                        view.showMessage("The country you selected is not connected to " + fromCountry.getName());//notify the view to show a message
+                        sendMessage("The country you selected is not connected to " + fromCountry.getName());//notify the view to show a message
                     }
                     return false;
             }
@@ -392,14 +535,15 @@ public class Model {
             if (currentPlayer instanceof AIPlayer) {//if the current player is AI
                 input = 1;//add 1 troop
             } else {
-                input = view.getNumber("How many troops do you want to place here?", 1, newTroops);
+                input = getNumber("How many troops do you want to place here?", 1, newTroops);
             }
             country.addTroops(input);
-            view.updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
+            updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
             newTroops -= input;
+            updateBonusTroopView(newTroops);
             if (newTroops == 0) {//once there are no more troops to place
                 placementPhase = false;//end the placement phase
-                view.showMessage("Placement Phase is done, Attack Phase has begun!");
+                sendMessage("Placement Phase is done, Attack Phase has begun!");
             } else {
                 return newTroops;
             }
@@ -420,7 +564,7 @@ public class Model {
         if(country.getOwner().equals(currentPlayer)){
             return true;
         }else{
-            view.showMessage("Placement can not be done (country is not yours)");
+            sendMessage("Placement can not be done (country is not yours)");
             return false;
         }
     }
@@ -474,7 +618,7 @@ public class Model {
      */
     public void activatePlacement(){
         placementPhase = true;
-        view.showMessage("Player " + getCurrentPlayer().getName() + " has " + bonusTroopCalculator() + " troops to place.");
+        sendMessage("Player " + getCurrentPlayer().getName() + " has " + bonusTroopCalculator() + " troops to place.");
         if (currentPlayer instanceof AIPlayer) {//if the first player is AI
             ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());//start their turn
         }
