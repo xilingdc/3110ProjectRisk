@@ -22,7 +22,7 @@ public class Model {
     private boolean placementPhase;
     private boolean fortifyPhase;
 //    private boolean isAiMode=false;
-    private List<View> viewLists;
+    private List<Views> viewLists;
     private int numberOfAttackDice, numberOfDefenceDice;
 
 
@@ -83,7 +83,7 @@ public class Model {
                 p = new AIPlayer(Integer.toString(i+1),colorPlayer[i], this);
             }
             players.add(p);//add player1, player2.... into playerList
-            for (View view : viewLists) {
+            for (Views view : viewLists) {
                 view.addPlayer(new Event(this,"Player " + (i+1), colorPlayer[i]));
             }
 //            view.addPlayer("Player " + (i+1), colorPlayer[i]);//display players in the view
@@ -140,7 +140,7 @@ public class Model {
      */
     public int getNumber(String str, int min, int max){
         int userInput=-1;
-        for (View view : viewLists) {
+        for (Views view : viewLists) {
             userInput = view.getNumberFromDiolog(new Event(this, str, min, max));
         }
         return userInput;
@@ -309,7 +309,7 @@ public class Model {
      */
     public void checkWinner(){
         if (players.size() == 1) {
-            for (View view : viewLists) {
+            for (Views view : viewLists) {
                 view.showEndMessage(new Event(this,"Player "+players.get(0).getName() + " is the winner. Game Over!"));
             }
 //            view.showEndMessage("Player "+players.get(0).getName() + " is the winner. Game Over!");//notify view to show end message
@@ -333,7 +333,7 @@ public class Model {
      * @param troop
      */
     public void updateCountryButton(Country country, Color color, int troop){
-        for (View view : viewLists) {
+        for (Views view : viewLists) {
             view.updateCountryButton(new Event(this, country, color, troop));
         }
     }
@@ -390,7 +390,7 @@ public class Model {
         }
         currentPlayer = players.get(currentPlayerIndex);
 
-        for (View view : viewLists) {
+        for (Views view : viewLists) {
             view.updatePlayerTurnTextHandler(new Event(this,currentPlayer));
         }
 //        view.updatePlayerTurnTextHandler(currentPlayer);
@@ -409,7 +409,7 @@ public class Model {
      * @param message
      */
     public void sendMessage(String message){
-        for (View view : viewLists) {
+        for (Views view : viewLists) {
             view.showMessage(new Event(this,message));
         }
     }
@@ -464,7 +464,7 @@ public class Model {
      * @param troop
      */
     public void updateBonusTroopView(int troop){
-        for (View view : viewLists) {
+        for (Views view : viewLists) {
             view.updatePlaceNum(new Event(this, troop));
         }
     }
