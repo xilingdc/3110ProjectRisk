@@ -14,6 +14,7 @@ public class View extends JFrame implements Views{
     private HashMap<Country, CountryButton> countryButtons;
     private JPanel bottomPanel;
     private Model model;
+    private String backgroundImageFileName;
 
     public View() throws IOException {
         super("Risk Domination");
@@ -22,15 +23,22 @@ public class View extends JFrame implements Views{
 
         int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
         int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
+        String mapFileName = getMapFileName();
 
-        model = new Model();
-//        model.setView(this);
-        model.addView(this);
+        //backgroundImageFileName = "risk-board-white.png";
+
+        if (mapFileName.equals("standard")) {
+            model = new Model();
+            model.addView(this);
+        } else {
+            model = new Model(mapFileName);
+            model.addView(this);
+            model.setCustomMap();
+        }
         bottomPanel = new JPanel();
         this.add(bottomPanel, BorderLayout.SOUTH);
 
         model.processBegin(numPlayer, numAI);
-//        model.setUp();
         Controller controller = new Controller(model,this);
 
         JPanel topPanel = new JPanel();
@@ -56,7 +64,7 @@ public class View extends JFrame implements Views{
         topPanel.add(placeNum);
         this.add(topPanel, BorderLayout.NORTH);
 
-        MapComponent map = new MapComponent("risk-board-white.png");
+        MapComponent map = new MapComponent(backgroundImageFileName);
         countryButtons = new HashMap<>();
         for (Country country : model.getMap().getCountries()) {//loop through the countries of the game
             CountryButton button = new CountryButton(country.getArmySize(), country);//make a new JButton with the number of troops of the country as the label
@@ -125,7 +133,26 @@ public class View extends JFrame implements Views{
         new View();
     }
 
+    @Override
+    public String getMapFileName() {
+        String message = "Do you want to use a custom map?";
+        String title = "Custom Map Choice";
+        String filename = "standard";
+        int choice = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
+            String message2 = "Enter the name of the xml file:";
+            filename = JOptionPane.showInputDialog(this, message2);
+            while (filename.isEmpty()) {
+                filename = JOptionPane.showInputDialog(this, message2);
+            }
+        }
+        return filename;
+    }
 
+    @Override
+    public void handleCustomMap(String filename) {
+        backgroundImageFileName = filename;
+    }
 
 
     /**

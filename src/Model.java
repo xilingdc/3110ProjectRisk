@@ -21,7 +21,7 @@ public class Model {
     private boolean placementPhase, fortifyPhase;
     private List<Views> viewLists;
     private int numberOfAttackDice, numberOfDefenceDice;
-
+    private String customMapFileName;
 
 
     /**
@@ -30,6 +30,26 @@ public class Model {
     public Model() {
         map = new Map();
         viewLists=new ArrayList<>();
+    }
+
+    public Model(String mapFileName) {
+        viewLists = new ArrayList<>();
+        customMapFileName = mapFileName;
+    }
+
+    public void setCustomMap() {
+        Map customMap = new Map(customMapFileName);
+        while (!(customMap.isValid())) {
+            for (Views view : viewLists) {
+                String filename = view.getMapFileName();
+                if (filename.equals("standard")) {
+                    customMap = new Map();
+                } else {
+                    customMap = new Map(filename);
+                }
+            }
+        }
+        map = customMap;
     }
     
     /**
@@ -71,6 +91,8 @@ public class Model {
      * @param playerNum the number of players in the game
      */
     public void processBegin(int playerNum, int aiNum) {
+        notifyMapSelection();
+
         pureProcessBegin(playerNum, aiNum);
 
         for (int i = 0; i < playerNum; i++) {
@@ -288,7 +310,11 @@ public class Model {
         return attackDice;
     }
 
-
+    public void notifyMapSelection() {
+        for (Views view : viewLists) {
+            view.handleCustomMap(map.getFilename());
+        }
+    }
 
 
     /**
@@ -636,23 +662,10 @@ public class Model {
      */
     public int bonusTroopCalculator() {
         int bonusTroops = 3;
-        if (currentPlayer.getCountries().containsAll(map.getAustralia())) {
-            bonusTroops += 2;
-        }
-        if (currentPlayer.getCountries().containsAll(map.getAsia())) {
-            bonusTroops += 7;
-        }
-        if (currentPlayer.getCountries().containsAll(map.getAfrica())) {
-            bonusTroops += 3;//go back to first player
-        }
-        if (currentPlayer.getCountries().containsAll(map.getEurope())) {
-            bonusTroops += 5;//go back to first player
-        }
-        if (currentPlayer.getCountries().containsAll(map.getNorthAmerica())) {
-            bonusTroops += 5;//go back to first player
-        }
-        if (currentPlayer.getCountries().containsAll(map.getSouthAmerica())) {
-            bonusTroops += 2;//go back to first player
+        for (Continent continent : map.getContinents()) {
+            if (currentPlayer.getCountries().containsAll(continent.getCountries())) {
+                bonusTroops += continent.getBonusTroops();
+            }
         }
 
         int countriesConquered = currentPlayer.getCountries().size();

@@ -2,6 +2,10 @@
  *@author Xiling Wang
  */
 public interface Views {
+    String getMapFileName();
+
+    void handleCustomMap(String filename);
+
     void showMessage(Event event);
 
     int getNumberFromDiolog(Event event);
