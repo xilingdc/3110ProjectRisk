@@ -1,0 +1,21 @@
+<map>
+	<continent name="West" bonusTroops="4">
+		<country name="A" x="10" y="10">
+			<neighbour name="B" x="40" y="50"></neighbour>
+			<neighbour name="C" x="100" y="10"></neighbour>
+		</country>
+		<country name="B" x="40" y="50">
+			<neighbour name="A" x="10" y="10"></neighbour>
+		</country>
+	</continent>
+	<continent name="East" bonusTroops="4">
+		<country name="C" x="100" y="10">
+			<neighbour name="D" x="100" y="50"></neighbour>
+			<neighbour name="A" x="10" y="10"></neighbour>
+		</country>
+		<country name="D" x="100" y="50">
+			<neighbour name="C" x="100" y="10"></neighbour>
+		</country>
+	</continent>
+	<image file="map.png"></image>
+</map>
