@@ -1,5 +1,14 @@
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Xiling Wang
@@ -7,7 +16,9 @@ import java.util.List;
  * @author Ali Fahd
  */
 public class Map {
+    private ArrayList<Continent> continents;
     private ArrayList<Country> countries;//general country list
+    private String filename;
     private ArrayList<Country> australia;
     private ArrayList<Country> asia;
     private ArrayList<Country> africa;
@@ -20,12 +31,21 @@ public class Map {
      */
     public Map() {
         countries = new ArrayList<>();
-        australia = new ArrayList<>();
-        asia = new ArrayList<>();
-        africa = new ArrayList<>();
-        europe = new ArrayList<>();
-        southAmerica = new ArrayList<>();
-        northAmerica = new ArrayList<>();
+        continents = new ArrayList<>();
+        filename = "risk-board-white.png";
+        Continent australia = new Continent("Australia",2);
+        continents.add(australia);
+        Continent asia = new Continent("Asia",7);
+        continents.add(asia);
+        Continent africa = new Continent("Africa",5);
+        continents.add(africa);
+        Continent europe = new Continent("Europe",5);
+        continents.add(europe);
+        Continent southAmerica = new Continent("South America",5);
+        continents.add(southAmerica);
+        Continent northAmerica = new Continent("North America",2);
+        continents.add(northAmerica);
+
         //North America
         Country Alaska = new Country("Alaska", 365, 90);//initialization and add the country into country list
         countries.add(Alaska);
@@ -176,55 +196,147 @@ public class Map {
         NorthAfrica.addNeighbours(new Country[]{Brazil, WesternEurope, Egypt, EastAfrica, Congo});
         SouthAfrica.addNeighbours(new Country[]{Congo, EastAfrica, Madagascar});
 
-        australia.add(EasternAustralia);
-        australia.add(WesternAustralia);
-        australia.add(Indonesia);
-        australia.add(NewGuinea);
+        australia.addCountry(EasternAustralia);
+        australia.addCountry(WesternAustralia);
+        australia.addCountry(Indonesia);
+        australia.addCountry(NewGuinea);
 
-        asia.add(Afghanistan);
-        asia.add(China);
-        asia.add(India);
-        asia.add(Irkutsk);
-        asia.add(Japan);
-        asia.add(Kamchatka);
-        asia.add(MiddleEast);
-        asia.add(Mongolia);
-        asia.add(Siam);
-        asia.add(Siberia);
-        asia.add(Ural);
-        asia.add(Yakutsk);
+        asia.addCountry(Afghanistan);
+        asia.addCountry(China);
+        asia.addCountry(India);
+        asia.addCountry(Irkutsk);
+        asia.addCountry(Japan);
+        asia.addCountry(Kamchatka);
+        asia.addCountry(MiddleEast);
+        asia.addCountry(Mongolia);
+        asia.addCountry(Siam);
+        asia.addCountry(Siberia);
+        asia.addCountry(Ural);
+        asia.addCountry(Yakutsk);
 
-        africa.add(Congo);
-        africa.add(EastAfrica);
-        africa.add(Egypt);
-        africa.add(Madagascar);
-        africa.add(NorthAfrica);
-        africa.add(SouthAfrica);
+        africa.addCountry(Congo);
+        africa.addCountry(EastAfrica);
+        africa.addCountry(Egypt);
+        africa.addCountry(Madagascar);
+        africa.addCountry(NorthAfrica);
+        africa.addCountry(SouthAfrica);
 
-        europe.add(GreatBritain);
-        europe.add(Iceland);
-        europe.add(NorthernEurope);
-        europe.add(Scandinavia);
-        europe.add(SouthernEurope);
-        europe.add(Ukraine);
-        europe.add(WesternEurope);
+        europe.addCountry(GreatBritain);
+        europe.addCountry(Iceland);
+        europe.addCountry(NorthernEurope);
+        europe.addCountry(Scandinavia);
+        europe.addCountry(SouthernEurope);
+        europe.addCountry(Ukraine);
+        europe.addCountry(WesternEurope);
 
-        southAmerica.add(Argentina);
-        southAmerica.add(Brazil);
-        southAmerica.add(Peru);
-        southAmerica.add(Venezuela);
+        southAmerica.addCountry(Argentina);
+        southAmerica.addCountry(Brazil);
+        southAmerica.addCountry(Peru);
+        southAmerica.addCountry(Venezuela);
 
-        northAmerica.add(Alaska);
-        northAmerica.add(Alberta);
-        northAmerica.add(CentralAmerica);
-        northAmerica.add(EasternAmerica);
-        northAmerica.add(Greenland);
-        northAmerica.add(NorthwestAmerica);
-        northAmerica.add(Ontario);
-        northAmerica.add(Quebec);
-        northAmerica.add(WesternAmerica);
+        northAmerica.addCountry(Alaska);
+        northAmerica.addCountry(Alberta);
+        northAmerica.addCountry(CentralAmerica);
+        northAmerica.addCountry(EasternAmerica);
+        northAmerica.addCountry(Greenland);
+        northAmerica.addCountry(NorthwestAmerica);
+        northAmerica.addCountry(Ontario);
+        northAmerica.addCountry(Quebec);
+        northAmerica.addCountry(WesternAmerica);
     }
 
+    public Map(String filename) {
+        continents = new ArrayList<>();
+        countries = new ArrayList<>();
+        try {
+            importFromXML(filename);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importFromXML(String filename) throws Exception {
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        SAXParser s = spf.newSAXParser();
+        File f = new File(filename);
+
+        DefaultHandler dh = new DefaultHandler() {
+            Continent continent;
+            Country country;
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                if (qName.equals("continent")) {
+                    String continentName = attributes.getValue(0);
+                    int bonusTroops = Integer.parseInt(attributes.getValue(1));
+                    continent = new Continent(continentName, bonusTroops);
+                } else if (qName.equals("country")) {
+                    String countryName = attributes.getValue(0);
+                    if (hasCountry(countryName)) {
+                        country = getCountry(countryName);
+                    } else {
+                        int x = Integer.parseInt(attributes.getValue(1));
+                        int y = Integer.parseInt(attributes.getValue(2));
+                        country = new Country(countryName, x, y);
+                    }
+                } else if (qName.equals("neighbour")) {
+                    String neighbourName = attributes.getValue(0);
+                    if (hasCountry(neighbourName)) {
+                        country.addNeighbour(getCountry(neighbourName));
+                    } else {
+                        int x = Integer.parseInt(attributes.getValue(1));
+                        int y = Integer.parseInt(attributes.getValue(2));
+                        Country neighbour = new Country(neighbourName, x, y);
+                        countries.add(neighbour);
+                        country.addNeighbour(neighbour);
+                    }
+                } else if (qName.equals("image")) {
+                    String filename = attributes.getValue(0);
+                    setFilename(filename);
+                }
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                if (qName.equals("continent")) {
+                    continents.add(continent);
+                } else if (qName.equals("country")) {
+                    if (!(countries.contains(country))) {
+                        countries.add(country);
+                    }
+                    continent.addCountry(country);
+                }
+            }
+        };
+        s.parse(f, dh);
+    }
+
+    public boolean isValid() {
+        boolean valid = true;
+        Country country = countries.get(0);
+        Set<Country> visited = new HashSet<>();
+        ArrayList<Country> queue = new ArrayList<>();
+        queue.add(country);
+        while (!(queue.isEmpty())) {
+            country = queue.get(0);
+            List<Country> neighbours = country.neighbours();
+            visited.add(country);
+            queue.remove(0);
+            for (Country neighbour : neighbours) {
+                if (!(visited.contains(neighbour))) {
+                    queue.add(neighbour);
+                }
+            }
+        }
+        return countries.size() == visited.size();
+    }
+
+    public void setFilename(String name) {
+        filename = name;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
 
     /**
      * Return a country we are looking for based on its name
@@ -283,45 +395,10 @@ public class Map {
     }
 
     /**
-     * @return australia country list
+     * @return list of continents
      */
-    public ArrayList<Country> getAustralia() {
-        return australia;
-    }
-
-    /**
-     * @return australia country list
-     */
-    public ArrayList<Country> getAsia() {
-        return asia;
-    }
-
-    /**
-     * @return australia country list
-     */
-    public ArrayList<Country> getAfrica() {
-        return africa;
-    }
-
-    /**
-     * @return australia country list
-     */
-    public ArrayList<Country> getEurope() {
-        return europe;
-    }
-
-    /**
-     * @return australia country list
-     */
-    public ArrayList<Country> getNorthAmerica() {
-        return northAmerica;
-    }
-
-    /**
-     * @return australia country list
-     */
-    public ArrayList<Country> getSouthAmerica() {
-        return southAmerica;
+    public ArrayList<Continent> getContinents() {
+        return continents;
     }
 
 

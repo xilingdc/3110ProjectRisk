@@ -147,8 +147,10 @@ public class Country {
             neighbours.add(countries[i]);
         }
     }
-    
-    
+
+    public void addNeighbour(Country country) {
+        neighbours.add(country);
+    }
     
     /**
      * @param country - which country we want to see is a neighbour
