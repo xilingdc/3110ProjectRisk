@@ -14,14 +14,11 @@ public class Model {
 
     private ArrayList<Player> players;// player list
     private Player currentPlayer;//current player
-    private int currentPlayerIndex;//current player index number 
+    private int currentPlayerIndex, playerNum;//current player index number
     private Map map;
     private int[] troopAllocation = {50, 35, 30, 25, 20};
     private Color[] colorPlayer = {Color.red,Color.cyan,Color.green,Color.magenta, Color.orange, Color.pink};//setting up an array of color for each player
-//    private View view;
-    private boolean placementPhase;
-    private boolean fortifyPhase;
-//    private boolean isAiMode=false;
+    private boolean placementPhase, fortifyPhase;
     private List<Views> viewLists;
     private int numberOfAttackDice, numberOfDefenceDice;
 
@@ -69,28 +66,39 @@ public class Model {
 
     
     /**
-     * the method prints the beginning of the game
+     * the method prints the beginning of the game in view
      *
      * @param playerNum the number of players in the game
      */
     public void processBegin(int playerNum, int aiNum) {
+        pureProcessBegin(playerNum, aiNum);
+
+        for (int i = 0; i < playerNum; i++) {
+            for (Views view : viewLists) {
+                view.addPlayer(new Event(this,"Player " + (i+1), colorPlayer[i]));
+            }
+        }
+    }
+
+    /**
+     * the method sets up the beginning of the game
+     * @param playerNum
+     * @param aiNum
+     */
+    public void pureProcessBegin(int playerNum, int aiNum){
         players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             Player p;
             if (i < playerNum - aiNum) {
-                p = new Player(Integer.toString(i+1),colorPlayer[i]);
+                p = new Player(Integer.toString(i + 1), colorPlayer[i]);
             } else {
-                p = new AIPlayer(Integer.toString(i+1),colorPlayer[i], this);
+                p = new AIPlayer(Integer.toString(i + 1), colorPlayer[i], this);
             }
             players.add(p);//add player1, player2.... into playerList
-            for (Views view : viewLists) {
-                view.addPlayer(new Event(this,"Player " + (i+1), colorPlayer[i]));
-            }
-//            view.addPlayer("Player " + (i+1), colorPlayer[i]);//display players in the view
         }
-
         currentPlayerIndex = 0;//the game begins at player one
         currentPlayer = players.get(0);
+        setUp();
     }
     
     /**
@@ -168,21 +176,43 @@ public class Model {
         Arrays.sort(defendDice, Collections.reverseOrder());//sort in descending order
         int lessDice = Math.min(attackDice.length, defendDice.length);
         for (int i = 0; i < lessDice; i++) {//loop through dice
-            String message = "Attack Dice: " + attackDice[i] + "   Defence dice: " + defendDice[i];
-            if (attackDice[i] > defendDice[i]) {//if attcking dice wins
-                defender.removeTroops(1);
-                message += "   Attacker wins";
-            } else {//if defending dice wins
-                attacker.removeTroops(1);
-                message += "   Defender wins";
-            }
-            sendMessage(message);//notify view to show message
+            String[] message = pureAttack(attacker,defender,attackDice,defendDice,i);
+            sendMessage(message[0]);//notify view to show message
+            sendMessage(message[1]);//notify view to show message
         }
 
         updateAttackMapChanges(defender,attacker, defendingPlayer,attackingPlayer, defenderAI, attackerAI, numberOfAttackDice);
 
         checkWinner();
     }
+
+    /**
+     * attack mechanism
+     * @param attacker
+     * @param defender
+     * @param attackDice
+     * @param defendDice
+     * @param round
+     * @return
+     */
+    public String[] pureAttack(Country attacker, Country defender, Integer attackDice[], Integer defendDice[], int round){
+            String[] message= new String[2];
+            message[0]= "Attack Dice: " + attackDice[round] + "   Defence dice: " + defendDice[round];
+            if (attackDice[round] > defendDice[round]) {//if attacking dice wins
+                defender.removeTroops(1);
+                message[1] = "Attacker wins";
+            } else {//if defending dice wins
+                attacker.removeTroops(1);
+                message[1] = "Defender wins";
+            }
+
+            return message;
+    }
+
+
+
+
+
 
     /**
      * preparation for defender side
@@ -380,28 +410,34 @@ public class Model {
     }
 
     /**
-     * pass to next player
+     * pass to next player in view
      */
     public void pass() {
+        purePass();
+        for (Views view : viewLists) {
+            view.updatePlayerTurnTextHandler(new Event(this,currentPlayer));
+        }
+
+        sendMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
+        if (currentPlayer instanceof AIPlayer) {//if the current player is AI
+            ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());//start their turn
+        }
+        updateBonusTroopView(bonusTroopCalculator());
+    }
+
+
+    /**
+     * pass to next function
+     */
+    public void purePass(){
         if (currentPlayerIndex == players.size() - 1) {
             currentPlayerIndex = 0;//go back to first player
         } else {
             currentPlayerIndex++;//move on to next player
         }
         currentPlayer = players.get(currentPlayerIndex);
-
-        for (Views view : viewLists) {
-            view.updatePlayerTurnTextHandler(new Event(this,currentPlayer));
-        }
-//        view.updatePlayerTurnTextHandler(currentPlayer);
-
         fortifyPhase = false;
         placementPhase = true;
-        sendMessage("Player " + currentPlayer.getName() + " has " + bonusTroopCalculator() + " troops to place.");
-        if (currentPlayer instanceof AIPlayer) {//if the current player is AI
-            ((AIPlayer) currentPlayer).aiPlay(bonusTroopCalculator());//start their turn
-        }
-        updateBonusTroopView(bonusTroopCalculator());
     }
 
     /**
@@ -430,12 +466,22 @@ public class Model {
         } else {
             troops = getNumber("How many troops do you want to move?", 1, fromCountry.getArmySize() - 1);
         }
-        fromCountry.removeTroops(troops);
-        toCountry.addTroops(troops);//move the troops
+        pureFortify(fromCountry,toCountry,troops);
         updateCountryButton(fromCountry, currentPlayer.getColor(), fromCountry.getArmySize());
         updateCountryButton(toCountry, currentPlayer.getColor(), toCountry.getArmySize());//update the buttons
-        fortifyPhase = false;
         pass();
+    }
+
+    /**
+     * fortifying certain amount of troops from certain country to target country
+     * @param fromCountry
+     * @param toCountry
+     * @param troops
+     */
+    public void pureFortify(Country fromCountry, Country toCountry, int troops){
+        fromCountry.removeTroops(troops);
+        toCountry.addTroops(troops);//move the troops
+        fortifyPhase = false;
     }
 
     /**
@@ -537,9 +583,9 @@ public class Model {
             } else {
                 input = getNumber("How many troops do you want to place here?", 1, newTroops);
             }
-            country.addTroops(input);
+
+            newTroops = purePlacingTroop(newTroops,input,country);
             updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
-            newTroops -= input;
             updateBonusTroopView(newTroops);
             if (newTroops == 0) {//once there are no more troops to place
                 placementPhase = false;//end the placement phase
@@ -552,6 +598,20 @@ public class Model {
             return newTroops;
         }
     }
+
+    /**
+     * placing troops
+     * @param newTroops
+     * @param input
+     * @param country
+     * @return
+     */
+    public int purePlacingTroop(int newTroops, int input, Country country){
+        country.addTroops(input);
+        newTroops -= input;
+        return newTroops;
+    }
+
 
     /**
      * Determines if the country can receive troops in

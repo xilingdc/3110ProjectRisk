@@ -1,198 +1,94 @@
 import static org.junit.Assert.*;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 /**
  * @author Ali Fahd
+ * @author Xiling Wang
  */
 public class ModelTest{
-    View v;
-    Model m;
 
-    @Test
-    public void testCountrySize() {
-        try {
-        v = new View();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Model m = new Model();
-        m.addView(v);
-        m.processBegin(3, 0);
-        m.setUp();
-        assertEquals(42, m.getMap().getCountries().size());
+    Model model;
+
+    @Before
+    public void testBegin(){
+        model = new Model();
     }
 
     @Test
-    public void testPass() {
-        try {
-            v = new View();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Model m = new Model();
-        m.addView(v);
-        m.processBegin(3, 0);
-        m.setUp();
-        assertEquals(3, m.getPlayers().size());
-        assertEquals("1", m.getCurrentPlayer().getName());
-        m.pass();
-        m.pass();
-        assertEquals("3", m.getCurrentPlayer().getName());
-        m.pass();
-        assertEquals("1", m.getCurrentPlayer().getName());
+    public void testProcessBegin(){
+        model.pureProcessBegin(5,3);
+        assertEquals(model.getPlayers().size(),5);
+        assertFalse(model.getPlayers().size()==3);
+        assertFalse(model.getPlayers().size()==4);
+        assertFalse(model.getPlayers().size()==2);
     }
 
     @Test
-    public void testCanDefend() {
-        try {
-            v = new View();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Model m = new Model();
-        m.addView(v);
-        m.processBegin(3, 0);
-        m.setUp();
-        Country attacker = m.getMap().getCountry("Greenland");
-        Country defender = m.getMap().getCountry("Quebec");
-        if(!(m.getCurrentPlayer().getCountries().contains(attacker))){
-            attacker.setOwner(m.getCurrentPlayer());
-            m.getCurrentPlayer().addCountry(attacker);
-        }
-        if(!(m.getCurrentPlayer().getCountries().contains(defender))){
-            defender.setOwner(m.getCurrentPlayer());
-            m.getCurrentPlayer().addCountry(defender);
-        }
-        assertFalse(m.canDefend(attacker, defender));
+    public void testPlacingTroops(){
+        model.pureProcessBegin(3,0);
+        int totalPlaceNum=7;
+        int previousTargetCountryTroop= model.getCurrentPlayer().countries.get(1).getArmySize();
+        int restPlaceTroop = model.purePlacingTroop(totalPlaceNum,4,model.getCurrentPlayer().countries.get(1));
+        assertEquals(previousTargetCountryTroop+4,model.getCurrentPlayer().countries.get(1).getArmySize());
+        assertEquals(restPlaceTroop, 3);
 
-        m.getCurrentPlayer().removeCountry(defender);
-        defender.setOwner(m.getNextPlayer());
-        m.getNextPlayer().addCountry(defender);
-        assertTrue(m.canDefend(attacker, defender));
-
-
-        defender = m.getMap().getCountry("Brazil");
-        if(!(m.getNextPlayer().getCountries().contains(defender))){
-            defender.setOwner(m.getNextPlayer());
-            m.getNextPlayer().addCountry(defender);
-        }
-        assertFalse(m.canDefend(attacker, defender));
     }
 
     @Test
-    public void testIsAttacker() {
-        try {
-            v = new View();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Model m = new Model();
-        m.addView(v);
-        m.processBegin(3, 0);
-        m.setUp();
-        Country attacker = m.getMap().getCountry("Greenland");
-        if(!(m.getCurrentPlayer().getCountries().contains(attacker))){
-            attacker.setOwner(m.getCurrentPlayer());
-            m.getCurrentPlayer().addCountry(attacker);
-        }
-        m.getCurrentPlayer().removeCountry(attacker);
-        attacker.setOwner(m.getNextPlayer());
-        assertFalse(m.isAttacker(attacker));
-
-        attacker.setOwner(m.getCurrentPlayer());
-        m.getCurrentPlayer().addCountry(attacker);
-        int num = attacker.getArmySize() - 1;
-        attacker.removeTroops(num);
-        assertFalse(m.isAttacker(attacker));
-
-        attacker.addTroops(num);
-        assertTrue(m.isAttacker(attacker));
+    public void testAttack(){
+        model.pureProcessBegin(2,0);
+        Player p1 = model.getPlayers().get(0);
+        Player p2 = model.getPlayers().get(1);
+        Country country1=model.getMap().getCountry("Alaska");
+        Country country2=model.getMap().getCountry("Alberta");;
+        country1.setOwner(p1);
+        country2.setOwner(p2);
+        country1.addTroops(4);
+        country2.addTroops(4);
+        Integer[] attackerDice = {6,3,1};
+        Integer[] defenderDice = {5,3,2};
+        String[] message1 = model.pureAttack(country1,country2,attackerDice,defenderDice,0);
+        assertEquals(message1[1],"Attacker wins");
+        assertFalse(message1[1].equals("Defender wins"));
+        String[] message2 = model.pureAttack(country1,country2,attackerDice,defenderDice,1);
+        assertEquals(message2[1],"Defender wins");
+        assertFalse(message2[1].equals("Attacker wins"));
+        String[] message3 = model.pureAttack(country1,country2,attackerDice,defenderDice,2);
+        assertEquals(message3[1],"Defender wins");
     }
+
+
 
     @Test
-    public void testFortify() {
-        try {
-            v = new View();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Model m = new Model();
-        m.addView(v);
-        m.processBegin(3, 0);
-        m.setUp();
-        Country c1 = m.getMap().getCountry("Alaska");
-        m.getCurrentPlayer().addCountry(c1);
-        c1.setOwner(m.getCurrentPlayer());
-        Country c2 = m.getMap().getCountry("Northwest America");
-        m.getCurrentPlayer().addCountry(c2);
-        c2.setOwner(m.getCurrentPlayer());
-        Country c3 = m.getMap().getCountry("Greenland");
-        m.getCurrentPlayer().addCountry(c3);
-        c3.setOwner(m.getCurrentPlayer());
-        Country c4 = m.getMap().getCountry("Iceland");
-        m.getCurrentPlayer().addCountry(c4);
-        c4.setOwner(m.getCurrentPlayer());
-        Country c5 = m.getMap().getCountry("Eastern Australia");
-        m.getCurrentPlayer().addCountry(c5);
-        c5.setOwner(m.getCurrentPlayer());
-        Country c6 = m.getMap().getCountry("Siam");
-        m.getNextPlayer().addCountry(c6);
-        c6.setOwner(m.getNextPlayer());
-
-        assertTrue(m.canFortify(c1, c4));
-        assertFalse(m.canFortify(c1, c5));
-        assertFalse(m.canFortify(c1, c6));
+    public void testPass(){
+        model.pureProcessBegin(2,0);
+        Player p1 = model.getPlayers().get(0);
+        Player p2 = model.getPlayers().get(1);
+        assertEquals(p1,model.getCurrentPlayer());
+        model.purePass();
+        assertEquals(p2,model.getCurrentPlayer());
     }
+
 
     @Test
-    public void testBonusPlacement() {
-        try {
-            v = new View();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Model m = new Model();
-        m.addView(v);
-        m.processBegin(3, 0);
-        m.setUp();
-        m.getCurrentPlayer().getCountries().clear();
-        for(Country c : m.getMap().getCountries()){
-            m.getCurrentPlayer().addCountry(c);
-            c.setOwner(m.getCurrentPlayer());
-        }
-        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
-        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getSouthAmerica()));
-        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getNorthAmerica()));
-        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getEurope()));
-        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAsia()));
-        assertTrue(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAustralia()));
-        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+2+3+5+5+7), m.bonusTroopCalculator());
+    public void testFortify(){
+        model.pureProcessBegin(2,0);
+        Player p1 = model.getPlayers().get(0);
+        Country country1=model.getMap().getCountry("Alaska");
+        Country country2=model.getMap().getCountry("Alberta");;
+        country1.setOwner(p1);
+        country2.setOwner(p1);
+        country1.addTroops(4);
+        country2.addTroops(4);
+        int troop1=country1.getArmySize();
+        int troop2=country2.getArmySize();
+        model.pureFortify(country1,country2,4);
+        assertEquals(troop1-4,country1.getArmySize());
+        assertEquals(troop2+4,country2.getArmySize());
 
-        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Madagascar"));
-        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+2+5+5+7), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAfrica()));
-
-        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Peru"));
-        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5+5+7), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getSouthAmerica()));
-
-        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Ontario"));
-        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5+7), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getNorthAmerica()));
-
-        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Japan"));
-        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2+5), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAsia()));
-
-        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Iceland"));
-        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)+2), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getEurope()));
-
-        m.getCurrentPlayer().removeCountry(m.getMap().getCountry("Indonesia"));
-        assertEquals(((m.getCurrentPlayer().getCountries().size()/3)), m.bonusTroopCalculator());
-        assertFalse(m.getCurrentPlayer().getCountries().containsAll(m.getMap().getAustralia()));
-
-        assertTrue(m.isPlaceable(m.getMap().getCountry("Western Australia")));
     }
+
 }

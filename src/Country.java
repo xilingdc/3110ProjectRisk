@@ -34,6 +34,14 @@ public class Country {
         return str;
     }
 
+    /**
+     * get neighbours list
+     * @return
+     */
+    public List<Country> getNeighbours() {
+        return neighbours;
+    }
+
     public String toXML(){
         String str="<country>";
         str+="<name>"+name+"</name>";

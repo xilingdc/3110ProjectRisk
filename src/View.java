@@ -30,7 +30,7 @@ public class View extends JFrame implements Views{
         this.add(bottomPanel, BorderLayout.SOUTH);
 
         model.processBegin(numPlayer, numAI);
-        model.setUp();
+//        model.setUp();
         Controller controller = new Controller(model,this);
 
         JPanel topPanel = new JPanel();
