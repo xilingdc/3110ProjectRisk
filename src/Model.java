@@ -1,6 +1,17 @@
 //import jdk.swing.interop.SwingInterOpUtils;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -708,5 +719,92 @@ public class Model {
             nextPlayerIndex = currentPlayerIndex++;//move on to next player
         }
         return players.get(nextPlayerIndex);
+    }
+
+    /*
+    public void save(String filename) {
+        FileOutputStream fileStream = new FileOutputStream(filename);
+        ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
+        outputStream.close();
+    }
+
+    public void loadGame(String filename) {
+        FileInputStream stream = new FileInputStream(filename);
+        ObjectInputStream inputStream = new ObjectInputStream(stream);
+        inputStream.close();
+    }*/
+
+    public String toSaveXML() {
+        String xml = "";
+        xml += "<Model>";
+        for (Player p : players) {
+            xml += "\n\t" + p.toSaveXML();
+        }
+        xml += "\n</Model>";
+        return xml;
+    }
+
+    public void exportToXMLFile(String filename) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+        writer.write(toSaveXML());
+        writer.close();
+    }
+
+    public void importFromXMLFile(String filename) throws Exception{
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        SAXParser s = spf.newSAXParser();
+        File f = new File(filename);
+
+        DefaultHandler dh = new DefaultHandler() {
+            String name = "";
+            String color = "";
+            String countryname = "";
+            boolean isName = false;
+            boolean isColor = false;
+            boolean isCountryname = false;
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                if (qName.equals("name")) {
+                    isName = true;
+                    isCountryname = false;
+                } else if (qName.equals("color")) {
+                    isColor = true;
+                    isName = false;
+                } else if (qName.equals("countryname")) {
+                    isCountryname = true;
+                    isColor = false;
+                }
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                if (qName.equals("color")) {
+                    Color colour;
+                    try {
+                        Field field = Class.forName("java.awt.Color").getField(color);
+                        colour = (Color)field.get(null);
+                        players.add(new Player(name, colour));
+                        currentPlayer = players.get(players.size()-1);
+                    } catch (Exception e) {
+                        color = null; // Not defined
+                    }
+                }else if(qName.equals("countryname")) {
+                    currentPlayer.addCountry(map.getCountry(countryname));
+                }
+            }
+
+            @Override
+            public void characters(char[] ch, int start, int length) throws SAXException {
+                String string = new String(ch, start, length);
+                if (isName) {
+                    if (name.isEmpty()) name = string;
+                } else if (isColor) {
+                    if (color.isEmpty()) color = string;
+                } else if (isCountryname) {
+                    if (countryname.isEmpty()) countryname = string;
+                }
+            }
+        };
+        s.parse(f, dh);
     }
 }

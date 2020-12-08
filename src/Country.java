@@ -25,6 +25,13 @@ public class Country {
         neighbours = new ArrayList<>();
     }
 
+    public String toSaveXML(){
+        String str="<country>";
+        str+="<countryname>"+name+"</countryname>";
+        str+="</country>";
+        return str;
+    }
+
     public String toSimpleXML(){
         String str="<country>";
         str+="<name>"+name+"</name>";

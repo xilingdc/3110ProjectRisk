@@ -40,13 +40,13 @@ public class Player {
 
 
 
-    public String toXML(){
+    public String toSaveXML(){
         String str="<player>";
         str+="<name>"+this.name+"</name>";
         str+="<color>"+this.color.toString()+"</color>";
         str+="<countries>";
         for (Country country : countries) {
-            str+=country.toSimpleXML();
+            str+=country.toSaveXML();
         }
         str+="</countries>";
         str+="</player>";

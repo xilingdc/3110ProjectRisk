@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -9,6 +11,9 @@ import java.util.HashMap;
  * @author Ali Fahd
  */
 public class View extends JFrame implements Views{
+    private static JMenuBar mb;
+    private static JMenu x;
+    private static JMenuItem m1;
     private JTextArea playerTurn,placeNum;
     private  JButton pass, cancel, fortify;
     private HashMap<Country, CountryButton> countryButtons;
@@ -23,18 +28,27 @@ public class View extends JFrame implements Views{
 
         int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
         int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
-        String mapFileName = getMapFileName();
+        String gameFileName = getNewOrLoad();
 
-        //backgroundImageFileName = "risk-board-white.png";
-
-        if (mapFileName.equals("standard")) {
+        if (!gameFileName.equals("new")) {
             model = new Model();
             model.addView(this);
-        } else {
-            model = new Model(mapFileName);
-            model.addView(this);
-            model.setCustomMap();
+            model.loadGame(gameFileName);
+        }else{
+            String mapFileName = getMapFileName();
+
+            //backgroundImageFileName = "risk-board-white.png";
+
+            if (mapFileName.equals("standard")) {
+                model = new Model();
+                model.addView(this);
+            } else {
+                model = new Model(mapFileName);
+                model.addView(this);
+                model.setCustomMap();
+            }
         }
+
         bottomPanel = new JPanel();
         this.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -77,6 +91,32 @@ public class View extends JFrame implements Views{
             map.add(button);
         }
         this.add(map, BorderLayout.CENTER);
+
+        mb = new JMenuBar();
+
+        x = new JMenu("Menu");
+
+        m1 = new JMenuItem("Save Game");
+        m1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JTextField fileName = new JTextField(8);
+
+                JPanel myPanel = new JPanel();
+                myPanel.add(new JLabel("File Name:"));
+                myPanel.add(fileName);
+
+                int result = JOptionPane.showConfirmDialog(null, myPanel,
+                        "Please enter name of file: ", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION) {
+                    try{
+                        model.save(fileName.getText());
+                    }catch(Exception ex){
+                        JOptionPane.showMessageDialog(null, "Didn't save properly");
+                    }
+                }
+
+            }
+        });
 
         this.setSize(1600,1000);
         this.setVisible(true);
@@ -152,6 +192,21 @@ public class View extends JFrame implements Views{
     @Override
     public void handleCustomMap(String filename) {
         backgroundImageFileName = filename;
+    }
+
+    public String getNewOrLoad() {
+        String message = "Do you want to load a game?";
+        String title = "Game Selection Choice";
+        String filename = "new";
+        int choice = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
+            String message2 = "Enter the name of the game file:";
+            filename = JOptionPane.showInputDialog(this, message2);
+            while (filename.isEmpty()) {
+                filename = JOptionPane.showInputDialog(this, message2);
+            }
+        }
+        return filename;
     }
 
 
