@@ -117,6 +117,8 @@ public class Controller implements ActionListener {
             }
         }
     }
-
+    public void resetPlacementTroops(){
+        placementTroops = 0;
+    }
 
 }

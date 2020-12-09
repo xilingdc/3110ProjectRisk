@@ -40,16 +40,17 @@ public class Player {
 
 
 
-    public String toXML(){
+    public String toSaveXML(){
         String str="<player>";
-        str+="<name>"+this.name+"</name>";
-        str+="<color>"+this.color.toString()+"</color>";
-        str+="<countries>";
+        str +="\n\t\t<aiplayer>false</aiplayer>";
+        str+="\n\t\t<name>"+this.name+"</name>";
+        str+="\n\t\t<color>"+String.valueOf(this.color.getRGB())+"</color>";
+        str+="\n\t\t<countries>";
         for (Country country : countries) {
-            str+=country.toSimpleXML();
+            str+=country.toSaveXML();
         }
-        str+="</countries>";
-        str+="</player>";
+        str+="\n\t\t</countries>";
+        str+="\n\t</player>";
         return str;
     }
 
@@ -101,5 +102,13 @@ public class Player {
     */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     *the setter of color
+     *@param color
+     */
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

@@ -1,6 +1,10 @@
-//import jdk.swing.interop.SwingInterOpUtils;
-
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -10,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Aleksandar Veselinovic
  * @author Ali Fahd 
  */
-public class Model {
+public class Model implements Serializable {
 
     private ArrayList<Player> players;// player list
     private Player currentPlayer;//current player
@@ -466,6 +470,10 @@ public class Model {
         placementPhase = true;
     }
 
+    public void setCurrentPlayerIndex(int index){
+        currentPlayerIndex = index;
+    }
+
     /**
      * send message to view
      * @param message
@@ -601,7 +609,6 @@ public class Model {
      * @param country the country to receive troops
      */
     public int troopPlacement(int newTroops, Country country) {
-
         if(isPlaceable(country)) {
             int input = 0;
             if (currentPlayer instanceof AIPlayer) {//if the current player is AI
@@ -614,7 +621,7 @@ public class Model {
             updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
             updateBonusTroopView(newTroops);
             if (newTroops == 0) {//once there are no more troops to place
-                placementPhase = false;//end the placement phase
+                deactivatePlacement();
                 sendMessage("Placement Phase is done, Attack Phase has begun!");
             } else {
                 return newTroops;
@@ -686,6 +693,14 @@ public class Model {
         fortifyPhase = true;
     }
 
+    public void deactiveFortify(){
+        fortifyPhase = false;
+    }
+
+    public void deactivatePlacement(){
+        placementPhase = false;
+    }
+
     /**
      * Starts the placement phase of the first turn
      */
@@ -708,5 +723,190 @@ public class Model {
             nextPlayerIndex = currentPlayerIndex++;//move on to next player
         }
         return players.get(nextPlayerIndex);
+    }
+
+    /*
+    public void save(String filename) throws IOException {
+        filename += ".txt";
+        FileOutputStream fileStream = new FileOutputStream(filename);
+        ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
+        outputStream.writeObject(this);
+        outputStream.close();
+    }
+
+    public static Model load(String filename) throws Exception {
+        filename += ".txt";
+        FileInputStream stream = new FileInputStream(filename);
+        ObjectInputStream inputStream = new ObjectInputStream(stream);
+        Model model = (Model) inputStream.readObject();
+        inputStream.close();
+        return model;
+    }*/
+
+    public void save(String filename) throws IOException{
+        filename += ".txt";
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+        writer.write(toSaveXML());
+        writer.close();
+    }
+
+    public String toSaveXML() {
+        String xml = "<Model>";
+        for (Player p : players) {
+            xml += "\n\t" + p.toSaveXML();
+        }
+        xml += "\n\t<playerturn>"+currentPlayer.getName()+"</playerturn>";
+        xml += "\n\t<placementphase>"+placementPhase+"</placementphase>";
+        xml += "\n\t<fortifyphase>"+fortifyPhase+"</fortifyphase>";
+        if (customMapFileName == null){
+            xml += "\n\t<custom>none</custom>";
+        }else{
+            xml += "\n\t<custom>"+customMapFileName+"</custom>";
+        }
+        xml += "\n</Model>";
+        return xml;
+    }
+
+    public void loadGame(String filename) throws Exception{
+        players.clear();
+        Model m = this;
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        SAXParser s = spf.newSAXParser();
+        File f = new File(filename);
+
+        DefaultHandler dh = new DefaultHandler() {
+            String aiplayer = "";
+            String name = "";
+            String color = "";
+            String countryname = "";
+            String troop = "";
+            String playerturn = "";
+            String placement = "";
+            String fortify = "";
+            boolean isAiplayer = false;
+            boolean isName = false;
+            boolean isColor = false;
+            boolean isCountryname = false;
+            boolean isTroop = false;
+            boolean isPlayerturn = false;
+            boolean isPlacement = false;
+            boolean isFortify = false;
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                if (qName.equals("aiplayer")) {
+                    isAiplayer = true;
+                    isTroop = false;
+                }else if (qName.equals("name")) {
+                    isName = true;
+                    isAiplayer = false;
+                } else if (qName.equals("color")) {
+                    isColor = true;
+                    isName = false;
+                } else if (qName.equals("countryname")) {
+                    isCountryname = true;
+                    isTroop = false;
+                    isColor = false;
+                } else if (qName.equals("troop")) {
+                    isTroop = true;
+                    isCountryname = false;
+                }else if (qName.equals("playerturn")) {
+                    isPlayerturn = true;
+                }else if (qName.equals("placementphase")) {
+                    isPlacement = true;
+                    isPlayerturn = false;
+                }else if (qName.equals("fortifyphase")) {
+                    isFortify = true;
+                    isPlacement = false;
+                }
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                if (qName.equals("color")) {
+                    Color colour = new Color(Integer.parseInt(color));
+                    if(aiplayer.equals("true")){
+                        players.add(new AIPlayer(name, colour, m));
+                        currentPlayer = players.get(players.size()-1);
+                    }else{
+                        players.add(new Player(name, colour));
+                        currentPlayer = players.get(players.size()-1);
+                    }
+                }else if(qName.equals("countryname")) {
+                    currentPlayer.addCountry(map.getCountry(countryname));
+                    troop = "";
+                }else if(qName.equals("troop")) {
+                    Country c = currentPlayer.getCountries().get(currentPlayer.getCountries().size()-1);
+                    c.removeTroops(c.getArmySize());
+                    c.addTroops(Integer.parseInt(troop));
+                }else if(qName.equals("country")) {
+                    countryname = "";
+                }else if(qName.equals("player")) {
+                    aiplayer = "";
+                    name = "";
+                    color = "";
+                    isName = false;
+                    isTroop = false;
+                    isCountryname = false;
+                    isColor = false;
+                }else if(qName.equals("playerturn")) {
+                    for (Player p: players){
+                        if(p.getName().equals(playerturn)){
+                            currentPlayer = p;
+                            currentPlayerIndex = Integer.parseInt(p.getName())-1;
+                            break;
+                        }
+                    }
+                }else if(qName.equals("placementphase")) {
+                    if(placement.equals("true")){
+                        activatePlacement();
+                        for (Views view : viewLists) {
+                            view.updatePlayerTurnTextHandler(new Event(m,currentPlayer));
+                            view.updatePlaceNum(new Event(m, bonusTroopCalculator()));
+                        }
+                    }else{
+                        deactivatePlacement();
+                    }
+                }else if(qName.equals("fortifyphase")) {
+                    if(fortify.equals("true")){
+                        activateFortify();
+                        for (Views view : viewLists) {
+                            view.updatePlayerTurnTextHandler(new Event(m,currentPlayer));
+                            view.updatePlaceNum(new Event(m, 0));
+                        }
+                    }else{
+                        deactiveFortify();
+                    }
+                }
+            }
+
+            @Override
+            public void characters(char[] ch, int start, int length) throws SAXException {
+                String string = new String(ch, start, length);
+                if (isPlayerturn) {
+                    if (playerturn.isEmpty()) playerturn = string;
+                } else if (isPlacement) {
+                    if (placement.isEmpty()) placement = string;
+                } else if (isFortify) {
+                    if (fortify.isEmpty()) fortify = string;
+                } else if (isAiplayer) {
+                    if (aiplayer.isEmpty()) aiplayer = string;
+                } else if (isName) {
+                    if (name.isEmpty()) name = string;
+                } else if (isColor) {
+                    if (color.isEmpty()) color = string;
+                } else if (isCountryname) {
+                    if (countryname.isEmpty()) countryname = string;
+                } else if (isTroop) {
+                    if (troop.isEmpty()) troop = string;
+                }
+            }
+        };
+        s.parse(f, dh);
+        for(Player p: players){
+            for(Country c: p.getCountries()){
+                c.setOwner(p);
+                updateCountryButton(c, p.getColor(), c.getArmySize());
+            }
+        }
     }
 }

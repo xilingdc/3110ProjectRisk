@@ -1,44 +1,86 @@
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import javax.swing.*;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * @author Xiling
  * @author Aleksandar Veselinovic
  * @author Ali Fahd
  */
-public class View extends JFrame implements Views{
+public class View extends JFrame implements Views, Serializable{
+    private static JMenuBar mb;
+    private static JMenu x;
+    private static JMenuItem m1;
     private JTextArea playerTurn,placeNum;
     private  JButton pass, cancel, fortify;
     private HashMap<Country, CountryButton> countryButtons;
     private JPanel bottomPanel;
     private Model model;
     private String backgroundImageFileName;
+    private String customfile;
 
-    public View() throws IOException {
+    public View() throws Exception {
         super("Risk Domination");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
-        int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
-        String mapFileName = getMapFileName();
+        customfile = null;
 
-        //backgroundImageFileName = "risk-board-white.png";
+        String gameFileName = getNewOrLoad();
+        if (!gameFileName.equals("new")) {
+            gameFileName += ".txt";
+            try {
+                initialParse(gameFileName);
+                if(customfile.equals("none")){
+                    model = new Model();
+                    model.addView(this);
+                }else{
+                    model = new Model(customfile);
+                    model.addView(this);
+                    model.setCustomMap();
+                }
+                bottomPanel = new JPanel();
+                this.add(bottomPanel, BorderLayout.SOUTH);
+                model.processBegin(2, 0);
+            } catch (Exception e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
 
-        if (mapFileName.equals("standard")) {
-            model = new Model();
-            model.addView(this);
-        } else {
-            model = new Model(mapFileName);
-            model.addView(this);
-            model.setCustomMap();
+        }else{
+            int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
+            int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
+            String mapFileName = getMapFileName();
+
+            //backgroundImageFileName = "risk-board-white.png";
+
+            if (mapFileName.equals("standard")) {
+                model = new Model();
+                model.addView(this);
+            } else {
+                model = new Model(mapFileName);
+                model.addView(this);
+                model.setCustomMap();
+            }
+            bottomPanel = new JPanel();
+            this.add(bottomPanel, BorderLayout.SOUTH);
+
+            model.processBegin(numPlayer, numAI);
         }
-        bottomPanel = new JPanel();
-        this.add(bottomPanel, BorderLayout.SOUTH);
 
-        model.processBegin(numPlayer, numAI);
         Controller controller = new Controller(model,this);
 
         JPanel topPanel = new JPanel();
@@ -78,11 +120,49 @@ public class View extends JFrame implements Views{
         }
         this.add(map, BorderLayout.CENTER);
 
+        mb = new JMenuBar();
+
+        x = new JMenu("Menu");
+
+        m1 = new JMenuItem("Save Game");
+        m1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JTextField fileName = new JTextField(8);
+
+                JPanel myPanel = new JPanel();
+                myPanel.add(new JLabel("File Name:"));
+                myPanel.add(fileName);
+
+                int result = JOptionPane.showConfirmDialog(null, myPanel,
+                        "Please enter name of file: ", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION) {
+                    try{
+                        model.save(fileName.getText());
+                    }catch(Exception ex){
+                        JOptionPane.showMessageDialog(null, "Didn't save properly");
+                    }
+                }
+
+            }
+        });
+
+        x.add(m1);
+        mb.add(x);
+        this.setJMenuBar(mb);
+
+
         this.setSize(1600,1000);
         this.setVisible(true);
 
-
-        model.activatePlacement();
+        if (!gameFileName.equals("new")) {
+            this.setVisible(false);
+            controller.resetPlacementTroops();
+            model.setCurrentPlayerIndex(Integer.parseInt(model.getCurrentPlayer().getName()));
+            model.loadGame(gameFileName);
+            this.setVisible(true);
+        }else{
+            model.activatePlacement();
+        }
     }
 
     /**
@@ -129,7 +209,7 @@ public class View extends JFrame implements Views{
 
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         new View();
     }
 
@@ -152,6 +232,21 @@ public class View extends JFrame implements Views{
     @Override
     public void handleCustomMap(String filename) {
         backgroundImageFileName = filename;
+    }
+
+    public String getNewOrLoad() {
+        String message = "Do you want to load a game?";
+        String title = "Game Selection Choice";
+        String filename = "new";
+        int choice = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) {
+            String message2 = "Enter the name of the game file:";
+            filename = JOptionPane.showInputDialog(this, message2);
+            while (filename.isEmpty()) {
+                filename = JOptionPane.showInputDialog(this, message2);
+            }
+        }
+        return filename;
     }
 
 
@@ -238,7 +333,7 @@ public class View extends JFrame implements Views{
         placeNum.setText("Bonus Troop Number: "+ event.getTroop());
     }
 
-   /* *//**
+   /* //**
      * update placeNum's text
      * @param troop
      *//*
@@ -246,4 +341,35 @@ public class View extends JFrame implements Views{
         placeNum.setText("Bonus Troop Number: "+ troop);
     }
 */
+   public void initialParse(String filename) throws Exception{
+       SAXParserFactory spf = SAXParserFactory.newInstance();
+       SAXParser s = spf.newSAXParser();
+       File f = new File(filename);
+
+       DefaultHandler dh = new DefaultHandler() {
+           boolean isCustom = false;
+           @Override
+           public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+               if (qName.equals("custom")) {
+                   isCustom = true;
+               }
+           }
+
+           @Override
+           public void endElement(String uri, String localName, String qName) throws SAXException {
+               if (qName.equals("custom")) {
+                   isCustom = false;
+               }
+           }
+
+           @Override
+           public void characters(char[] ch, int start, int length) throws SAXException {
+               String string = new String(ch, start, length);
+               if (isCustom) {
+                   customfile = string;
+               }
+           }
+       };
+       s.parse(f, dh);
+   }
 }

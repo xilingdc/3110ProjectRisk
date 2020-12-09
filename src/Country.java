@@ -25,6 +25,14 @@ public class Country {
         neighbours = new ArrayList<>();
     }
 
+    public String toSaveXML(){
+        String str="\n\t\t\t<country>";
+        str+="\n\t\t\t\t<countryname>"+name+"</countryname>";
+        str+="\n\t\t\t\t<troop>"+armySize+"</troop>";
+        str+="\n\t\t\t</country>";
+        return str;
+    }
+
     public String toSimpleXML(){
         String str="<country>";
         str+="<name>"+name+"</name>";
