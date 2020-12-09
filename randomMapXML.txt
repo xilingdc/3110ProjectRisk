@@ -1,0 +1,83 @@
+<map>
+	<continent name="West" bonusTroops="5">
+		<country name="WLS" x="480" y="170">
+			<neighbour name="WMS" x="580" y="170"></neighbour>
+			<neighbour name="WBS" x="540" y="240"></neighbour>
+			<neighbour name="WTT" x="650" y="100"></neighbour>
+		</country>
+		<country name="WMS" x="580" y="170">
+			<neighbour name="WBS" x="540" y="240"></neighbour>
+			<neighbour name="WTT" x="610" y="100"></neighbour>
+			<neighbour name="WLS" x="480" y="170"></neighbour>
+			<neighbour name="WRT" x="650" y="180"></neighbour>
+		</country>
+		<country name="WBS" x="540" y="240">
+			<neighbour name="WMS" x="580" y="170"></neighbour>
+			<neighbour name="WLS" x="480" y="170"></neighbour>
+			<neighbour name="WRT" x="650" y="180"></neighbour>
+		</country>
+		<country name="WTT" x="650" y="100">
+			<neighbour name="WMS" x="580" y="170"></neighbour>
+			<neighbour name="WLS" x="480" y="170"></neighbour>
+			<neighbour name="WRT" x="650" y="180"></neighbour>
+		</country>
+		<country name="WRT" x="650" y="180">
+			<neighbour name="WMS" x="580" y="170"></neighbour>
+			<neighbour name="WBS" x="540" y="240"></neighbour>
+			<neighbour name="WTT" x="610" y="100"></neighbour>
+			<neighbour name="ELT" x="820" y="130"></neighbour>
+		</country>
+	</continent>
+	<continent name="East" bonusTroops="5">
+		<country name="ELT" x="820" y="130">
+			<neighbour name="ELS" x="900" y="200"></neighbour>
+			<neighbour name="WRT" x="650" y="180"></neighbour>
+		</country>
+		<country name="ELS" x="900" y="200">
+			<neighbour name="ELT" x="820" y="130"></neighbour>
+			<neighbour name="ETS" x="1000" y="170"></neighbour>
+			<neighbour name="EBS" x="950" y="260"></neighbour>
+			<neighbour name="SRT" x="830" y="420"></neighbour>
+		</country>
+		<country name="ETS" x="1000" y="170">
+			<neighbour name="ELS" x="900" y="200"></neighbour>
+			<neighbour name="EBS" x="950" y="260"></neighbour>
+			<neighbour name="ERS" x="1050" y="260"></neighbour>
+		</country>
+		<country name="EBS" x="950" y="260">
+			<neighbour name="ELS" x="900" y="200"></neighbour>
+			<neighbour name="ETS" x="1000" y="170"></neighbour>
+			<neighbour name="ERS" x="1050" y="260"></neighbour>
+		</country>
+		<country name="ERS" x="1050" y="260">
+			<neighbour name="EBS" x="950" y="260"></neighbour>
+			<neighbour name="ETS" x="1000" y="170"></neighbour>
+		</country>
+	</continent>
+	<continent name="South" bonusTroops="5">
+		<country name="SRT" x="830" y="420">
+			<neighbour name="SMT" x="760" y="430"></neighbour>
+			<neighbour name="SBT" x="820" y="470"></neighbour>
+			<neighbour name="ELS" x="900" y="200"></neighbour>
+		</country>
+		<country name="SMT" x="760" y="430">
+			<neighbour name="SRT" x="830" y="420"></neighbour>
+			<neighbour name="SLT" x="700" y="410"></neighbour>
+			<neighbour name="SLS" x="690" y="460"></neighbour>
+			<neighbour name="SBT" x="820" y="470"></neighbour>
+		</country>
+		<country name="SLT" x="700" y="410">
+			<neighbour name="SMT" x="760" y="430"></neighbour>
+			<neighbour name="SLS" x="690" y="460"></neighbour>
+		</country>
+		<country name="SLS" x="690" y="460">
+			<neighbour name="SLT" x="700" y="410"></neighbour>
+			<neighbour name="SMT" x="760" y="430"></neighbour>
+		</country>
+		<country name="SBT" x="820" y="470">
+			<neighbour name="SRT" x="830" y="420"></neighbour>
+			<neighbour name="SMT" x="760" y="430"></neighbour>
+		</country>
+	</continent>
+	<image file="randomMap.png"></image>
+</map>
