@@ -1,0 +1,264 @@
+<map>
+	<continent name="North America" bonusTroops="2">
+		<country name="Alaska" x="365" y="90">
+			<neighbour name="Alberta" x="440" y="160"></neighbour>
+			<neighbour name="Kamchatka" x="1180" y="85"></neighbour>
+			<neighbour name="Northwest America" x="455" y="95"></neighbour>
+		</country>
+		<country name="Alberta" x="440" y="160">
+			<neighbour name="Alaska" x="365" y="90"></neighbour>
+			<neighbour name="Northwest America" x="455" y="95"></neighbour>
+			<neighbour name="Ontario" x="510" y="160"></neighbour>
+			<neighbour name="Western America" x="445" y="220"></neighbour>
+		</country>
+		<country name="Ontario" x="510" y="160">
+			<neighbour name="Quebec" x="575" y="160"></neighbour>
+			<neighbour name="Western America" x="445" y="220"></neighbour>
+			<neighbour name="Eastern America" x="525" y="240"></neighbour>
+			<neighbour name="Greenland" x="640" y="50"></neighbour>
+			<neighbour name="Northwest America" x="455" y="95"></neighbour>
+			<neighbour name="Alberta" x="440" y="160"></neighbour>
+		</country>
+		<country name="Western America" x="445" y="220">
+			<neighbour name="Alberta" x="440" y="160"></neighbour>
+			<neighbour name="Ontario" x="510" y="160"></neighbour>
+			<neighbour name="Eastern America" x="525" y="240"></neighbour>
+			<neighbour name="Central America" x="455" y="300"></neighbour>
+		</country>
+		<country name="Eastern America" x="525" y="240">
+			<neighbour name="Quebec" x="575" y="160"></neighbour>
+			<neighbour name="Ontario" x="510" y="160"></neighbour>
+			<neighbour name="Western America" x="445" y="220"></neighbour>
+			<neighbour name="Central America" x="455" y="300"></neighbour>
+		</country>
+		<country name="Quebec" x="575" y="160">
+			<neighbour name="Ontario" x="510" y="160"></neighbour>
+			<neighbour name="Greenland" x="640" y="50"></neighbour>
+			<neighbour name="Eastern America" x="525" y="240"></neighbour>
+		</country>
+		<country name="Central America" x="455" y="300">
+			<neighbour name="Western America" x="445" y="220"></neighbour>
+			<neighbour name="Eastern America" x="525" y="240"></neighbour>
+			<neighbour name="Venezuela" x="525" y="360"></neighbour>
+		</country>
+		<country name="Greenland" x="640" y="50">
+			<neighbour name="Iceland" x="715" y="120"></neighbour>
+			<neighbour name="Quebec" x="575" y="160"></neighbour>
+			<neighbour name="Ontario" x="510" y="160"></neighbour>
+			<neighbour name="Northwest America" x="455" y="95"></neighbour>
+		</country>
+		<country name="Northwest America" x="455" y="95">
+			<neighbour name="Alaska" x="365" y="90"></neighbour>
+			<neighbour name="Alberta" x="440" y="160"></neighbour>
+			<neighbour name="Ontario" x="510" y="160"></neighbour>
+			<neighbour name="Greenland" x="640" y="50"></neighbour>
+		</country>
+	</continent>
+	<continent name="South America" bonusTroops="5">
+		<country name="Brazil" x="605" y="425">
+			<neighbour name="Venezuela" x="525" y="360"></neighbour>
+			<neighbour name="Peru" x="535" y="440"></neighbour>
+			<neighbour name="Argentina" x="545" y="525"></neighbour>
+			<neighbour name="North Africa" x="740" y="400"></neighbour>
+		</country>
+		<country name="Venezuela" x="525" y="360">
+			<neighbour name="Brazil" x="605" y="425"></neighbour>
+			<neighbour name="Peru" x="535" y="440"></neighbour>
+			<neighbour name="Central America" x="455" y="300"></neighbour>
+		</country>
+		<country name="Peru" x="535" y="440">
+			<neighbour name="Brazil" x="605" y="425"></neighbour>
+			<neighbour name="Argentina" x="545" y="525"></neighbour>
+			<neighbour name="Venezuela" x="525" y="360"></neighbour>
+		</country>
+		<country name="Argentina" x="545" y="525">
+			<neighbour name="Peru" x="535" y="440"></neighbour>
+			<neighbour name="Brazil" x="605" y="425"></neighbour>
+		</country>
+	</continent>
+	<continent name="Europe" bonusTroops="5">
+		<country name="Ukraine" x="870" y="190">
+			<neighbour name="Ural" x="980" y="150"></neighbour>
+			<neighbour name="Afghanistan" x="960" y="240"></neighbour>
+			<neighbour name="Middle East" x="900" y="360"></neighbour>
+			<neighbour name="Southern Europe" x="790" y="280"></neighbour>
+			<neighbour name="Northern Europe" x="780" y="210"></neighbour>
+			<neighbour name="Scandinavia" x="780" y="140"></neighbour>
+		</country>
+		<country name="Scandinavia" x="780" y="140">
+			<neighbour name="Ukraine" x="870" y="190"></neighbour>
+			<neighbour name="Northern Europe" x="780" y="210"></neighbour>
+			<neighbour name="Great Britain" x="700" y="210"></neighbour>
+			<neighbour name="Iceland" x="715" y="120"></neighbour>
+		</country>
+		<country name="Iceland" x="715" y="120">
+			<neighbour name="Greenland" x="640" y="50"></neighbour>
+			<neighbour name="Great Britain" x="700" y="210"></neighbour>
+			<neighbour name="Scandinavia" x="780" y="140"></neighbour>
+		</country>
+		<country name="Great Britain" x="700" y="210">
+			<neighbour name="Western Europe" x="715" y="300"></neighbour>
+			<neighbour name="Northern Europe" x="780" y="210"></neighbour>
+			<neighbour name="Scandinavia" x="780" y="140"></neighbour>
+			<neighbour name="Iceland" x="715" y="120"></neighbour>
+		</country>
+		<country name="Northern Europe" x="780" y="210">
+			<neighbour name="Scandinavia" x="780" y="140"></neighbour>
+			<neighbour name="Great Britain" x="700" y="210"></neighbour>
+			<neighbour name="Western Europe" x="715" y="300"></neighbour>
+			<neighbour name="Southern Europe" x="790" y="280"></neighbour>
+			<neighbour name="Ukraine" x="870" y="190"></neighbour>
+		</country>
+		<country name="Western Europe" x="715" y="300">
+			<neighbour name="Great Britain" x="700" y="210"></neighbour>
+			<neighbour name="Northern Europe" x="780" y="210"></neighbour>
+			<neighbour name="Southern Europe" x="790" y="280"></neighbour>
+			<neighbour name="North Africa" x="740" y="400"></neighbour>
+		</country>
+		<country name="Southern Europe" x="790" y="280">
+			<neighbour name="North Africa" x="740" y="400"></neighbour>
+			<neighbour name="Northern Europe" x="780" y="210"></neighbour>
+			<neighbour name="Egypt" x="825" y="370"></neighbour>
+			<neighbour name="Middle East" x="900" y="360"></neighbour>
+			<neighbour name="Ukraine" x="870" y="190"></neighbour>
+			<neighbour name="Western Europe" x="715" y="300"></neighbour>
+		</country>
+	</continent>
+	<continent name="Asia" bonusTroops="7">
+		<country name="Yakustsk" x="1100" y="65">
+			<neighbour name="Kamchatka" x="1180" y="85"></neighbour>
+			<neighbour name="Irkutsk" x="1090" y="160"></neighbour>
+			<neighbour name="Siberia" x="1020" y="80"></neighbour>
+		</country>
+		<country name="Siberia" x="1020" y="80">
+			<neighbour name="Ural" x="980" y="150"></neighbour>
+			<neighbour name="China" x="1090" y="280"></neighbour>
+			<neighbour name="Mongolia" x="1100" y="220"></neighbour>
+			<neighbour name="Irkutsk" x="1090" y="160"></neighbour>
+			<neighbour name="Yakustsk" x="1100" y="65"></neighbour>
+		</country>
+		<country name="Kamchatka" x="1180" y="85">
+			<neighbour name="Alaska" x="365" y="90"></neighbour>
+			<neighbour name="Japan" x="1190" y="220"></neighbour>
+			<neighbour name="Yakustsk" x="1100" y="65"></neighbour>
+			<neighbour name="Irkutsk" x="1090" y="160"></neighbour>
+			<neighbour name="Mongolia" x="1100" y="220"></neighbour>
+		</country>
+		<country name="Irkutsk" x="1090" y="160">
+			<neighbour name="Yakustsk" x="1100" y="65"></neighbour>
+			<neighbour name="Siberia" x="1020" y="80"></neighbour>
+			<neighbour name="Kamchatka" x="1180" y="85"></neighbour>
+			<neighbour name="Mongolia" x="1100" y="220"></neighbour>
+		</country>
+		<country name="Ural" x="980" y="150">
+			<neighbour name="Siberia" x="1020" y="80"></neighbour>
+			<neighbour name="China" x="1090" y="280"></neighbour>
+			<neighbour name="Afghanistan" x="960" y="240"></neighbour>
+			<neighbour name="Ukraine" x="870" y="190"></neighbour>
+		</country>
+		<country name="Japan" x="1190" y="220">
+			<neighbour name="Kamchatka" x="1180" y="85"></neighbour>
+			<neighbour name="Mongolia" x="1100" y="220"></neighbour>
+		</country>
+		<country name="Mongolia" x="1100" y="220">
+			<neighbour name="Irkutsk" x="1090" y="160"></neighbour>
+			<neighbour name="Kamchatka" x="1180" y="85"></neighbour>
+			<neighbour name="Siberia" x="1020" y="80"></neighbour>
+			<neighbour name="Japan" x="1190" y="220"></neighbour>
+			<neighbour name="China" x="1090" y="280"></neighbour>
+		</country>
+		<country name="China" x="1090" y="280">
+			<neighbour name="Mongolia" x="1100" y="220"></neighbour>
+			<neighbour name="Siberia" x="1020" y="80"></neighbour>
+			<neighbour name="Ural" x="980" y="150"></neighbour>
+			<neighbour name="Afghanistan" x="960" y="240"></neighbour>
+			<neighbour name="India" x="1020" y="350"></neighbour>
+			<neighbour name="Siam" x="1090" y="360"></neighbour>
+		</country>
+		<country name="Middle East" x="900" y="360">
+			<neighbour name="India" x="1020" y="350"></neighbour>
+			<neighbour name="Afghanistan" x="960" y="240"></neighbour>
+			<neighbour name="Ukraine" x="870" y="190"></neighbour>
+			<neighbour name="Southern Europe" x="790" y="280"></neighbour>
+			<neighbour name="Egypt" x="825" y="370"></neighbour>
+			<neighbour name="East Africa" x="870" y="440"></neighbour>
+		</country>
+		<country name="India" x="1020" y="350">
+			<neighbour name="Middle East" x="900" y="360"></neighbour>
+			<neighbour name="Afghanistan" x="960" y="240"></neighbour>
+			<neighbour name="China" x="1090" y="280"></neighbour>
+			<neighbour name="Siam" x="1090" y="360"></neighbour>
+		</country>
+		<country name="Siam" x="1090" y="360">
+			<neighbour name="India" x="1020" y="350"></neighbour>
+			<neighbour name="Indonesia" x="1110" y="470"></neighbour>
+			<neighbour name="China" x="1090" y="280"></neighbour>
+		</country>
+		<country name="Afghanistan" x="960" y="240">
+			<neighbour name="Ukraine" x="870" y="190"></neighbour>
+			<neighbour name="Ural" x="980" y="150"></neighbour>
+			<neighbour name="China" x="1090" y="280"></neighbour>
+			<neighbour name="India" x="1020" y="350"></neighbour>
+			<neighbour name="Middle East" x="900" y="360"></neighbour>
+		</country>
+	</continent>
+	<continent name="Africa" bonusTroops="5">
+		<country name="Congo" x="825" y="480">
+			<neighbour name="East Africa" x="870" y="440"></neighbour>
+			<neighbour name="North Africa" x="740" y="400"></neighbour>
+			<neighbour name="South Africa" x="825" y="560"></neighbour>
+		</country>
+		<country name="East Africa" x="870" y="440">
+			<neighbour name="Middle East" x="900" y="360"></neighbour>
+			<neighbour name="Egypt" x="825" y="370"></neighbour>
+			<neighbour name="North Africa" x="740" y="400"></neighbour>
+			<neighbour name="Congo" x="825" y="480"></neighbour>
+			<neighbour name="South Africa" x="825" y="560"></neighbour>
+			<neighbour name="Madagascar" x="915" y="560"></neighbour>
+		</country>
+		<country name="Egypt" x="825" y="370">
+			<neighbour name="Middle East" x="900" y="360"></neighbour>
+			<neighbour name="East Africa" x="870" y="440"></neighbour>
+			<neighbour name="North Africa" x="740" y="400"></neighbour>
+			<neighbour name="Southern Europe" x="790" y="280"></neighbour>
+		</country>
+		<country name="Madagascar" x="915" y="560">
+			<neighbour name="East Africa" x="870" y="440"></neighbour>
+			<neighbour name="South Africa" x="825" y="560"></neighbour>
+		</country>
+		<country name="North Africa" x="740" y="400">
+			<neighbour name="Brazil" x="605" y="425"></neighbour>
+			<neighbour name="Western Europe" x="715" y="300"></neighbour>
+			<neighbour name="Egypt" x="825" y="370"></neighbour>
+			<neighbour name="East Africa" x="870" y="440"></neighbour>
+			<neighbour name="Congo" x="825" y="480"></neighbour>
+		</country>
+		<country name="South Africa" x="825" y="560">
+			<neighbour name="Congo" x="825" y="480"></neighbour>
+			<neighbour name="East Africa" x="870" y="440"></neighbour>
+			<neighbour name="Madagascar" x="915" y="560"></neighbour>
+		</country>
+	</continent>
+	<continent name="Australia" bonusTroops="2">
+		<country name="Western Australia" x="1150" y="560">
+			<neighbour name="Eastern Australia" x="1235" y="560"></neighbour>
+			<neighbour name="Indonesia" x="1110" y="470"></neighbour>
+			<neighbour name="NewGuinea" x="1190" y="445"></neighbour>
+		</country>
+		<country name="Eastern Australia" x="1235" y="560">
+			<neighbour name="Western Australia" x="1150" y="560"></neighbour>
+			<neighbour name="NewGuinea" x="1190" y="445"></neighbour>
+		</country>
+		<country name="Indonesia" x="1110" y="470">
+			<neighbour name="Siam" x="1090" y="360"></neighbour>
+			<neighbour name="NewGuinea" x="1190" y="445"></neighbour>
+			<neighbour name="Western Australia" x="1150" y="560"></neighbour>
+		</country>
+		<country name="NewGuinea" x="1190" y="445">
+			<neighbour name="Eastern Australia" x="1235" y="560"></neighbour>
+			<neighbour name="Western Australia" x="1150" y="560"></neighbour>
+			<neighbour name="Indonesia" x="1110" y="470"></neighbour>
+		</country>
+	</continent>
+	<image file="risk-board-white.png"></image>
+</map>
