@@ -758,6 +758,11 @@ public class Model implements Serializable {
         xml += "\n\t<playerturn>"+currentPlayer.getName()+"</playerturn>";
         xml += "\n\t<placementphase>"+placementPhase+"</placementphase>";
         xml += "\n\t<fortifyphase>"+fortifyPhase+"</fortifyphase>";
+        if (fortifyPhase == false && placementPhase == false){
+            xml += "\n\t<attackphase>true</attackphase>";
+        }else{
+            xml += "\n\t<attackphase>false</attackphase>";
+        }
         if (customMapFileName == null){
             xml += "\n\t<custom>none</custom>";
         }else{
@@ -783,6 +788,7 @@ public class Model implements Serializable {
             String playerturn = "";
             String placement = "";
             String fortify = "";
+            String attack = "";
             boolean isAiplayer = false;
             boolean isName = false;
             boolean isColor = false;
@@ -791,6 +797,7 @@ public class Model implements Serializable {
             boolean isPlayerturn = false;
             boolean isPlacement = false;
             boolean isFortify = false;
+            boolean isAttack = false;
             @Override
             public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
                 if (qName.equals("aiplayer")) {
@@ -817,6 +824,9 @@ public class Model implements Serializable {
                 }else if (qName.equals("fortifyphase")) {
                     isFortify = true;
                     isPlacement = false;
+                }else if (qName.equals("attackphase")) {
+                    isAttack = true;
+                    isFortify = false;
                 }
             }
 
@@ -876,6 +886,15 @@ public class Model implements Serializable {
                     }else{
                         deactiveFortify();
                     }
+                }else if(qName.equals("attackphase")) {
+                    if(attack.equals("true")){
+                        deactiveFortify();
+                        deactivatePlacement();
+                        for (Views view : viewLists) {
+                            view.updatePlayerTurnTextHandler(new Event(m,currentPlayer));
+                            view.updatePlaceNum(new Event(m, 0));
+                        }
+                    }
                 }
             }
 
@@ -888,7 +907,9 @@ public class Model implements Serializable {
                     if (placement.isEmpty()) placement = string;
                 } else if (isFortify) {
                     if (fortify.isEmpty()) fortify = string;
-                } else if (isAiplayer) {
+                } else if (isAttack) {
+                    if (attack.isEmpty()) attack = string;
+                }else if (isAiplayer) {
                     if (aiplayer.isEmpty()) aiplayer = string;
                 } else if (isName) {
                     if (name.isEmpty()) name = string;
