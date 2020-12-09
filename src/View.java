@@ -1,9 +1,18 @@
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import javax.swing.*;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * @author Xiling
@@ -26,15 +35,36 @@ public class View extends JFrame implements Views{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
-        int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
         String gameFileName = getNewOrLoad();
-
         if (!gameFileName.equals("new")) {
-            model = new Model();
-            model.addView(this);
-            model.loadGame(gameFileName);
+            gameFileName += ".txt";
+            try {
+                String customfile = initialParse(gameFileName);
+                if(customfile.equals("none")){
+                    model = new Model();
+                    model.addView(this);
+                    bottomPanel = new JPanel();
+                    this.add(bottomPanel, BorderLayout.SOUTH);
+                    model.processBegin(2, 0);
+                    model.loadGame(gameFileName);
+                }else{
+                    model = new Model(customfile);
+                    model.addView(this);
+                    model.setCustomMap();
+                    bottomPanel = new JPanel();
+                    this.add(bottomPanel, BorderLayout.SOUTH);
+                    model.processBegin(2, 0);
+                    model.loadGame(gameFileName);
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+
         }else{
+            int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
+            int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
+
             String mapFileName = getMapFileName();
 
             //backgroundImageFileName = "risk-board-white.png";
@@ -47,12 +77,11 @@ public class View extends JFrame implements Views{
                 model.addView(this);
                 model.setCustomMap();
             }
+            bottomPanel = new JPanel();
+            this.add(bottomPanel, BorderLayout.SOUTH);
+            model.processBegin(numPlayer, numAI);
         }
 
-        bottomPanel = new JPanel();
-        this.add(bottomPanel, BorderLayout.SOUTH);
-
-        model.processBegin(numPlayer, numAI);
         Controller controller = new Controller(model,this);
 
         JPanel topPanel = new JPanel();
@@ -117,6 +146,10 @@ public class View extends JFrame implements Views{
 
             }
         });
+
+        x.add(m1);
+        mb.add(x);
+        this.setJMenuBar(mb);
 
         this.setSize(1600,1000);
         this.setVisible(true);
@@ -301,4 +334,42 @@ public class View extends JFrame implements Views{
         placeNum.setText("Bonus Troop Number: "+ troop);
     }
 */
+
+    public String initialParse(String filename) throws Exception{
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        SAXParser s = spf.newSAXParser();
+        File f = new File(filename);
+        final String[] val = {null};
+
+        DefaultHandler dh = new DefaultHandler() {
+            boolean isCustom = false;
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                if (qName.equals("custom")) {
+                    isCustom = true;
+                }
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                if (qName.equals("custom")) {
+
+                }
+            }
+
+            @Override
+            public void characters(char[] ch, int start, int length) throws SAXException {
+                String string = new String(ch, start, length);
+                if (isCustom) {
+                    val[0] = string;
+                }
+            }
+        };
+        if(val[0] == null){
+            s.parse(f, dh);
+        }else{
+            return val[0];
+        }
+        return "";
+    }
 }

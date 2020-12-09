@@ -7,10 +7,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
@@ -21,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Aleksandar Veselinovic
  * @author Ali Fahd 
  */
-public class Model {
+public class Model implements Serializable {
 
     private ArrayList<Player> players;// player list
     private Player currentPlayer;//current player
@@ -722,35 +719,57 @@ public class Model {
     }
 
     /*
-    public void save(String filename) {
+    public void save(String filename) throws IOException {
+        filename += ".txt";
         FileOutputStream fileStream = new FileOutputStream(filename);
         ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
+        outputStream.writeObject(this);
         outputStream.close();
     }
 
-    public void loadGame(String filename) {
+    public static Model load(String filename) throws Exception {
+        filename += ".txt";
         FileInputStream stream = new FileInputStream(filename);
         ObjectInputStream inputStream = new ObjectInputStream(stream);
+        Model model = (Model) inputStream.readObject();
         inputStream.close();
+        return model;
     }*/
 
+    public void save(String filename) {
+        filename += ".txt";
+        try {
+            File myObj = new File(filename);
+            if (!myObj.createNewFile()) {
+                myObj.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(filename);
+            BufferedWriter writer = new BufferedWriter(fileWriter);
+            writer.write(toSaveXML());
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
     public String toSaveXML() {
-        String xml = "";
-        xml += "<Model>";
+        String xml = "<Model>";
         for (Player p : players) {
             xml += "\n\t" + p.toSaveXML();
+        }
+        xml += "\n\t<playerturn>"+currentPlayer.getName()+"</playerturn>";
+        if (customMapFileName == null){
+            xml += "\n\t<custom>none</custom>";
+        }else{
+            xml += "\n\t<custom>"+customMapFileName+"</custom>";
         }
         xml += "\n</Model>";
         return xml;
     }
 
-    public void exportToXMLFile(String filename) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-        writer.write(toSaveXML());
-        writer.close();
-    }
-
-    public void importFromXMLFile(String filename) throws Exception{
+    public void loadGame(String filename) throws Exception{
+        players.clear();
         SAXParserFactory spf = SAXParserFactory.newInstance();
         SAXParser s = spf.newSAXParser();
         File f = new File(filename);
@@ -759,37 +778,39 @@ public class Model {
             String name = "";
             String color = "";
             String countryname = "";
+            String troop = "";
             boolean isName = false;
             boolean isColor = false;
             boolean isCountryname = false;
+            boolean isTroop = false;
             @Override
             public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
                 if (qName.equals("name")) {
                     isName = true;
-                    isCountryname = false;
+                    isTroop = false;
                 } else if (qName.equals("color")) {
                     isColor = true;
                     isName = false;
                 } else if (qName.equals("countryname")) {
                     isCountryname = true;
                     isColor = false;
+                } else if (qName.equals("troop")) {
+                    isTroop = true;
+                    isCountryname = false;
                 }
             }
 
             @Override
             public void endElement(String uri, String localName, String qName) throws SAXException {
                 if (qName.equals("color")) {
-                    Color colour;
-                    try {
-                        Field field = Class.forName("java.awt.Color").getField(color);
-                        colour = (Color)field.get(null);
-                        players.add(new Player(name, colour));
-                        currentPlayer = players.get(players.size()-1);
-                    } catch (Exception e) {
-                        color = null; // Not defined
-                    }
+                    Color colour = new Color(Integer.parseInt(color));
+                    players.add(new Player(name, colour));
+                    currentPlayer = players.get(players.size()-1);
                 }else if(qName.equals("countryname")) {
                     currentPlayer.addCountry(map.getCountry(countryname));
+                }else if(qName.equals("troop")) {
+                    Country c = currentPlayer.getCountries().get(currentPlayer.getCountries().size()-1);
+                    c.addTroops(Integer.parseInt(troop));
                 }
             }
 
@@ -802,9 +823,17 @@ public class Model {
                     if (color.isEmpty()) color = string;
                 } else if (isCountryname) {
                     if (countryname.isEmpty()) countryname = string;
+                }else if (isTroop) {
+                    if (troop.isEmpty()) troop = string;
                 }
             }
         };
         s.parse(f, dh);
+        for(Player p: players){
+            for(Country c: p.getCountries()){
+                c.setOwner(p);
+                updateCountryButton(c, p.getColor(), c.getArmySize());
+            }
+        }
     }
 }

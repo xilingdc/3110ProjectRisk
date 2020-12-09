@@ -42,14 +42,14 @@ public class Player {
 
     public String toSaveXML(){
         String str="<player>";
-        str+="<name>"+this.name+"</name>";
-        str+="<color>"+this.color.toString()+"</color>";
-        str+="<countries>";
+        str+="\n\t\t<name>"+this.name+"</name>";
+        str+="\n\t\t<color>"+String.valueOf(this.color.getRGB())+"</color>";
+        str+="\n\t\t<countries>";
         for (Country country : countries) {
             str+=country.toSaveXML();
         }
-        str+="</countries>";
-        str+="</player>";
+        str+="\n\t\t</countries>";
+        str+="\n\t</player>";
         return str;
     }
 

@@ -26,9 +26,10 @@ public class Country {
     }
 
     public String toSaveXML(){
-        String str="<country>";
-        str+="<countryname>"+name+"</countryname>";
-        str+="</country>";
+        String str="\n\t\t\t<country>";
+        str+="\n\t\t\t\t<countryname>"+name+"</countryname>";
+        str+="\n\t\t\t\t<troop>"+armySize+"</troop>";
+        str+="\n\t\t\t</country>";
         return str;
     }
 
