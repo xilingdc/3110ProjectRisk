@@ -470,6 +470,10 @@ public class Model implements Serializable {
         placementPhase = true;
     }
 
+    public void setCurrentPlayerIndex(int index){
+        currentPlayerIndex = index;
+    }
+
     /**
      * send message to view
      * @param message
@@ -605,7 +609,6 @@ public class Model implements Serializable {
      * @param country the country to receive troops
      */
     public int troopPlacement(int newTroops, Country country) {
-
         if(isPlaceable(country)) {
             int input = 0;
             if (currentPlayer instanceof AIPlayer) {//if the current player is AI
@@ -618,7 +621,7 @@ public class Model implements Serializable {
             updateCountryButton(country, currentPlayer.getColor(), country.getArmySize());
             updateBonusTroopView(newTroops);
             if (newTroops == 0) {//once there are no more troops to place
-                placementPhase = false;//end the placement phase
+                deactivatePlacement();
                 sendMessage("Placement Phase is done, Attack Phase has begun!");
             } else {
                 return newTroops;
@@ -849,6 +852,7 @@ public class Model implements Serializable {
                     for (Player p: players){
                         if(p.getName().equals(playerturn)){
                             currentPlayer = p;
+                            currentPlayerIndex = Integer.parseInt(p.getName())-1;
                             break;
                         }
                     }
@@ -857,7 +861,7 @@ public class Model implements Serializable {
                         activatePlacement();
                         for (Views view : viewLists) {
                             view.updatePlayerTurnTextHandler(new Event(m,currentPlayer));
-                            view.updatePlaceNum(new Event(m, 0));
+                            view.updatePlaceNum(new Event(m, bonusTroopCalculator()));
                         }
                     }else{
                         deactivatePlacement();

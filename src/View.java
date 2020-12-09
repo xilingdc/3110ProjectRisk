@@ -30,22 +30,20 @@ public class View extends JFrame implements Views, Serializable{
     private JPanel bottomPanel;
     private Model model;
     private String backgroundImageFileName;
-    private String custom;
+    private String customfile;
 
     public View() throws Exception {
         super("Risk Domination");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        custom = null;
+        customfile = null;
 
         String gameFileName = getNewOrLoad();
         if (!gameFileName.equals("new")) {
             gameFileName += ".txt";
             try {
                 initialParse(gameFileName);
-                String customfile = "none";
-                System.out.println(customfile);
                 if(customfile.equals("none")){
                     model = new Model();
                     model.addView(this);
@@ -152,14 +150,18 @@ public class View extends JFrame implements Views, Serializable{
         mb.add(x);
         this.setJMenuBar(mb);
 
+
         this.setSize(1600,1000);
         this.setVisible(true);
 
-        model.activatePlacement();
-
-
         if (!gameFileName.equals("new")) {
+            this.setVisible(false);
+            controller.resetPlacementTroops();
+            model.setCurrentPlayerIndex(Integer.parseInt(model.getCurrentPlayer().getName()));
             model.loadGame(gameFileName);
+            this.setVisible(true);
+        }else{
+            model.activatePlacement();
         }
     }
 
@@ -343,7 +345,6 @@ public class View extends JFrame implements Views, Serializable{
        SAXParserFactory spf = SAXParserFactory.newInstance();
        SAXParser s = spf.newSAXParser();
        File f = new File(filename);
-       String custom = "";
 
        DefaultHandler dh = new DefaultHandler() {
            boolean isCustom = false;
@@ -355,10 +356,17 @@ public class View extends JFrame implements Views, Serializable{
            }
 
            @Override
+           public void endElement(String uri, String localName, String qName) throws SAXException {
+               if (qName.equals("custom")) {
+                   isCustom = false;
+               }
+           }
+
+           @Override
            public void characters(char[] ch, int start, int length) throws SAXException {
                String string = new String(ch, start, length);
                if (isCustom) {
-                   System.out.println(string);
+                   customfile = string;
                }
            }
        };
