@@ -42,6 +42,7 @@ public class Player {
 
     public String toSaveXML(){
         String str="<player>";
+        str +="\n\t\t<aiplayer>false</aiplayer>";
         str+="\n\t\t<name>"+this.name+"</name>";
         str+="\n\t\t<color>"+String.valueOf(this.color.getRGB())+"</color>";
         str+="\n\t\t<countries>";
@@ -101,5 +102,13 @@ public class Player {
     */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     *the setter of color
+     *@param color
+     */
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

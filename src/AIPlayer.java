@@ -198,4 +198,18 @@ public class AIPlayer extends Player {
         }
         return strongCountry;//return the strongest country
     }
+
+    public String toSaveXML(){
+        String str="<player>";
+        str +="\n\t\t<aiplayer>true</aiplayer>";
+        str+="\n\t\t<name>"+getName()+"</name>";
+        str+="\n\t\t<color>"+String.valueOf(getColor().getRGB())+"</color>";
+        str+="\n\t\t<countries>";
+        for (Country country : countries) {
+            str+=country.toSaveXML();
+        }
+        str+="\n\t\t</countries>";
+        str+="\n\t</player>";
+        return str;
+    }
 }

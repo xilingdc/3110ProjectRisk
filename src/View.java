@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -19,7 +20,7 @@ import java.util.Scanner;
  * @author Aleksandar Veselinovic
  * @author Ali Fahd
  */
-public class View extends JFrame implements Views{
+public class View extends JFrame implements Views, Serializable{
     private static JMenuBar mb;
     private static JMenu x;
     private static JMenuItem m1;
@@ -29,33 +30,33 @@ public class View extends JFrame implements Views{
     private JPanel bottomPanel;
     private Model model;
     private String backgroundImageFileName;
+    private String custom;
 
-    public View() throws IOException {
+    public View() throws Exception {
         super("Risk Domination");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
+
+        custom = null;
 
         String gameFileName = getNewOrLoad();
         if (!gameFileName.equals("new")) {
             gameFileName += ".txt";
             try {
-                String customfile = initialParse(gameFileName);
+                initialParse(gameFileName);
+                String customfile = "none";
+                System.out.println(customfile);
                 if(customfile.equals("none")){
                     model = new Model();
                     model.addView(this);
-                    bottomPanel = new JPanel();
-                    this.add(bottomPanel, BorderLayout.SOUTH);
-                    model.processBegin(2, 0);
-                    model.loadGame(gameFileName);
                 }else{
                     model = new Model(customfile);
                     model.addView(this);
                     model.setCustomMap();
-                    bottomPanel = new JPanel();
-                    this.add(bottomPanel, BorderLayout.SOUTH);
-                    model.processBegin(2, 0);
-                    model.loadGame(gameFileName);
                 }
+                bottomPanel = new JPanel();
+                this.add(bottomPanel, BorderLayout.SOUTH);
+                model.processBegin(2, 0);
             } catch (Exception e) {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
@@ -64,7 +65,6 @@ public class View extends JFrame implements Views{
         }else{
             int numPlayer = getNumber("Enter Player Number(2-6):", 2, 6);
             int numAI = getNumber("Enter the number of AI players:", 0, numPlayer);
-
             String mapFileName = getMapFileName();
 
             //backgroundImageFileName = "risk-board-white.png";
@@ -79,6 +79,7 @@ public class View extends JFrame implements Views{
             }
             bottomPanel = new JPanel();
             this.add(bottomPanel, BorderLayout.SOUTH);
+
             model.processBegin(numPlayer, numAI);
         }
 
@@ -154,8 +155,12 @@ public class View extends JFrame implements Views{
         this.setSize(1600,1000);
         this.setVisible(true);
 
-
         model.activatePlacement();
+
+
+        if (!gameFileName.equals("new")) {
+            model.loadGame(gameFileName);
+        }
     }
 
     /**
@@ -202,7 +207,7 @@ public class View extends JFrame implements Views{
 
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         new View();
     }
 
@@ -326,7 +331,7 @@ public class View extends JFrame implements Views{
         placeNum.setText("Bonus Troop Number: "+ event.getTroop());
     }
 
-   /* *//**
+   /* //**
      * update placeNum's text
      * @param troop
      *//*
@@ -334,42 +339,29 @@ public class View extends JFrame implements Views{
         placeNum.setText("Bonus Troop Number: "+ troop);
     }
 */
+   public void initialParse(String filename) throws Exception{
+       SAXParserFactory spf = SAXParserFactory.newInstance();
+       SAXParser s = spf.newSAXParser();
+       File f = new File(filename);
+       String custom = "";
 
-    public String initialParse(String filename) throws Exception{
-        SAXParserFactory spf = SAXParserFactory.newInstance();
-        SAXParser s = spf.newSAXParser();
-        File f = new File(filename);
-        final String[] val = {null};
+       DefaultHandler dh = new DefaultHandler() {
+           boolean isCustom = false;
+           @Override
+           public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+               if (qName.equals("custom")) {
+                   isCustom = true;
+               }
+           }
 
-        DefaultHandler dh = new DefaultHandler() {
-            boolean isCustom = false;
-            @Override
-            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                if (qName.equals("custom")) {
-                    isCustom = true;
-                }
-            }
-
-            @Override
-            public void endElement(String uri, String localName, String qName) throws SAXException {
-                if (qName.equals("custom")) {
-
-                }
-            }
-
-            @Override
-            public void characters(char[] ch, int start, int length) throws SAXException {
-                String string = new String(ch, start, length);
-                if (isCustom) {
-                    val[0] = string;
-                }
-            }
-        };
-        if(val[0] == null){
-            s.parse(f, dh);
-        }else{
-            return val[0];
-        }
-        return "";
-    }
+           @Override
+           public void characters(char[] ch, int start, int length) throws SAXException {
+               String string = new String(ch, start, length);
+               if (isCustom) {
+                   System.out.println(string);
+               }
+           }
+       };
+       s.parse(f, dh);
+   }
 }
