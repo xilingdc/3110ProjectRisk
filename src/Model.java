@@ -725,24 +725,6 @@ public class Model implements Serializable {
         return players.get(nextPlayerIndex);
     }
 
-    /*
-    public void save(String filename) throws IOException {
-        filename += ".txt";
-        FileOutputStream fileStream = new FileOutputStream(filename);
-        ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
-        outputStream.writeObject(this);
-        outputStream.close();
-    }
-
-    public static Model load(String filename) throws Exception {
-        filename += ".txt";
-        FileInputStream stream = new FileInputStream(filename);
-        ObjectInputStream inputStream = new ObjectInputStream(stream);
-        Model model = (Model) inputStream.readObject();
-        inputStream.close();
-        return model;
-    }*/
-
     public void save(String filename) throws IOException{
         filename += ".txt";
         BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
