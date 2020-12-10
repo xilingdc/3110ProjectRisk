@@ -31,9 +31,9 @@ and then a list of neighbour tags inside the country tag. The country tags also 
 an image tag with the name of the file at the end of the xml file that stores the image of the map. With this structure for the xml file, the saxparser
 was easy to use to create a new map object.
 
-For the save and load features, we implemented as such that the user can select whether or not they want to load a game right when they laucnh the program.
-They would then be prompted for a text file which would be in xml format and hold all the required infromation from the incomplete game which would've been
+For the save and load features, we implemented as such that the user can select whether or not they want to load a game right when they launch the program.
+They would then be prompted for a text file which would be in xml format and hold all the required information from the incomplete game which would've been
 stored in its proper format via the save option. Again, we decided to use xml to store game information and use a saxparser to parse the xml file. If the 
-user selected to laod a file, the file would orignally be checked to see if it was played on a custom map, this is our initialParse. This was necessary so
-that depending on what the custom value was the proper model consturcter would be called and the game would resume as normal at the correct phase and player 
+user selected to load a file, the file would orignally be checked to see if it was played on a custom map, this is our initialParse. This was necessary so
+that depending on what the custom value was the proper model constructor would be called and the game would resume as normal at the correct phase and player 
 the game left off at.
