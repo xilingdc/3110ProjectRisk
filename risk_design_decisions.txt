@@ -1,36 +1,32 @@
-One aspect of the game that was missing from the second milestone was to ask the player how many troops they wanted to move into a country
-they had just captured. Originally, the game would move all but 1 troop from the attacking country to the new country, but it should be
-the player's choice to do this. Therefore, in the corresponding code for capturing a country, we added a call to a new method in view that
-asks the player for the number of troops they want to move and returned the number to the model. The model could then move this number of
-troops to the new country. After making this new method in view, we realized that we had a few methods with very similar responsibilities.
-The methods would output a dialog box with the given message, and only after accepting a number in the given range it would return the number.
-The only differences were variable names in the method, so we were able to convert all these methods into one method that had more generic
-variable names. In our updated Model class, whenever a number is needed from the player the more generic getNumber method is now used.
+From the last milestone there were a few design flaws that needed to be fixed. Firstly, the attack method in model and the actionPerformed method
+in controller were too lengthy with too many responsibilities, so they needed to be broken up into smaller methods. For the attack method, we
+broke it up into a method to roll the dice for each player, a method to implement just the attack mechanism, a method to handle the result
+of the attack, and a method to check for an overall winner of the game. The original attack method now calls each of these methods to achieve
+the full attacking functionality. For the actionPerformed method, there is now a separate method for each type of button that can be clicked,
+and actionPerformed simply determines which method to call. Therefore, there are now cancel, pass, fortify, and countryAction methods in
+Controller. The countryAction method determines which state the game is in to decide what to do, so it is possible to make extra methods for
+each possible action, but we decided that countryAction's responsibilities were not large enough to need these extra methods.
 
-With the addition of bonus army placement in this milestone, we needed to incorporate continents into our model, specifically the
-Map class. Originally, the Map class simply stored all the countries in a single arraylist of Country objects which could be easily
-used in the model when neccesary. For this decision, it was important that this arraylist was still available after the continents
-were incorporated for the mentioned reason. There were two approaches to this decision, one was to store a reference to the continent
-with each country, the other was to create a new list of countries for each continent. Since continents were only needed to check if
-they were completely occupied by one player, it was more efficient to implement this using a list of countries for each continent.
-Therefore, we chose the second approach despite the extra space that is used by the higher number of lists.
+The second flaw that we had was the model and view classes being too tightly coupled which was exposed by some difficulties trying to smoothly
+test the model class. The methods we designed to implement the major features of Risk included updating the view before the end of the method,
+and these updates would show a dialog box. Therefore when testing the model we could not avoid having dialog boxes appear when running the tests.
+By breaking up the methods into smaller methods that isolated the mechanism to be tested as mentioned above, we were able to change the tests to
+test these isolated mechanisms instead, so the dialog boxes did not appear anymore. This refactoring also allows the view updates to be avoided,
+so the model and view classes are not tightly coupled anymore.
 
-As mentioned above with bonus troop placement, as well as with troop movement, we had a design decision of how to implement these features.
-Since milestone 2 only required attacking as a country-specific action, we were able to have one button for each country that had one
-responsibility. Therefore, the Controller class only had to keep track of which countries were attacking and defending and then call
-the attack method when a country's button was pressed. Now, with multiple country-specific actions, either more buttons needed to be added
-or the controller would have to keep track of the state of the current turn. Focusing on the extra buttons, the buttons on the map would
-open a popup box with three buttons, one for each possible player action. Even in this case only one button could be active at a time, so this
-option is redundant. Instead, we chose the second option where there are no new extra buttons, but when a country's button is pressed
-the controller needs to determine what method it could call in Model. Therefore, we added booleans in the Model class that kept track
-of the phase of the player's turn, and used those booleans to allow the controller to call the appropriate methods in the model.
-If the player is in the bonus troop phase, selecting two connected countries will call troopPlacement in Model with the associated countries.
-If the player is in the attack phase, selecting two neighbouring countries will call attack in Model with the associated countries.
+The last flaw that needed to be fixed was a missing feature in the MVC pattern, specifically, we were missing the observer pattern that is a part
+of the MVC pattern. Instead of having a list of views in model that implemented a view interface, our model stored one regular view without an
+interface. We were also missing the Event class used to package information to be passed from the model to the view when it needed to be updated.
+To fix this flaw, we created an interface that included all the methods the view needed to override, added a list of objects in model that implemented
+the new interface, and created an Event class that replaced the old parameters of the methods in the interface. With these changes, our project fully
+follows the MVC pattern.
 
-Lastly, with the requirement for AI players for this milestone, we needed to decide how to implement this feature. Since an AI player is just
-a regular player with the ability to play by itself, we made an AIPlayer class that extends the Player class, and then has its own methods
-for attacking, placing bonus troops, and moving troops. The AIPlayer class used its list of countries frequently, so we made the countries field
-in Player protected to give AIPlayer direct access to it. Since an AIPlayer object inherits from Player, the players list in Model did not need to be
-changed. To have specific code in Model methods when the current player was an AI player, we checked if currentPlayer was an instance of AIPlayer,
-then cast currentPlayer to an AIPlayer to call one of its methods. This allowed us to bypass user input from a player when the player was an
-AI player.
+With the addition of custom maps in this milestone, we needed to decide how to store and import the custom maps. Between json and xml, we had more
+experience with xml, so we decided to use xml to store map information and use a saxparser to parse the xml file. This brought attention to our
+map design, specifically the continent design. Since the bonus troops for each continent was hardcoded, we were able to use an array list of countries
+to represent a continent, but with a custom map the bonus troop value is unknown. Therefore, we moved the array list for a continent into a continent class
+that also stored its bonus troop value. This made the design of the xml file easier, having a continent tag with its bonus troops as an attribute,
+and then all of its countries inside the tag as their own tags. Inside each country tag there were attributes needed to construct the country object,
+and then a list of neighbour tags inside the country tag. The country tags also had the attributes needed to construct a country object. There is also
+an image tag with the name of the file at the end of the xml file that stores the image of the map. With this structure for the xml file, the saxparser
+was easy to use to create a new map object.
