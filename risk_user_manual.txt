@@ -45,7 +45,7 @@ When this dialog box is closed, the game closes and stops executing.
 
 As mentioned above, you can load a previously saved game before you start playing. To save a game while playing, click on the word menu at the top left
 of the screen and then click save game. This will open a dialog box asking for a filename for a file that will store the status of the game. After typing
-the name including the .txt extension and pressing ok, there will be a file in the same folder as the jar file that has the status of the game. When you start
+the name excluding the .txt extension and pressing ok, there will be a file in the same folder as the jar file that has the status of the game. When you start
 a new game and are asked if you want to load a game, click yes and then type the name of the file that you saved. This will open the saved game at the point
 when you typed in the file name.
 
