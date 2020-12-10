@@ -841,11 +841,10 @@ public class Model implements Serializable {
                     Color colour = new Color(Integer.parseInt(color));
                     if(aiplayer.equals("true")){
                         players.add(new AIPlayer(name, colour, m));
-                        currentPlayer = players.get(players.size()-1);
                     }else{
                         players.add(new Player(name, colour));
-                        currentPlayer = players.get(players.size()-1);
                     }
+                    currentPlayer = players.get(players.size()-1);
                 }else if(qName.equals("countryname")) {
                     currentPlayer.addCountry(map.getCountry(countryname));
                     troop = "";

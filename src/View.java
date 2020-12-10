@@ -9,11 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Scanner;
 
 /**
  * @author Xiling
@@ -234,6 +231,9 @@ public class View extends JFrame implements Views, Serializable{
         backgroundImageFileName = filename;
     }
 
+    /**
+     * Asks the user if they want to continue playing a game or make a new one
+     */
     public String getNewOrLoad() {
         String message = "Do you want to load a game?";
         String title = "Game Selection Choice";
@@ -333,14 +333,10 @@ public class View extends JFrame implements Views, Serializable{
         placeNum.setText("Bonus Troop Number: "+ event.getTroop());
     }
 
-   /* //**
-     * update placeNum's text
-     * @param troop
-     *//*
-    public void updatePlaceNum(int troop){
-        placeNum.setText("Bonus Troop Number: "+ troop);
-    }
-*/
+    /**
+     * Checks to see if the file is a save fo custom map
+     * @param filename
+     */
    public void initialParse(String filename) throws Exception{
        SAXParserFactory spf = SAXParserFactory.newInstance();
        SAXParser s = spf.newSAXParser();
