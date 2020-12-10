@@ -1,8 +1,10 @@
 To run the game, double click on the jar file that is in the provided zipped folder or execute it in the command line. This will open
-a dialog box that will ask you how many players will be playing in the game. After typing your number and pressing ok, another dialog
+a dialog box that will ask you if you want to load a game that you previously saved. This will be explained later. By pressing no,
+a dialog box will open asking you how many players will be playing in the game. After typing your number and pressing ok, another dialog
 box will open that will ask you how many of the players will be AI. This number can be anything from 0 to the number of players you
-just entered. After typing your number and pressing ok, the game will open, showing the map with colored buttons on each country,
-the player with the current turn, and each player name. Also, there will be a dialog box that says how many troops the current player
+just entered. After typing your number and pressing ok, another dialog box will open asking you if you want to use a custom map. This will
+also be explained later. After passing this step, the game will open, showing the map with colored buttons on each country, the player 
+with the current turn, and each player name. Also, there will be a dialog box that says how many troops the current player
 has to place in their countries.
 
 Focusing on the map, the color of a button represents which player owns that country, and the number on the button represents how many troops are
@@ -40,6 +42,19 @@ next player.
 After fortifying or passing, the turn will go the next player. The text above the map will change to say the next player's name, written in their color.
 When a player is eliminated, a dialog box will open saying who was eliminated. When someone has won the game, a dialog box will open saying who won the game.
 When this dialog box is closed, the game closes and stops executing.
+
+As mentioned above, you can load a previously saved game before you start playing. To save a game while playing, click on the word menu at the top left
+of the screen and then click save game. This will open a dialog box asking for a filename for a file that will store the status of the game. After typing
+the name including the .txt extension and pressing ok, there will be a file in the same folder as the jar file that has the status of the game. When you start
+a new game and are asked if you want to load a game, click yes and then type the name of the file that you saved. This will open the saved game at the point
+when you typed in the file name.
+
+Also mentioned above, you can use a custom map before starting the game. In order to be able to use a custom map, there must be a txt file in xml format that
+describes the map and an image file of the map, stored in the same folder as the jar file. There are 2 example xml files provided in the folder called
+baseMapXML and randomMapXML that show the neccesary structure of the xml file. These 2 xml files also have their corresponding image files, so you can
+use these to see how the custom map feature works. The randomMapXML file represents a different map than the base map of risk. Once you have your custom map
+files ready, when you are asked if you want to use a custom map, click yes and then type the name of the xml file including the extension. After pressing ok,
+the game will open showing your custom map and all the buttons that represent countries.
 
 Note: the jar file might make the map larger than it should be, so the map is cut off at the bottom and the bottom panel is not visible, but all
 the buttons are visible. To make the bottom panel visible make the frame full screen. If the game is run in intellij the frame looks as it should.
