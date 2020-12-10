@@ -30,6 +30,10 @@ public class Player {
         this.color = color;
     }
 
+    /**
+     * creates a simple string in xml format of the player
+     * @return a string that represents the player in xml format
+     */
     public String toSimpleXML(){
         String str="<player>";
         str+="<name>"+this.name+"</name>";
@@ -39,7 +43,10 @@ public class Player {
     }
 
 
-
+    /**
+     * creates a string in xml format of the player
+     * @return a string that represents the player in xml format
+     */
     public String toSaveXML(){
         String str="<player>";
         str +="\n\t\t<aiplayer>false</aiplayer>";

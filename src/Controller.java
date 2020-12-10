@@ -131,6 +131,10 @@ public class Controller implements ActionListener {
             }
         }
     }
+
+    /**
+     * resets bonus troops, used for loading games
+     */
     public void resetPlacementTroops(){
         placementTroops = 0;
     }

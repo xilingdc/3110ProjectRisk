@@ -25,6 +25,10 @@ public class Country {
         neighbours = new ArrayList<>();
     }
 
+    /**
+     * creates a string in xml format of the country
+     * @return a string that represents the country in xml format
+     */
     public String toSaveXML(){
         String str="\n\t\t\t<country>";
         str+="\n\t\t\t\t<countryname>"+name+"</countryname>";
@@ -33,6 +37,10 @@ public class Country {
         return str;
     }
 
+    /**
+     * creates a simple string in xml format of the country
+     * @return a string that represents the country in xml format
+     */
     public String toSimpleXML(){
         String str="<country>";
         str+="<name>"+name+"</name>";
