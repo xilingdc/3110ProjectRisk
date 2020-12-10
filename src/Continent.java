@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Continent {
     private String name;
     private ArrayList<Country> countries;
-    int bonusTroops;
+    private int bonusTroops;
 
     /**
      * constructor
