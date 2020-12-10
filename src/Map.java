@@ -19,15 +19,9 @@ public class Map {
     private ArrayList<Continent> continents;
     private ArrayList<Country> countries;//general country list
     private String filename;
-    private ArrayList<Country> australia;
-    private ArrayList<Country> asia;
-    private ArrayList<Country> africa;
-    private ArrayList<Country> europe;
-    private ArrayList<Country> southAmerica;
-    private ArrayList<Country> northAmerica;
 
     /**
-     * constructor Map()
+     * constructor for base map
      */
     public Map() {
         countries = new ArrayList<>();
@@ -245,6 +239,10 @@ public class Map {
         northAmerica.addCountry(WesternAmerica);
     }
 
+    /**
+     * constructor for custom map
+     * @param filename indicates the xml file of the custom map
+     */
     public Map(String filename) {
         continents = new ArrayList<>();
         countries = new ArrayList<>();
@@ -255,6 +253,11 @@ public class Map {
         }
     }
 
+    /**
+     * imports a map from the xml file
+     * @param filename indicates the xml file to parse
+     * @throws Exception when there is an error in parsing
+     */
     public void importFromXML(String filename) throws Exception {
         SAXParserFactory spf = SAXParserFactory.newInstance();
         SAXParser s = spf.newSAXParser();
@@ -310,8 +313,11 @@ public class Map {
         s.parse(f, dh);
     }
 
+    /**
+     * determines if the map can be used
+     * @return true if the map is valid, false if not
+     */
     public boolean isValid() {
-        boolean valid = true;
         Country country = countries.get(0);
         Set<Country> visited = new HashSet<>();
         ArrayList<Country> queue = new ArrayList<>();

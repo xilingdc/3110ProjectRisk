@@ -29,18 +29,25 @@ public class Model implements Serializable {
 
 
     /**
-     * @constructor
+     * @constructor when base map used
      */
     public Model() {
         map = new Map();
         viewLists=new ArrayList<>();
     }
 
+    /**
+     * @constructor when custom map used
+     */
     public Model(String mapFileName) {
         viewLists = new ArrayList<>();
         customMapFileName = mapFileName;
     }
 
+    /**
+     * sets the map field to the custom map
+     * when it is a valid map
+     */
     public void setCustomMap() {
         Map customMap = new Map(customMapFileName);
         while (!(customMap.isValid())) {
@@ -314,12 +321,6 @@ public class Model implements Serializable {
         return attackDice;
     }
 
-    public void notifyMapSelection() {
-        for (Views view : viewLists) {
-            view.handleCustomMap(map.getFilename());
-        }
-    }
-
 
     /**
      * update any changes in map after player finish a single attack
@@ -377,7 +378,15 @@ public class Model implements Serializable {
     }
 
 
-
+    /**
+     * notifies the views of the model when a custom map is
+     * successfully loaded
+     */
+    public void notifyMapSelection() {
+        for (Views view : viewLists) {
+            view.handleCustomMap(map.getFilename());
+        }
+    }
 
 
 
@@ -725,6 +734,11 @@ public class Model implements Serializable {
         return players.get(nextPlayerIndex);
     }
 
+    /**
+     * saves the model in an xml file
+     * @param filename indicates the file to save to
+     * @throws IOException
+     */
     public void save(String filename) throws IOException{
         filename += ".txt";
         BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
@@ -732,6 +746,10 @@ public class Model implements Serializable {
         writer.close();
     }
 
+    /**
+     * creates a string in xml format of the model
+     * @return a string that represents the model in xml format
+     */
     public String toSaveXML() {
         String xml = "<Model>";
         for (Player p : players) {
@@ -754,6 +772,11 @@ public class Model implements Serializable {
         return xml;
     }
 
+    /**
+     * loads the model from the indicated xml file
+     * @param filename indicates the file to load from
+     * @throws Exception
+     */
     public void loadGame(String filename) throws Exception{
         players.clear();
         Model m = this;

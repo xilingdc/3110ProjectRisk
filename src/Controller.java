@@ -45,6 +45,9 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * clears all selected countries
+     */
     private void cancel(){
         attacker = null;
         defender = null;
@@ -52,6 +55,9 @@ public class Controller implements ActionListener {
         country2 = null;//reset all selected countries
     }
 
+    /**
+     * calls the pass method in model if allowed
+     */
     private void pass(){
         if(!model.isPlacementPhase()) {//if the game isn't in placement phase
             model.pass();//pass
@@ -68,6 +74,9 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * activates the fortifying phase in model
+     */
     private void fortify(){
         if(!model.isPlacementPhase()) {//if the game isn't in placement phase
             model.activateFortify();
@@ -76,6 +85,11 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * calls attack, troopPlacement, or fortify based on
+     * the state of the model
+     * @param b the CountryButton that was clicked
+     */
     private void countryAction(CountryButton b){
         if(model.isPlacementPhase()){//if the game is in placement phase
             if(placementTroops == 0){

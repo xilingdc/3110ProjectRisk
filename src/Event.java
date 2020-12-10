@@ -22,11 +22,23 @@ public class Event extends EventObject {
         this.message=message;
     }
 
+    /**
+     * Alternate constructor
+     * @param model
+     * @param player
+     */
     public Event(Model model,Player player) {
         super(model);
         this.player=player;
     }
 
+    /**
+     * Alternate constructor
+     * @param model
+     * @param message
+     * @param min
+     * @param max
+     */
     public Event(Model model, String message, int min, int max){
         super(model);
         this.message=message;
@@ -35,6 +47,13 @@ public class Event extends EventObject {
 
     }
 
+    /**
+     * Alternate constructor
+     * @param model
+     * @param country
+     * @param color
+     * @param troop
+     */
     public Event(Model model, Country country, Color color, int troop){
         super(model);
         this.color=color;
@@ -43,12 +62,23 @@ public class Event extends EventObject {
 
     }
 
+    /**
+     * Alternate constructor
+     * @param model
+     * @param troop
+     */
     public Event(Model model,  int troop){
         super(model);
         this.troop = troop;
 
     }
 
+    /**
+     * Alternate constructor
+     * @param model
+     * @param playerName
+     * @param color
+     */
     public Event(Model model, String playerName, Color color){
         super(model);
         this.color=color;
